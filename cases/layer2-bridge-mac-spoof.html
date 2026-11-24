@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layer 2 Bridge Architecture & MAC-IP Anti-Spoofing Controls | Sheikh Soban Fayaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --paper: #FFFFFF;
+  --surface: #F8FAFC;
+  --ink: #0F172A;
+  --ink2: #334155;
+  --mute: #475569;
+  --hair: #E2E8F0;
+  --accent: #2563EB;
+  --accent-text: #1E40AF;
+  --accent-soft: #EFF6FF;
+  --emerald: #0D9488;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0B0F17;
+  --surface: #111827;
+  --ink: #F8FAFC;
+  --ink2: #CBD5E1;
+  --mute: #94A3B8;
+  --hair: #1E293B;
+  --accent: #3B82F6;
+  --accent-text: #60A5FA;
+  --accent-soft: #172554;
+  --emerald: #2DD4BF;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hair);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 68px;
+}
+
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand strong {
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--ink2);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Article */
+article.case-article {
+  padding: 40px 0 80px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-text);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.case-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.project-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-text);
+  font-weight: 500;
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0 28px;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--mute);
+}
+
+h1.case-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+
+.case-summary {
+  font-size: 18px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.section-block {
+  margin: 36px 0;
+}
+
+.section-block h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-block h2::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.analysis-card {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 16px 0;
+}
+
+.analysis-card p {
+  margin: 0 0 14px;
+  color: var(--ink2);
+  font-size: 15.5px;
+}
+
+.analysis-card p:last-child {
+  margin-bottom: 0;
+}
+
+.workflow-steps {
+  white-space: pre-line;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 10px;
+  padding: 20px 24px;
+  font-size: 15px;
+  color: var(--ink2);
+  line-height: 1.8;
+}
+
+.code-block {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  color: var(--ink);
+  white-space: pre-wrap;
+  margin: 14px 0;
+}
+
+.value-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.value-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.value-list li::before {
+  content: "✔";
+  color: var(--emerald);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.outcome-box {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.outcome-box h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--accent-text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.outcome-box p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 50px;
+  padding-top: 28px;
+  border-top: 1px solid var(--hair);
+  flex-wrap: wrap;
+}
+
+footer {
+  padding: 32px 0 48px;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--mute);
+}
+
+@media (max-width: 680px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+  }
+  .article-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">Sheikh <strong>Soban</strong> Fayaz</a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="../index.html#experience">Background</a>
+      <a href="../index.html#methodology">Methodology</a>
+      <a href="../index.html#projects">Write-Ups</a>
+      <a href="../index.html#stack">Stack</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <button type="button" id="themeToggle" class="btn btn-sm" aria-label="Toggle dark mode">Dark Mode</button>
+  </div>
+</header>
+
+<main class="container">
+  <article class="case-article">
+    <a href="../index.html#projects" class="back-link">&larr; Back to All Investigations &amp; Write-Ups</a>
+    
+    <div class="case-meta">
+      <span class="project-cat">Network & Perimeter</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mute);">Technical Case Study</span>
+    </div>
+
+    <h1 class="case-title">Layer 2 Bridge Architecture & MAC-IP Anti-Spoofing Controls</h1>
+    <p class="case-summary">Troubleshooting transparent bridge interface security, member port inheritance, and Layer 2 ARP/IP spoofing prevention controls.</p>
+
+    <div class="tag-row">
+      <span class="tag">Layer 2</span><span class="tag">Bridging</span><span class="tag">Anti-Spoofing</span><span class="tag">Network Architecture</span><span class="tag">ARP Security</span>
+    </div>
+
+    <div class="section-block">
+      <h2>Incident Scenario &amp; Environmental Context</h2>
+      <p style="font-size: 15.5px; color: var(--ink2);">A customer reported that security policies failed to bind properly on bridged interface segments, causing transparent bridge traffic to bypass expected MAC-IP Anti-Spoof protection. The investigation evaluated bridge architecture, member port inheritance, and Layer 2 security controls.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>Investigation Workflow</h2>
+      <div class="workflow-steps">1. Audited the firewall bridge architecture, comparing native transparent bridging with routed Layer 2 sub-interface pairings.
+2. Examined the operational relationship between parent bridge objects and underlying physical member interfaces.
+3. Verified whether security enforcement policies and anti-spoof filters must be bound directly to individual member interfaces rather than the logical bridge master.
+4. Audited ARP translation tables, MAC-address learning databases, and IP-MAC binding enforcement rules.
+5. Evaluated bridge type and firmware capabilities to determine whether observed behavior was by design or anomalous.
+6. Configured static IP-MAC binding lists and validated packet dropping for unauthorized spoofed ARP announcements.</div>
+    </div>
+
+    <div class="section-block">
+      <h2>Technical Analysis &amp; Telemetry Insights</h2>
+      <div class="analysis-card">
+        <p>Enterprise firewalls operating in Layer 2 transparent bridge mode insert deep packet inspection into an existing network broadcast domain without requiring IP subnet redesign. However, implementing security controls such as MAC-IP Anti-Spoofing and ARP inspection in bridged environments introduces complex architectural interdependencies.</p><p>When two physical ports form a transparent bridge pair, the firewall creates a logical bridge object while retaining individual member interfaces. A common configuration mistake occurs when administrators assume that enabling anti-spoof protection on the parent bridge object automatically applies enforcement to all transit frames. In many enterprise firewall operating systems, MAC-IP binding tables and ARP anti-spoof policies must be explicitly associated with the individual physical member interfaces where packets enter the physical chassis. If member interfaces lack explicit binding, transit ARP requests and forged MAC packets bypass inspection.</p><p>Furthermore, in virtualized environments with hypervisor switch uplinks, virtual machines frequently move between physical NICs or share MAC addresses (e.g., CARP, VRRP, HSRP, NLB). A rigid MAC-IP anti-spoof policy without static ARP table overrides or dynamic lease snooping can inadvertently drop legitimate high-availability heartbeat traffic. The troubleshooting workflow requires inspecting ARP translation tables, verifying member port inheritance, and isolating static IP-MAC bindings from dynamic DHCP leases.</p>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2>Diagnostic Query / Logic Sample</h2>
+      <div class="code-block"># Layer 2 bridge security enforcement
+Bridge: Parent [Bridge_Pair_01] -> Members [Interface X2, Interface X3]
+Security Policy: MAC-IP Anti-Spoofing enabled on individual member interfaces with static ARP inspection</div>
+    </div>
+
+    <div class="section-block">
+      <h2>Competencies &amp; Value Demonstrated</h2>
+      <ul class="value-list">
+        <li>Enterprise firewall Layer 2 bridge architecture and transparent inspection knowledge</li><li>MAC-IP Anti-Spoofing control implementation and ARP inspection mechanics</li><li>Configuration inheritance analysis between bridge objects and physical member ports</li><li>Ability to isolate firmware architectural specifications from configuration errors</li><li>Rigorous testing of Layer 2 broadcast containment and anti-spoof dropping</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>Incident Outcome &amp; Verification Status</h2>
+      <div class="outcome-box">
+        <h3>Verified Disposition</h3>
+        <p>Identified that anti-spoof controls were configured only on the logical bridge object; binding enforcement rules directly to physical member interfaces enabled full anti-spoof filtering as designed.</p>
+      </div>
+    </div>
+
+    <div class="article-nav">
+      <a href="../index.html#projects" class="btn">&larr; Return to All Write-Ups</a>
+      <a href="../index.html#contact" class="btn btn-primary">Discuss This Case Study &rarr;</a>
+    </div>
+  </article>
+
+  <footer>
+    <span>Sheikh Soban Fayaz · Security Operations Portfolio</span>
+    <span style="font-family: 'IBM Plex Mono', monospace;">ISC2 CC · Network &amp; SOC</span>
+  </footer>
+</main>
+
+<script>
+function applyTheme(theme) {
+  const btn = document.getElementById('themeToggle');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    btn.textContent = 'Light Mode';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    btn.textContent = 'Dark Mode';
+  }
+  try {
+    localStorage.setItem('soban_theme', theme);
+  } catch (e) {}
+}
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  applyTheme(isDark ? 'light' : 'dark');
+});
+
+(function() {
+  let saved = 'light';
+  try {
+    saved = localStorage.getItem('soban_theme') || 'light';
+  } catch (e) {}
+  applyTheme(saved);
+})();
+</script>
+</body>
+</html>

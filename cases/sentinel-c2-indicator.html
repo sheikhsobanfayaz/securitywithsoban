@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft Sentinel Custom Network Indicator & Possible C2 Triage | Sheikh Soban Fayaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --paper: #FFFFFF;
+  --surface: #F8FAFC;
+  --ink: #0F172A;
+  --ink2: #334155;
+  --mute: #475569;
+  --hair: #E2E8F0;
+  --accent: #2563EB;
+  --accent-text: #1E40AF;
+  --accent-soft: #EFF6FF;
+  --emerald: #0D9488;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0B0F17;
+  --surface: #111827;
+  --ink: #F8FAFC;
+  --ink2: #CBD5E1;
+  --mute: #94A3B8;
+  --hair: #1E293B;
+  --accent: #3B82F6;
+  --accent-text: #60A5FA;
+  --accent-soft: #172554;
+  --emerald: #2DD4BF;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hair);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 68px;
+}
+
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand strong {
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--ink2);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Article */
+article.case-article {
+  padding: 40px 0 80px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-text);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.case-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.project-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-text);
+  font-weight: 500;
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0 28px;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--mute);
+}
+
+h1.case-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+
+.case-summary {
+  font-size: 18px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.section-block {
+  margin: 36px 0;
+}
+
+.section-block h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-block h2::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.analysis-card {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 16px 0;
+}
+
+.analysis-card p {
+  margin: 0 0 14px;
+  color: var(--ink2);
+  font-size: 15.5px;
+}
+
+.analysis-card p:last-child {
+  margin-bottom: 0;
+}
+
+.workflow-steps {
+  white-space: pre-line;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 10px;
+  padding: 20px 24px;
+  font-size: 15px;
+  color: var(--ink2);
+  line-height: 1.8;
+}
+
+.code-block {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  color: var(--ink);
+  white-space: pre-wrap;
+  margin: 14px 0;
+}
+
+.value-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.value-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.value-list li::before {
+  content: "✔";
+  color: var(--emerald);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.outcome-box {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.outcome-box h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--accent-text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.outcome-box p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 50px;
+  padding-top: 28px;
+  border-top: 1px solid var(--hair);
+  flex-wrap: wrap;
+}
+
+footer {
+  padding: 32px 0 48px;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--mute);
+}
+
+@media (max-width: 680px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+  }
+  .article-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">Sheikh <strong>Soban</strong> Fayaz</a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="../index.html#experience">Background</a>
+      <a href="../index.html#methodology">Methodology</a>
+      <a href="../index.html#projects">Write-Ups</a>
+      <a href="../index.html#stack">Stack</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <button type="button" id="themeToggle" class="btn btn-sm" aria-label="Toggle dark mode">Dark Mode</button>
+  </div>
+</header>
+
+<main class="container">
+  <article class="case-article">
+    <a href="../index.html#projects" class="back-link">&larr; Back to All Investigations &amp; Write-Ups</a>
+    
+    <div class="case-meta">
+      <span class="project-cat">SIEM & Detection</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mute);">Technical Case Study</span>
+    </div>
+
+    <h1 class="case-title">Microsoft Sentinel Custom Network Indicator & Possible C2 Triage</h1>
+    <p class="case-summary">Correlating endpoint process network events with perimeter firewall disposition to validate custom threat intelligence C2 indicator alerts.</p>
+
+    <div class="tag-row">
+      <span class="tag">Microsoft Sentinel</span><span class="tag">KQL</span><span class="tag">Endpoint Telemetry</span><span class="tag">C2 Detection</span><span class="tag">Palo Alto Logs</span>
+    </div>
+
+    <div class="section-block">
+      <h2>Incident Scenario &amp; Environmental Context</h2>
+      <p style="font-size: 15.5px; color: var(--ink2);">A Microsoft Sentinel high-severity incident flagged a custom network indicator for potential command-and-control (C2) communication. Telemetry recorded an internal workstation (workstation-alpha, IP 10.16.56.241) executing an msedge.exe process that initiated communication to an external document utility domain, accompanied by specific SHA-256 and SHA-1 file hashes in the incident context.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>Investigation Workflow</h2>
+      <div class="workflow-steps">1. Scoped the Sentinel incident, extracting affected host, authenticated user, initiating process name, external destination domain, internal IPs, and file hashes.
+2. Queried host-level endpoint network telemetry to evaluate whether the local operating system recorded a successful TCP connection or socket failure.
+3. Queried perimeter firewall logs (CommonSecurityLog) for the source IP and timestamp window, inspecting the DeviceAction field (allow, deny, or drop) to determine actual perimeter disposition.
+4. Audited SIEM events across all enterprise endpoints to establish if the custom indicator or external domain was observed on any other assets.
+5. Validated file hashes against cloud sandbox detonation reports and threat intelligence reputation databases to assess payload malice.
+6. Correlated timeline events to confirm whether subsequent lateral movement, persistence registry keys, or credential access occurred.</div>
+    </div>
+
+    <div class="section-block">
+      <h2>Technical Analysis &amp; Telemetry Insights</h2>
+      <div class="analysis-card">
+        <p>A common pitfall in SOC alert triage is assuming that a high-severity alert or an endpoint connection event equals an active compromise. In modern enterprise environments, host-level telemetry (such as Sysmon Event ID 3 or EDR NetworkConnect) describes what the client operating system attempted or observed locally. If an endpoint reports 'ConnectionSuccess', that only indicates the local TCP socket handshake initiated; it does not account for perimeter security controls.</p><p>Conversely, perimeter firewalls (such as Palo Alto or enterprise NGFWs logging via CommonSecurityLog) track stateful inspection and enforcement. An event with DeviceAction equal to 'deny' or 'drop' proves the traffic was blocked before leaving the perimeter, rendering an automated C2 callback harmless. Furthermore, indicators pointing to dual-use utility domains (such as online PDF conversion or file-sharing tools) frequently trigger custom threat intelligence rules when users interact with unapproved web utilities.</p><p>Rather than isolating the asset immediately based solely on an indicator match, the analyst must verify the exact URI, analyze DNS resolution history, inspect parent-child process relationships (e.g. browser vs unauthorized executable), evaluate payload hashes against cloud sandbox detonations, and determine if identical indicators appear across other enterprise nodes before making a defensible containment decision.</p>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2>Diagnostic Query / Logic Sample</h2>
+      <div class="code-block">CommonSecurityLog
+| where TimeGenerated >= ago(24h)
+| where SourceIP == "10.16.56.241" or DestinationIP == "10.16.56.241"
+| project TimeGenerated, DeviceAction, SourceIP, DestinationIP, DestinationPort, Activity</div>
+    </div>
+
+    <div class="section-block">
+      <h2>Competencies &amp; Value Demonstrated</h2>
+      <ul class="value-list">
+        <li>Correlation of SIEM alert context with endpoint and network evidence</li><li>Clear analytical distinction between an alert trigger and confirmed compromise</li><li>Deep log-interpretation understanding of endpoint socket events versus perimeter firewall DeviceAction disposition</li><li>Structured multi-source scoping across internal endpoints to confirm incident blast radius</li><li>Defensible, evidence-driven escalation and incident documentation under strict SLAs</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>Incident Outcome &amp; Verification Status</h2>
+      <div class="outcome-box">
+        <h3>Verified Disposition</h3>
+        <p>Investigation established that perimeter firewall controls blocked the outbound connection attempt (DeviceAction: drop). Compromise was not established from the evidence reviewed. The host remained operational under ongoing monitoring.</p>
+      </div>
+    </div>
+
+    <div class="article-nav">
+      <a href="../index.html#projects" class="btn">&larr; Return to All Write-Ups</a>
+      <a href="../index.html#contact" class="btn btn-primary">Discuss This Case Study &rarr;</a>
+    </div>
+  </article>
+
+  <footer>
+    <span>Sheikh Soban Fayaz · Security Operations Portfolio</span>
+    <span style="font-family: 'IBM Plex Mono', monospace;">ISC2 CC · Network &amp; SOC</span>
+  </footer>
+</main>
+
+<script>
+function applyTheme(theme) {
+  const btn = document.getElementById('themeToggle');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    btn.textContent = 'Light Mode';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    btn.textContent = 'Dark Mode';
+  }
+  try {
+    localStorage.setItem('soban_theme', theme);
+  } catch (e) {}
+}
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  applyTheme(isDark ? 'light' : 'dark');
+});
+
+(function() {
+  let saved = 'light';
+  try {
+    saved = localStorage.getItem('soban_theme') || 'light';
+  } catch (e) {}
+  applyTheme(saved);
+})();
+</script>
+</body>
+</html>

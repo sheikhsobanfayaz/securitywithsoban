@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site-to-Site IPsec VPN Payload Negotiation Fault Isolation | Sheikh Soban Fayaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --paper: #FFFFFF;
+  --surface: #F8FAFC;
+  --ink: #0F172A;
+  --ink2: #334155;
+  --mute: #475569;
+  --hair: #E2E8F0;
+  --accent: #2563EB;
+  --accent-text: #1E40AF;
+  --accent-soft: #EFF6FF;
+  --emerald: #0D9488;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0B0F17;
+  --surface: #111827;
+  --ink: #F8FAFC;
+  --ink2: #CBD5E1;
+  --mute: #94A3B8;
+  --hair: #1E293B;
+  --accent: #3B82F6;
+  --accent-text: #60A5FA;
+  --accent-soft: #172554;
+  --emerald: #2DD4BF;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hair);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 68px;
+}
+
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand strong {
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--ink2);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Article */
+article.case-article {
+  padding: 40px 0 80px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-text);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.case-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.project-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-text);
+  font-weight: 500;
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0 28px;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--mute);
+}
+
+h1.case-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+
+.case-summary {
+  font-size: 18px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.section-block {
+  margin: 36px 0;
+}
+
+.section-block h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-block h2::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.analysis-card {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 16px 0;
+}
+
+.analysis-card p {
+  margin: 0 0 14px;
+  color: var(--ink2);
+  font-size: 15.5px;
+}
+
+.analysis-card p:last-child {
+  margin-bottom: 0;
+}
+
+.workflow-steps {
+  white-space: pre-line;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 10px;
+  padding: 20px 24px;
+  font-size: 15px;
+  color: var(--ink2);
+  line-height: 1.8;
+}
+
+.code-block {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  color: var(--ink);
+  white-space: pre-wrap;
+  margin: 14px 0;
+}
+
+.value-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.value-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.value-list li::before {
+  content: "✔";
+  color: var(--emerald);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.outcome-box {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.outcome-box h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--accent-text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.outcome-box p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 50px;
+  padding-top: 28px;
+  border-top: 1px solid var(--hair);
+  flex-wrap: wrap;
+}
+
+footer {
+  padding: 32px 0 48px;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--mute);
+}
+
+@media (max-width: 680px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+  }
+  .article-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">Sheikh <strong>Soban</strong> Fayaz</a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="../index.html#experience">Background</a>
+      <a href="../index.html#methodology">Methodology</a>
+      <a href="../index.html#projects">Write-Ups</a>
+      <a href="../index.html#stack">Stack</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <button type="button" id="themeToggle" class="btn btn-sm" aria-label="Toggle dark mode">Dark Mode</button>
+  </div>
+</header>
+
+<main class="container">
+  <article class="case-article">
+    <a href="../index.html#projects" class="back-link">&larr; Back to All Investigations &amp; Write-Ups</a>
+    
+    <div class="case-meta">
+      <span class="project-cat">Network & Perimeter</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mute);">Technical Case Study</span>
+    </div>
+
+    <h1 class="case-title">Site-to-Site IPsec VPN Payload Negotiation Fault Isolation</h1>
+    <p class="case-summary">Diagnosing Phase 1 and Phase 2 proposal mismatches, traffic selector discrepancies, and cryptographic parameter symmetry in enterprise site-to-site tunnels.</p>
+
+    <div class="tag-row">
+      <span class="tag">IPsec</span><span class="tag">Site-to-Site</span><span class="tag">IKEv2</span><span class="tag">Firewall Diagnostics</span><span class="tag">Crypto Protocols</span>
+    </div>
+
+    <div class="section-block">
+      <h2>Incident Scenario &amp; Environmental Context</h2>
+      <p style="font-size: 15.5px; color: var(--ink2);">An enterprise branch site-to-site IPsec VPN tunnel failed to negotiate, generating recurring 'payload processing error' events in the firewall diagnostic logs. The failure prevented inter-branch traffic between local and remote enterprise subnets, requiring cryptographic proposal auditing.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>Investigation Workflow</h2>
+      <div class="workflow-steps">1. Extracted timestamped IKE negotiation logs on both peer security gateways to isolate the failure to Phase 1 (IKE SA) or Phase 2 (Child / IPsec SA).
+2. Audited Phase 1 proposals: IKE version (IKEv1 vs IKEv2), Diffie-Hellman group, encryption cipher, hash algorithm, and peer ID authentication.
+3. Audited Phase 2 proposals: transform sets, encryption algorithms (AES-GCM vs AES-CBC), integrity algorithms, Perfect Forward Secrecy (PFS), and SA lifetimes.
+4. Audited traffic selectors and crypto access-lists on both gateways to verify that local and remote encryption domains were exact mirror images.
+5. Examined NAT-Traversal (NAT-T) and UDP encapsulation settings across intermediate upstream carrier routes.
+6. Resolved subnet definition discrepancies and verified tunnel stability across Phase 1 and Phase 2 re-keying intervals.</div>
+    </div>
+
+    <div class="section-block">
+      <h2>Technical Analysis &amp; Telemetry Insights</h2>
+      <div class="analysis-card">
+        <p>Enterprise site-to-site IPsec VPNs rely on a two-phase cryptographic handshake governed by strict parameter symmetry between peer gateways. When a tunnel fails with a generic 'payload processing error', relying on the error message alone is insufficient because payload errors can originate at multiple negotiation stages.</p><p>In Phase 1 (IKE SA), peers must agree on IKE version (IKEv1 vs IKEv2), Diffie-Hellman (DH) exchange group, encryption cipher (e.g., AES-CBC-256 vs AES-GCM-256), hashing algorithm (SHA-256 vs SHA-384), authentication type (Pre-Shared Key vs X.509 Certificate), and lifetime parameters. A single mismatched parameter triggers an immediate negotiation abort.</p><p>In Phase 2 (IPsec / Child SA), peers negotiate the security association transform set and validate traffic selectors (crypto access control lists). Traffic selector asymmetry is the single most frequent cause of payload processing errors: if Gateway A defines its local encryption domain as 10.100.0.0/24 and remote domain as 10.200.0.0/24, Gateway B must define its local domain as 10.200.0.0/24 and remote domain as 10.100.0.0/24. If Gateway B configures a broader subnet mask (such as 10.200.0.0/16) or an overlapping address object, the security association proposals clash, causing Phase 2 payload validation to fail. Debugging requires capturing timestamped IKE negotiation logs on both peer gateways, validating crypto ACL symmetry, and confirming Perfect Forward Secrecy (PFS) settings.</p>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2>Diagnostic Query / Logic Sample</h2>
+      <div class="code-block"># VPN diagnostic log inspection
+IKEv2 Phase 2 negotiation failed: NO_PROPOSAL_CHOSEN / Payload mismatch
+Verification: Validate LocalSubnet (10.100.0.0/24) <-> RemoteSubnet (10.200.0.0/24) matching crypto ACL</div>
+    </div>
+
+    <div class="section-block">
+      <h2>Competencies &amp; Value Demonstrated</h2>
+      <ul class="value-list">
+        <li>Site-to-site IPsec VPN architecture and protocol negotiation mastery</li><li>Granular understanding of IKE Phase 1 and Phase 2 proposal compatibility parameters</li><li>Methodical comparison of peer gateway cryptographic configurations and crypto ACLs</li><li>Log-driven diagnostic isolation rather than reliance on ambiguous error strings</li><li>Root-cause isolation of traffic selector subnet mask asymmetries</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>Incident Outcome &amp; Verification Status</h2>
+      <div class="outcome-box">
+        <h3>Verified Disposition</h3>
+        <p>Log analysis revealed a Phase 2 traffic selector mismatch where the remote gateway defined a /16 supernet while the local gateway expected /24 subnets. Aligning address objects resolved the error and restored tunnel stability.</p>
+      </div>
+    </div>
+
+    <div class="article-nav">
+      <a href="../index.html#projects" class="btn">&larr; Return to All Write-Ups</a>
+      <a href="../index.html#contact" class="btn btn-primary">Discuss This Case Study &rarr;</a>
+    </div>
+  </article>
+
+  <footer>
+    <span>Sheikh Soban Fayaz · Security Operations Portfolio</span>
+    <span style="font-family: 'IBM Plex Mono', monospace;">ISC2 CC · Network &amp; SOC</span>
+  </footer>
+</main>
+
+<script>
+function applyTheme(theme) {
+  const btn = document.getElementById('themeToggle');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    btn.textContent = 'Light Mode';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    btn.textContent = 'Dark Mode';
+  }
+  try {
+    localStorage.setItem('soban_theme', theme);
+  } catch (e) {}
+}
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  applyTheme(isDark ? 'light' : 'dark');
+});
+
+(function() {
+  let saved = 'light';
+  try {
+    saved = localStorage.getItem('soban_theme') || 'light';
+  } catch (e) {}
+  applyTheme(saved);
+})();
+</script>
+</body>
+</html>

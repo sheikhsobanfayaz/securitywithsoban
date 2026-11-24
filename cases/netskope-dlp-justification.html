@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloud DLP Policy Alert & User Justification Triage | Sheikh Soban Fayaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --paper: #FFFFFF;
+  --surface: #F8FAFC;
+  --ink: #0F172A;
+  --ink2: #334155;
+  --mute: #475569;
+  --hair: #E2E8F0;
+  --accent: #2563EB;
+  --accent-text: #1E40AF;
+  --accent-soft: #EFF6FF;
+  --emerald: #0D9488;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0B0F17;
+  --surface: #111827;
+  --ink: #F8FAFC;
+  --ink2: #CBD5E1;
+  --mute: #94A3B8;
+  --hair: #1E293B;
+  --accent: #3B82F6;
+  --accent-text: #60A5FA;
+  --accent-soft: #172554;
+  --emerald: #2DD4BF;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hair);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 68px;
+}
+
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand strong {
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--ink2);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Article */
+article.case-article {
+  padding: 40px 0 80px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent-text);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.case-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.project-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-text);
+  font-weight: 500;
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0 28px;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--mute);
+}
+
+h1.case-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+
+.case-summary {
+  font-size: 18px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.section-block {
+  margin: 36px 0;
+}
+
+.section-block h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-block h2::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.analysis-card {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 16px 0;
+}
+
+.analysis-card p {
+  margin: 0 0 14px;
+  color: var(--ink2);
+  font-size: 15.5px;
+}
+
+.analysis-card p:last-child {
+  margin-bottom: 0;
+}
+
+.workflow-steps {
+  white-space: pre-line;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 10px;
+  padding: 20px 24px;
+  font-size: 15px;
+  color: var(--ink2);
+  line-height: 1.8;
+}
+
+.code-block {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  color: var(--ink);
+  white-space: pre-wrap;
+  margin: 14px 0;
+}
+
+.value-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.value-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.value-list li::before {
+  content: "✔";
+  color: var(--emerald);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.outcome-box {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.outcome-box h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--accent-text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.outcome-box p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 50px;
+  padding-top: 28px;
+  border-top: 1px solid var(--hair);
+  flex-wrap: wrap;
+}
+
+footer {
+  padding: 32px 0 48px;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--mute);
+}
+
+@media (max-width: 680px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+  }
+  .article-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">Sheikh <strong>Soban</strong> Fayaz</a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="../index.html#experience">Background</a>
+      <a href="../index.html#methodology">Methodology</a>
+      <a href="../index.html#projects">Write-Ups</a>
+      <a href="../index.html#stack">Stack</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <button type="button" id="themeToggle" class="btn btn-sm" aria-label="Toggle dark mode">Dark Mode</button>
+  </div>
+</header>
+
+<main class="container">
+  <article class="case-article">
+    <a href="../index.html#projects" class="back-link">&larr; Back to All Investigations &amp; Write-Ups</a>
+    
+    <div class="case-meta">
+      <span class="project-cat">SIEM & Detection</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mute);">Technical Case Study</span>
+    </div>
+
+    <h1 class="case-title">Cloud DLP Policy Alert & User Justification Triage</h1>
+    <p class="case-summary">Investigating enterprise cloud DLP alerts in Microsoft Sentinel and validating employee business justifications against corporate data governance policies.</p>
+
+    <div class="tag-row">
+      <span class="tag">Netskope</span><span class="tag">DLP</span><span class="tag">Microsoft Sentinel</span><span class="tag">Insider Threat</span><span class="tag">Data Governance</span>
+    </div>
+
+    <div class="section-block">
+      <h2>Incident Scenario &amp; Environmental Context</h2>
+      <p style="font-size: 15.5px; color: var(--ink2);">A cloud DLP policy alert (DLP_INTERNAL_Label_User_Justification) triggered in Microsoft Sentinel when an internal user attempted to upload restricted-label technical documents to an external cloud application. The user supplied a self-reported business justification string to bypass the client prompt.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>Investigation Workflow</h2>
+      <div class="workflow-steps">1. Scoped the investigation window in Microsoft Sentinel over a 7-day lookback using the Netskope_Alerts_CL dataset.
+2. Filtered records by the specific user account, destination cloud application, and exact DLP rule trigger.
+3. Parsed key fields: TimeGenerated, user_s, app_s, activity_s, action_s, justification_reason_s, and justification_type_s.
+4. Evaluated the user's supplied explanation against corporate information security handling policies and sanctioned vendor lists.
+5. Differentiated between self-asserted business rationale and verifiable managerial approval.
+6. Correlated the event with sensitive document repository audit logs to determine the exact data classification, sensitivity label, and file hash.
+7. Documented evidence and escalated to data governance officers for authorization verification.</div>
+    </div>
+
+    <div class="section-block">
+      <h2>Technical Analysis &amp; Telemetry Insights</h2>
+      <div class="analysis-card">
+        <p>Data Loss Prevention (DLP) alerts in hybrid enterprise environments frequently incorporate user prompting, allowing employees to submit business justification strings to override standard block policies. While user justifications provide immediate qualitative context, they represent self-reported assertions rather than verified administrative authorization.</p><p>In a structured SecOps investigation, the analyst must evaluate the justification within a zero-trust verification model:
+1. Entity & Role Alignment: Does the user's role require sharing sensitive documents externally, and does the stated business reason align with authorized corporate projects?
+2. Destination Classification: Is the destination cloud storage platform (e.g., personal Google Drive or Dropbox vs approved corporate OneDrive) sanctioned under the enterprise cloud governance policy?
+3. File Sensitivity & Cryptographic Evidence: Querying the Sentinel DLP repository allows the analyst to extract metadata regarding information protection labels, exact keyword matches, regular expression hits (e.g., PII, payment card data, intellectual property), and file hashes.
+4. Pattern Detection: Evaluating 7-day and 30-day historical lookbacks reveals whether the user exhibits recurring override patterns or escalating data exfiltration volumes prior to planned departures.</p><p>A defensible investigation requires corroborating the user justification against formal ticket approvals and cross-referencing with manager confirmation before closing the alert as authorized.</p>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2>Diagnostic Query / Logic Sample</h2>
+      <div class="code-block">Netskope_Alerts_CL
+| where TimeGenerated >= ago(7d)
+| where alert_name_s contains "Label_User_Justification"
+| project TimeGenerated, user_s, app_s, activity_s, action_s, justification_reason_s, justification_type_s</div>
+    </div>
+
+    <div class="section-block">
+      <h2>Competencies &amp; Value Demonstrated</h2>
+      <ul class="value-list">
+        <li>Investigation of cloud DLP alerts using Microsoft Sentinel and KQL</li><li>Filtering and scoping security telemetry by user, application, and policy trigger</li><li>Deep understanding of user justification context versus independently verified authorization</li><li>Preservation of evidentiary chain of custody in data-handling policy reviews</li><li>Structured escalation workflows balancing business productivity with risk mitigation</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>Incident Outcome &amp; Verification Status</h2>
+      <div class="outcome-box">
+        <h3>Verified Disposition</h3>
+        <p>Investigation established that the upload targeted an unapproved personal repository. While user asserted project urgency, managerial authorization was absent. File transfer was revoked and referred for governance review.</p>
+      </div>
+    </div>
+
+    <div class="article-nav">
+      <a href="../index.html#projects" class="btn">&larr; Return to All Write-Ups</a>
+      <a href="../index.html#contact" class="btn btn-primary">Discuss This Case Study &rarr;</a>
+    </div>
+  </article>
+
+  <footer>
+    <span>Sheikh Soban Fayaz · Security Operations Portfolio</span>
+    <span style="font-family: 'IBM Plex Mono', monospace;">ISC2 CC · Network &amp; SOC</span>
+  </footer>
+</main>
+
+<script>
+function applyTheme(theme) {
+  const btn = document.getElementById('themeToggle');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    btn.textContent = 'Light Mode';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    btn.textContent = 'Dark Mode';
+  }
+  try {
+    localStorage.setItem('soban_theme', theme);
+  } catch (e) {}
+}
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  applyTheme(isDark ? 'light' : 'dark');
+});
+
+(function() {
+  let saved = 'light';
+  try {
+    saved = localStorage.getItem('soban_theme') || 'light';
+  } catch (e) {}
+  applyTheme(saved);
+})();
+</script>
+</body>
+</html>
