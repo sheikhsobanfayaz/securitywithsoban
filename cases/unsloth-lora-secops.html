@@ -1527,43 +1527,62 @@ article.case-article {
   flex-wrap: wrap;
 }
 /* ==============================================================================
-   HIGH-TECH CYBER HACKING BACKGROUND ANIMATION & CRT OVERLAY
+   CINEMATIC FULL-SCREEN HACKER VIDEO BACKGROUND & THEMED OVERLAY
    ============================================================================== */
-#cyberCanvas {
+.cyber-video-bg-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
   pointer-events: none;
-  z-index: 1 !important; /* Positioned directly above body background */
-  opacity: 0.65;
-  transition: opacity 0.3s ease;
+  z-index: 1 !important;
 }
 
-[data-theme="light"] #cyberCanvas {
-  opacity: 0.28;
+.cyber-video-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  filter: contrast(1.15) brightness(0.72) saturate(1.2);
+  transition: opacity 0.5s ease;
 }
 
-.cyber-crt-overlay {
-  position: fixed;
+[data-theme="dark"] .cyber-video-bg {
+  opacity: 0.52;
+}
+
+[data-theme="light"] .cyber-video-bg {
+  opacity: 0.18;
+  filter: contrast(1.05) brightness(1.15) saturate(0.85);
+}
+
+.cyber-video-overlay {
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 2 !important; /* Directly above canvas, below page content */
-  background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.45) 100%),
-              linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
-  background-size: 100% 100%, 100% 4px;
-  opacity: 0.35;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 50% 30%, rgba(249, 115, 22, 0.08) 0%, transparent 70%),
+    radial-gradient(circle at 50% 50%, transparent 45%, rgba(11, 12, 16, 0.88) 100%),
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%);
+  background-size: 100% 100%, 100% 100%, 100% 4px;
 }
 
-[data-theme="light"] .cyber-crt-overlay {
-  opacity: 0.10;
+[data-theme="light"] .cyber-video-overlay {
+  background: 
+    radial-gradient(circle at 50% 30%, rgba(234, 88, 12, 0.05) 0%, transparent 70%),
+    radial-gradient(circle at 50% 50%, transparent 40%, rgba(250, 248, 245, 0.90) 100%);
 }
 
-/* Ensure all page content layers sit above canvas & scanlines */
+/* Ensure all page content layers sit above the video background */
 .site-header-wrap {
   position: sticky;
   top: 14px;
@@ -1638,8 +1657,13 @@ main, .container, .hero, .sec, section, footer, .site-footer {
 </style>
 </head>
 <body>
-<canvas id="cyberCanvas" aria-hidden="true"></canvas>
-<div class="cyber-crt-overlay" aria-hidden="true"></div>
+<div class="cyber-video-bg-container" aria-hidden="true">
+  <video class="cyber-video-bg" autoplay loop muted playsinline preload="auto" poster="../assets/cyber-hacker-poster.jpg">
+    <source src="../assets/cyber-hacker-bg.mp4" type="video/mp4">
+    <source src="https://assets.mixkit.co/videos/50737/50737-720.mp4" type="video/mp4">
+  </video>
+  <div class="cyber-video-overlay"></div>
+</div>
 
 <header class="site-header-wrap">
   <div class="nav-container">
@@ -2093,194 +2117,22 @@ function fallbackCopy(text) {
 }
 
 // Back to Top Smooth Scroll
-// Cyber Hacking Background Animation Engine
-function initCyberBackground() {
-  const canvas = document.getElementById('cyberCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  let width = (canvas.width = window.innerWidth);
-  let height = (canvas.height = window.innerHeight);
-
-  let mouseX = width / 2;
-  let mouseY = height / 2;
-  let hasMouseMoved = false;
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-    initStreams();
-    initNodes();
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    hasMouseMoved = true;
-  });
-
-  // 1. Digital Matrix Rain Streams (Hex, SecOps Tokens, Binary, Opcodes)
-  const CHARS = '0123456789ABCDEF0x7F_SYN_ACK_PORT:443_TLS13_C2_BYPASS_HEX_PAYLOAD_DROP_SCAN_INJECT_LOG_SOC';
-  const fontSize = 13;
-  let columns = Math.floor(width / 22);
-  let drops = [];
-
-  function initStreams() {
-    columns = Math.floor(width / 22);
-    drops = [];
-    for (let i = 0; i < columns; i++) {
-      // Pre-seed across viewport height so digital rain is streaming immediately on page load
-      drops[i] = Math.floor(Math.random() * (height / fontSize));
-    }
+// Video Background Autoplay Assurance
+function initVideoBackground() {
+  const vid = document.querySelector('.cyber-video-bg');
+  if (!vid) return;
+  const promise = vid.play();
+  if (promise !== undefined) {
+    promise.catch(() => {
+      const playOnTouch = () => {
+        vid.play();
+        document.removeEventListener('click', playOnTouch);
+        document.removeEventListener('touchstart', playOnTouch);
+      };
+      document.addEventListener('click', playOnTouch);
+      document.addEventListener('touchstart', playOnTouch);
+    });
   }
-  initStreams();
-
-  // 2. Interconnected Network Defense Nodes
-  const nodeCount = Math.min(30, Math.floor(width / 42));
-  let nodes = [];
-
-  function initNodes() {
-    nodes = [];
-    for (let i = 0; i < nodeCount; i++) {
-      nodes.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: Math.random() * 2 + 1.6,
-        pulse: Math.random() * Math.PI
-      });
-    }
-  }
-  initNodes();
-
-  // Radar sweep angle
-  let radarAngle = 0;
-
-  let isVisible = true;
-  document.addEventListener('visibilitychange', () => {
-    isVisible = !document.hidden;
-  });
-
-  function render() {
-    if (!isVisible) {
-      requestAnimationFrame(render);
-      return;
-    }
-
-    const isDark = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
-
-    // Translucent background fade creates persistent glowing phosphor trails!
-    ctx.fillStyle = isDark ? 'rgba(11, 12, 16, 0.16)' : 'rgba(250, 248, 245, 0.18)';
-    ctx.fillRect(0, 0, width, height);
-
-    // --- Render Radar Scanner Sweep ---
-    radarAngle += 0.008;
-    const radarRadius = Math.max(width, height) * 0.6;
-    const sweepGradient = ctx.createConicGradient(radarAngle, width / 2, height * 0.35);
-    if (isDark) {
-      sweepGradient.addColorStop(0, 'rgba(249, 115, 22, 0.08)');
-      sweepGradient.addColorStop(0.06, 'rgba(249, 115, 22, 0)');
-      sweepGradient.addColorStop(1, 'rgba(249, 115, 22, 0)');
-    } else {
-      sweepGradient.addColorStop(0, 'rgba(234, 88, 12, 0.04)');
-      sweepGradient.addColorStop(0.05, 'rgba(234, 88, 12, 0)');
-      sweepGradient.addColorStop(1, 'rgba(234, 88, 12, 0)');
-    }
-    ctx.fillStyle = sweepGradient;
-    ctx.beginPath();
-    ctx.arc(width / 2, height * 0.35, radarRadius, 0, Math.PI * 2);
-    ctx.fill();
-
-    // --- Render Falling Cyber Matrix Rain Streams ---
-    ctx.font = "bold " + fontSize + "px 'IBM Plex Mono', monospace";
-    for (let i = 0; i < drops.length; i++) {
-      const char = CHARS[Math.floor(Math.random() * CHARS.length)];
-      const x = i * 22;
-      const y = drops[i] * fontSize;
-
-      if (y > 0 && y < height) {
-        if (Math.random() > 0.88) {
-          // Leading bright packet head
-          ctx.fillStyle = '#FFFFFF';
-          ctx.shadowColor = isDark ? '#F97316' : '#EA580C';
-          ctx.shadowBlur = 8;
-        } else if (Math.random() > 0.5) {
-          ctx.fillStyle = isDark ? '#F97316' : '#EA580C'; // Cyber Orange
-          ctx.shadowBlur = 0;
-        } else {
-          ctx.fillStyle = isDark ? '#10B981' : '#059669'; // Cyber Emerald
-          ctx.shadowBlur = 0;
-        }
-        ctx.fillText(char, x, y);
-      }
-
-      if (y > height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
-      drops[i]++;
-    }
-
-    // --- Render Network Defense Topology Nodes & Packet Links ---
-    ctx.shadowBlur = 0;
-    ctx.lineWidth = 0.85;
-    for (let i = 0; i < nodes.length; i++) {
-      const n = nodes[i];
-      n.x += n.vx;
-      n.y += n.vy;
-      n.pulse += 0.025;
-
-      if (n.x < 0 || n.x > width) n.vx *= -1;
-      if (n.y < 0 || n.y > height) n.vy *= -1;
-
-      // Mouse interactive repulsion / magnetic excitation
-      if (hasMouseMoved) {
-        const dx = mouseX - n.x;
-        const dy = mouseY - n.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 140 && dist > 0) {
-          const force = (140 - dist) / 140;
-          n.x -= (dx / dist) * force * 1.8;
-          n.y -= (dy / dist) * force * 1.8;
-        }
-      }
-
-      const glow = Math.sin(n.pulse) * 0.3 + 0.7;
-      ctx.fillStyle = isDark ? 'rgba(249, 115, 22, ' + (0.75 * glow) + ')' : 'rgba(234, 88, 12, ' + (0.6 * glow) + ')';
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      for (let j = i + 1; j < nodes.length; j++) {
-        const n2 = nodes[j];
-        const d = Math.hypot(n.x - n2.x, n.y - n2.y);
-        if (d < 150) {
-          const alpha = (1 - d / 150) * (isDark ? 0.28 : 0.18);
-          ctx.strokeStyle = isDark ? 'rgba(249, 115, 22, ' + alpha + ')' : 'rgba(234, 88, 12, ' + alpha + ')';
-          ctx.beginPath();
-          ctx.moveTo(n.x, n.y);
-          ctx.lineTo(n2.x, n2.y);
-          ctx.stroke();
-
-          // Live packet pulse along the network link
-          if (Math.sin(n.pulse + i) > 0.82) {
-            const t = (Math.sin(n.pulse * 2) + 1) / 2;
-            const px = n.x + (n2.x - n.x) * t;
-            const py = n.y + (n2.y - n.y) * t;
-            ctx.fillStyle = isDark ? '#10B981' : '#059669';
-            ctx.beginPath();
-            ctx.arc(px, py, 2, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-      }
-    }
-
-    requestAnimationFrame(render);
-  }
-
-  requestAnimationFrame(render);
 }
 
 function initBackToTop() {
@@ -2293,7 +2145,7 @@ function initBackToTop() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
-  initCyberBackground();
+  initVideoBackground();
   initThemeManager();
   initMobileMenu();
   initSpotlights();
