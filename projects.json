@@ -5,10 +5,207 @@
     "categoryLabel": "Network & Perimeter",
     "title": "SSL VPN Brute-Force & Impossible Travel Triage",
     "summary": "Correlating enterprise SSL VPN authentication logs with cloud identity sign-ins to separate credential-stuffing noise from account compromise.",
-    "tags": ["Firewall", "SSL VPN", "SIEM", "Geo-IP"],
+    "tags": [
+      "Firewall",
+      "SSL VPN",
+      "SIEM",
+      "Geo-IP"
+    ],
     "scenario": "High-volume failed SSL VPN logins across multiple MSSP client firewalls followed by a single successful authentication from an atypical ASN.",
     "steps": "1. Group failed attempts by source IP and username across a 15-minute window.\n2. Cross-reference the successful login IP against corporate VPN egress ranges and Entra ID MFA logs.\n3. Check for post-auth internal lateral movement or unusual DNS queries.",
     "snippet": "source_type=\"firewall_vpn\" action=\"login_failed\" | stats count by src_ip, user | where count > 15"
+  },
+  {
+    "id": "sentinel-c2-indicator",
+    "category": "siem",
+    "categoryLabel": "SIEM & Detection",
+    "title": "Sentinel Custom Network Indicator & Possible C2 Triage",
+    "summary": "Validating high-severity SIEM custom C2 indicator alerts by correlating endpoint network telemetry against perimeter firewall disposition.",
+    "tags": [
+      "Microsoft Sentinel",
+      "KQL",
+      "Endpoint Telemetry",
+      "C2 Detection"
+    ],
+    "scenario": "A Microsoft Sentinel incident flagged a custom network indicator for possible command-and-control activity from an internal workstation process visiting an external domain, accompanied by file hash telemetry.",
+    "steps": "1. Extract endpoint, user, initiating process, external domain, internal IPs, and file hashes from the Sentinel incident.\n2. Query endpoint connection telemetry to determine whether the TCP/TLS handshake succeeded or failed.\n3. Compare endpoint observations against perimeter firewall traffic logs (allow, deny, drop) to confirm actual egress.\n4. Search SIEM telemetry across all internal endpoints to identify potential broader scope or lateral spread.\n5. Verify file hashes against threat intelligence and sandbox detonation results before drawing conclusions.",
+    "snippet": "CommonSecurityLog\n| where TimeGenerated >= ago(24h)\n| where SourceIP == \"10.16.56.241\" or DestinationIP == \"10.16.56.241\"\n| project TimeGenerated, DeviceAction, SourceIP, DestinationIP, DestinationPort, Activity"
+  },
+  {
+    "id": "internal-portscan-analysis",
+    "category": "network",
+    "categoryLabel": "Network & Perimeter",
+    "title": "Internal High-Volume Traffic & Port-Scan Investigation",
+    "summary": "Distinguishing malicious internal port reconnaissance from automated backup sweeps and repetitive infrastructure polling.",
+    "tags": [
+      "Traffic Analysis",
+      "Anomaly Detection",
+      "Internal Network",
+      "Port Scan"
+    ],
+    "scenario": "Network telemetry revealed high-volume connection bursts between internal subnets, including single host pairs exceeding 100,000 connection attempts across private IPv4 ranges.",
+    "steps": "1. Group traffic by source IP, destination IP, and connection counts across the affected time window.\n2. Separate single-destination persistent sessions from multi-port horizontal or vertical sweeps.\n3. Identify data-visibility limits in summarized dashboard tables and pivot to raw connection records to enumerate target ports.\n4. Inspect connection success/reset flags, timing intervals, and application protocols.\n5. Cross-reference initiating IP with enterprise asset inventories to verify if the source is an authorized scanner, backup node, or anomalous host.",
+    "snippet": "NetworkConnections\n| where TimeGenerated >= ago(4h)\n| where SourceIp in (\"10.12.8.254\", \"10.32.116.175\")\n| summarize ConnectionCount = count(), UniquePorts = dcount(DestinationPort), UniqueIPs = dcount(DestinationIp) by SourceIp, bin(TimeGenerated, 10m)"
+  },
+  {
+    "id": "netskope-dlp-justification",
+    "category": "siem",
+    "categoryLabel": "SIEM & Detection",
+    "title": "Cloud DLP Policy Alert & User Justification Triage",
+    "summary": "Investigating enterprise cloud DLP alerts in Microsoft Sentinel and validating employee business justifications against corporate policy.",
+    "tags": [
+      "Netskope",
+      "DLP",
+      "Microsoft Sentinel",
+      "Insider Threat"
+    ],
+    "scenario": "Netskope DLP triggered user-prompted alerts for restricted label data uploads to cloud storage where employees provided self-reported business justifications.",
+    "steps": "1. Query the Sentinel DLP dataset for the user, application, file classification, and exact policy rule trigger over a 7-day lookback.\n2. Parse activity, action taken (block, alert, user-allow), and user-supplied justification strings.\n3. Differentiate between self-asserted business rationale and verifiable managerial or compliance approval.\n4. Correlate with sensitive file repository logs to identify file contents, egress destination, and potential data exposure.\n5. Document findings and route high-risk unapproved transfers to corporate compliance.",
+    "snippet": "Netskope_Alerts_CL\n| where TimeGenerated >= ago(7d)\n| where alert_name_s contains \"Label_User_Justification\"\n| project TimeGenerated, user_s, app_s, activity_s, action_s, justification_reason_s, justification_type_s"
+  },
+  {
+    "id": "waf-recon-investigation",
+    "category": "network",
+    "categoryLabel": "Network & Perimeter",
+    "title": "WAF Alert Triage: Web Reconnaissance & Path Probing",
+    "summary": "Analyzing Web Application Firewall (WAF) alerts targeting sensitive system paths, credentials, and configuration endpoints.",
+    "tags": [
+      "WAF",
+      "Web Security",
+      "Reconnaissance",
+      "Vulnerability Defense"
+    ],
+    "scenario": "An external IP address launched rapid, repetitive HTTP requests targeting an enterprise web application, probing for sensitive configuration files, environment variables, and administrative endpoints.",
+    "steps": "1. Correlate external source IP with target domain and internal web application host IP.\n2. Extract the complete sequence of probed URL paths, HTTP methods, user-agent headers, and payload structures.\n3. Classify access patterns into automated vulnerability scanner probes versus targeted manual exploration.\n4. Verify WAF disposition (blocked vs passed) and inspect upstream web server HTTP response codes (404, 403, 200).\n5. Differentiate attempted reconnaissance from successful exploitation before recommending perimeter IP blocking and rule tuning.",
+    "snippet": "WAFEvents\n| where TimeGenerated >= ago(6h)\n| where client_ip == \"34.26.159.138\"\n| summarize RequestCount = count(), TargetPaths = make_set(request_uri) by client_ip, action, http_status\n| order by RequestCount desc"
+  },
+  {
+    "id": "ip-reputation-correlation",
+    "category": "siem",
+    "categoryLabel": "SIEM & Detection",
+    "title": "Suspicious IP Reputation & Directional Egress Analysis",
+    "summary": "Correlating threat intelligence IP reputation feeds with perimeter firewall logs to verify bidirectional communication and threat exposure.",
+    "tags": [
+      "Threat Intel",
+      "Firewall Logs",
+      "Traffic Analysis",
+      "Egress Defense"
+    ],
+    "scenario": "Threat intelligence feeds flagged a cluster of external IP addresses with malicious reputation scores, requiring immediate impact validation across internal enterprise subnets.",
+    "steps": "1. Aggregate external indicator IPs into a consolidated query scope across network security logs.\n2. Filter firewall sessions for both inbound probes and internal outbound initiation.\n3. Analyze destination ports, application signatures, protocol handshakes, and firewall actions (allow, deny, drop).\n4. Distinguish shared hosting or cloud provider noise from dedicated threat infrastructure.\n5. Map communicating internal endpoints to endpoint telemetry to inspect initiating processes if egress succeeded.",
+    "snippet": "CommonSecurityLog\n| where TimeGenerated >= ago(48h)\n| where DestinationIP in (\"69.5.169.66\", \"69.5.169.167\", \"69.5.169.242\", \"64.23.214.73\", \"193.163.125.165\")\n| project TimeGenerated, SourceIP, DestinationIP, DestinationPort, DeviceAction, Protocol"
+  },
+  {
+    "id": "multi-vpn-routing-conflict",
+    "category": "network",
+    "categoryLabel": "Network & Perimeter",
+    "title": "Enterprise SSL VPN Route Interception & Packet Isolation",
+    "summary": "Resolving \"No response from server\" connection failures in multi-client VPN environments through dual-end packet captures.",
+    "tags": [
+      "SSL VPN",
+      "Packet Analysis",
+      "Routing",
+      "Wireshark"
+    ],
+    "scenario": "Remote enterprise users experienced \"No response from server\" timeouts during SSL VPN negotiation whenever a secondary corporate or third-party VPN client was active on the same workstation.",
+    "steps": "1. Replicate the failure condition under controlled multi-VPN client configurations.\n2. Execute simultaneous packet captures on the client network adapter and the enterprise perimeter firewall WAN interface.\n3. Verify whether SSL VPN handshake packets egress the client and reach the firewall interface or are swallowed by default routing tables.\n4. Inspect route tables (netstat -rn) to identify route metric conflicts and conflicting 0.0.0.0/0 split-tunnel directives.\n5. Adjust routing exclusions and split-tunnel policy to prevent intermediate tunnel encapsulation.",
+    "snippet": "# Dual capture analysis strategy\nClient: tcpdump -i any -n \"host <FIREWALL_WAN> and port 4433\"\nFirewall: capture interface X1 match proto 6 ip <CLIENT_PUBLIC_IP> port 4433"
+  },
+  {
+    "id": "ipsec-s2s-payload-error",
+    "category": "network",
+    "categoryLabel": "Network & Perimeter",
+    "title": "Site-to-Site IPsec VPN Payload Negotiation Fault Isolation",
+    "summary": "Diagnosing Phase 1 and Phase 2 proposal mismatches and traffic selector discrepancies in enterprise site-to-site tunnels.",
+    "tags": [
+      "IPsec",
+      "Site-to-Site",
+      "IKEv2",
+      "Firewall Diagnostics"
+    ],
+    "scenario": "An enterprise branch site-to-site IPsec VPN failed to establish, logging recurring \"payload processing error\" events during negotiation.",
+    "steps": "1. Extract detailed IKE negotiation logs and pinpoint the exact failure stage (Phase 1 authentication vs Phase 2 SA exchange).\n2. Compare local and remote peer security associations: IKE version, encryption (AES-GCM/CBC), hashing (SHA-256), and DH groups.\n3. Audit Phase 2 transform sets, PFS keys, lifetimes, and peer identification IDs.\n4. Verify traffic selectors and crypto access-lists to ensure local and remote subnet definitions are exact mirror images.\n5. Correlate timestamped negotiation drops across both peer gateways to resolve parameter mismatches.",
+    "snippet": "# VPN diagnostic log inspection\nIKEv2 Phase 2 negotiation failed: NO_PROPOSAL_CHOSEN / Payload mismatch\nVerification: Validate LocalSubnet (10.100.0.0/24) <-> RemoteSubnet (10.200.0.0/24) matching crypto ACL"
+  },
+  {
+    "id": "firewall-config-persistence",
+    "category": "network",
+    "categoryLabel": "Network & Perimeter",
+    "title": "Firewall Configuration Persistence & Firmware State Triage",
+    "summary": "Isolating appliance firmware state transitions, non-volatile configuration commit issues, and reboot reversion behaviors.",
+    "tags": [
+      "Firewall Firmware",
+      "Configuration Audit",
+      "Disaster Recovery",
+      "Hardware"
+    ],
+    "scenario": "An enterprise edge firewall reverted interface and routing adjustments back to previous states following maintenance reboots and recovery procedures.",
+    "steps": "1. Document the exact operational sequence: configuration modifications, manual commits, and reboot timing.\n2. Compare behavior between controlled soft reboots and hardware power-cycle / factory reset operations.\n3. Validate firmware build stability across release lines, checking vendor errata for non-volatile storage commit bugs.\n4. Preserve automated configuration backups and system preferences prior to state testing.\n5. Isolate dual-boot partition integrity and commit persistent runtime parameters to flash storage.",
+    "snippet": "# Firmware and flash persistence validation\nshow system status\nshow boot-summary\nexport preferences current-config.exp"
+  },
+  {
+    "id": "firewall-service-reachability",
+    "category": "network",
+    "categoryLabel": "Network & Perimeter",
+    "title": "Firewall Management Access & NAT Reachability Diagnostics",
+    "summary": "Differentiating listening service availability from firewall policy, zone assignment, and asymmetrical routing drops.",
+    "tags": [
+      "Firewall Rules",
+      "NAT",
+      "Service Triage",
+      "Access Control"
+    ],
+    "scenario": "Administrative services and hosted internal resources were reported unreachable on specific management interfaces and TCP/UDP ports.",
+    "steps": "1. Verify whether the target daemon or server is actively listening on the intended port using local netstat / socket diagnostics.\n2. Trace incoming interface, ingress zone, and outbound egress zone across security access rules.\n3. Validate management access allowances on interface-specific configurations.\n4. Review NAT rules (Inbound, Outbound, Hairpin NAT) for missing address translation mappings.\n5. Execute packet monitor sessions to inspect where packets arrive, drop, or fail to receive return-path routing.",
+    "snippet": "# Firewall packet monitor filter\nMonitor: Source IP [X.X.X.X] -> Destination IP [Y.Y.Y.Y] Port [8443, 443]\nStatus: Packet Received -> Policy Lookup [ALLOWED] -> NAT Translated -> Egress Interface [LAN]"
+  },
+  {
+    "id": "layer2-bridge-mac-spoof",
+    "category": "network",
+    "categoryLabel": "Network & Perimeter",
+    "title": "Layer 2 Bridge Architecture & MAC-IP Anti-Spoofing Controls",
+    "summary": "Troubleshooting transparent bridge interface security, member port inheritance, and Layer 2 ARP/IP spoofing prevention.",
+    "tags": [
+      "Layer 2",
+      "Bridging",
+      "Anti-Spoofing",
+      "Network Architecture"
+    ],
+    "scenario": "Security policies failed to bind properly on bridged interface segments, causing unexpected bypass of MAC-IP anti-spoof protection.",
+    "steps": "1. Analyze the firewall bridge architecture: native transparent bridge vs routed Layer 2 sub-interfaces.\n2. Examine the relationship between bridge master objects and member physical interfaces.\n3. Verify whether security enforcement policies must be assigned directly to member interfaces rather than the logical parent.\n4. Review ARP tables, MAC-address learning databases, and IP-MAC binding enforcement rules.\n5. Validate that anti-spoof filters correctly drop packets where the source MAC or IP fails authorized host pairing.",
+    "snippet": "# Layer 2 bridge security enforcement\nBridge: Parent [Bridge_Pair_01] -> Members [Interface X2, Interface X3]\nSecurity Policy: MAC-IP Anti-Spoofing enabled on individual member interfaces with static ARP inspection"
+  },
+  {
+    "id": "physical-interface-diagnostics",
+    "category": "network",
+    "categoryLabel": "Network & Perimeter",
+    "title": "Physical Ethernet Fault Isolation & Hardware Diagnostics",
+    "summary": "Systematic methodology for diagnosing physical Ethernet port degradation, link negotiation failures, and interface hardware defects.",
+    "tags": [
+      "Hardware Diagnostics",
+      "Ethernet",
+      "Layer 1/2",
+      "Physical Security"
+    ],
+    "scenario": "An enterprise firewall physical uplink experienced intermittent link drops and frame errors, threatening high-availability failover stability.",
+    "steps": "1. Perform physical loopback plug tests to isolate internal transceiver electronics from external cable plant.\n2. Observe physical link LEDs for speed, duplex, and intermittent carrier transitions.\n3. Verify auto-negotiation settings, interface speed mismatches (1G vs 10G SFP+), and MTU sizing.\n4. Inspect interface error counters for CRC errors, collisions, runt frames, and dropped packets.\n5. Test port assignments, VLAN associations, and isolate physical transceiver hardware failure from firmware port configuration.",
+    "snippet": "# Interface hardware statistics check\nInterface X0/X1 Status: 1000 Mbps Full Duplex, Auto-Negotiation: Resolved\nCounters: Rx Packets: 14,291,020 | Rx Errors: 0 | CRC Errors: 0 | Collisions: 0"
+  },
+  {
+    "id": "cloud-sandbox-edr-correlation",
+    "category": "siem",
+    "categoryLabel": "SIEM & Detection",
+    "title": "Cloud Sandbox ATP & Endpoint EDR Telemetry Correlation",
+    "summary": "Bridging cloud sandbox malware detonation alerts at the perimeter with endpoint EDR process trees and telemetry.",
+    "tags": [
+      "Cloud Sandbox",
+      "ATP",
+      "EDR",
+      "Malware Defense"
+    ],
+    "scenario": "Perimeter Advanced Threat Protection (ATP) flagged a zero-day executable download, requiring immediate correlation with host-level EDR sensor logs to determine execution impact.",
+    "steps": "1. Retrieve cloud sandbox detonation report: behavioral indicators, registry keys, dropped files, and network callback domains.\n2. Query endpoint EDR telemetry for the corresponding file SHA-256 hash across all workstations.\n3. Inspect process tree to determine if the payload was written to disk, quarantined, or executed by a user process.\n4. Correlate with perimeter firewall egress logs to verify if post-detonation C2 callbacks were attempted or blocked.\n5. Establish containment: isolate affected endpoint via EDR and update enterprise indicator blocklists.",
+    "snippet": "DeviceFileEvents\n| where SHA256 == \"3a1b8c2d9e0f...\" or FileName endswith \".exe\"\n| join kind=inner (DeviceProcessEvents | where InitiatingProcessFileName in (\"outlook.exe\", \"msedge.exe\")) on DeviceId\n| project TimeGenerated, DeviceName, ActionType, FileName, FolderPath, ProcessCommandLine"
   },
   {
     "id": "mssp-tuning",
@@ -16,7 +213,12 @@
     "categoryLabel": "SIEM & Detection",
     "title": "Multi-Tenant SIEM False-Positive Tuning Playbook",
     "summary": "Systematic approach to auditing noisy recurring alerts in an MSSP queue and proposing scoped exclusions without creating blind spots.",
-    "tags": ["SIEM", "MITRE ATT&CK", "Tuning", "MSSP"],
+    "tags": [
+      "SIEM",
+      "MITRE ATT&CK",
+      "Tuning",
+      "MSSP"
+    ],
     "scenario": "Repeated benign vulnerability-scanner and backup-agent alerts flooding L1 shift queues across three client tenants.",
     "steps": "1. Tag recurring alerts over 14 days by rule ID, host, and parent process.\n2. Verify authorized maintenance windows and asset ownership with the client.\n3. Scope exclusions strictly to signed binary hash + source IP + destination port.",
     "snippet": "title: Scoped Authorized Scanner Exclusion\nstatus: experimental\ndetection:\n  selection:\n    src_ip: [\"10.14.2.50\"]\n    user_agent|contains: \"AuthorizedScanner\""
@@ -27,10 +229,15 @@
     "categoryLabel": "AI & Automation",
     "title": "Anonymized Log Summarizer & Triage Harness",
     "summary": "A privacy-first workflow for stripping client PII and internal IPs before using LLMs to decode obfuscated PowerShell and summarize timelines.",
-    "tags": ["AI SecOps", "Python", "Sanitization", "Privacy"],
+    "tags": [
+      "AI SecOps",
+      "Python",
+      "Sanitization",
+      "Privacy"
+    ],
     "scenario": "Analysts need rapid explanation of base64-encoded PowerShell or unfamiliar Linux one-liners without exposing client hostnames or credentials.",
     "steps": "1. Run a local regex sanitizer to replace client domains, IPs, and usernames with deterministic tokens.\n2. Pass only the sanitized command tree to the LLM with a structured MITRE ATT&CK prompt.\n3. Validate every returned indicator directly in the SIEM before documenting.",
-    "snippet": "sanitized = re.sub(r\"\\\\b(?:\\\\d{1,3}\\\\.){3}\\\\d{1,3}\\\\b\", \"[INTERNAL_IP]\", raw_log)"
+    "snippet": "sanitized = re.sub(r\"\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b\", \"[INTERNAL_IP]\", raw_log)"
   },
   {
     "id": "sysmon-c2",
@@ -38,7 +245,12 @@
     "categoryLabel": "SIEM & Detection",
     "title": "Windows 4688 + Sysmon C2 Beaconing Correlation",
     "summary": "Bridging network firewall outbound alerts to endpoint process creation events to confirm command-and-control callbacks.",
-    "tags": ["Sysmon", "Event 4688", "EDR", "Network"],
+    "tags": [
+      "Sysmon",
+      "Event 4688",
+      "EDR",
+      "Network"
+    ],
     "scenario": "Perimeter firewall flags periodic outbound HTTPS connections on a non-standard port from a workstation.",
     "steps": "1. Pivot from the firewall source IP and timestamp to Sysmon Event ID 3 (Network Connection).\n2. Identify the owning ProcessGuid and trace back to Event ID 1 / 4688 parent process.\n3. Inspect command-line arguments and isolate the host if an unsigned binary initiated the beacon.",
     "snippet": "EventID IN (1, 3, 4688) | where DestinationPort NOT IN (80, 443) | project TimeGenerated, Computer, Image, CommandLine, DestinationIp"
