@@ -1,4 +1,4 @@
-# Sheikh Soban Fayaz — Cybersecurity Portfolio
+# Sheikh Soban Fayaz - Cybersecurity Portfolio
 
 Static portfolio hosted on GitHub Pages with automated write-up publishing via `projects.json` and GitHub Issues.
 
