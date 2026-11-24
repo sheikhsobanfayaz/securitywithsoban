@@ -7,23 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+<div class="scroll-progress-bar"></div>
 <script>
 (function() {
-  function getInitialTheme() {
-    try {
-      const saved = localStorage.getItem('soban_theme');
-      if (saved) return saved;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    } catch (e) {
-      return 'dark';
-    }
-  }
-  const theme = getInitialTheme();
-  document.documentElement.setAttribute('data-theme', theme);
+  try {
+    const saved = localStorage.getItem('soban_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', saved);
+  } catch(e) {}
 })();
 </script>
-
 <style>
 
 :root {
@@ -40,12 +32,14 @@
   --accent-text: #C2410C;
   --accent-soft: #FFEDD5;
   --accent-glow: rgba(234, 88, 12, 0.18);
-  --accent-gradient: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
   --emerald: #059669;
   --emerald-soft: #D1FAE5;
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
   --card-shadow-hover: 0 16px 32px -8px rgba(234, 88, 12, 0.18);
-  --ambient-glow: radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.09) 0%, transparent 60%);
+  --grid-color: rgba(234, 88, 12, 0.04);
+  --terminal-bg: #14151C;
+  --terminal-text: #F8FAFC;
+  --terminal-bar: #1E202C;
 }
 
 [data-theme="dark"] {
@@ -62,12 +56,14 @@
   --accent-text: #FB923C;
   --accent-soft: rgba(249, 115, 22, 0.12);
   --accent-glow: rgba(249, 115, 22, 0.28);
-  --accent-gradient: linear-gradient(135deg, #FB923C 0%, #F97316 100%);
   --emerald: #10B981;
   --emerald-soft: rgba(16, 185, 129, 0.15);
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
   --card-shadow-hover: 0 16px 36px -8px rgba(249, 115, 22, 0.25);
-  --ambient-glow: radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.16) 0%, transparent 65%);
+  --grid-color: rgba(249, 115, 22, 0.035);
+  --terminal-bg: #0E0F15;
+  --terminal-text: #F8FAFC;
+  --terminal-bar: #181922;
 }
 
 *, *::before, *::after {
@@ -84,8 +80,12 @@ body {
   margin: 0;
   padding: 0;
   background: var(--paper);
-  background-image: var(--ambient-glow);
-  background-repeat: no-repeat;
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.12) 0%, transparent 65%),
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 100% 100%, 36px 36px, 36px 36px;
+  background-repeat: no-repeat, repeat, repeat;
   background-attachment: fixed;
   color: var(--ink);
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -93,6 +93,18 @@ body {
   line-height: 1.65;
   transition: background-color 0.2s ease, color 0.2s ease;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Reading Progress Bar for Case Pages */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #F97316, #FB923C);
+  width: 0%;
+  z-index: 100;
+  transition: width 0.1s ease;
 }
 
 .container {
@@ -320,12 +332,12 @@ body {
   font-size: 12px;
 }
 
-/* Status Pill */
+/* Status Pill with Pulsing Radar Dot */
 .status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
+  gap: 10px;
+  padding: 6px 16px;
   background: var(--accent-soft);
   border: 1px solid var(--accent);
   border-radius: 9999px;
@@ -335,12 +347,36 @@ body {
   margin-bottom: 24px;
 }
 
+.status-dot-wrap {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: var(--accent);
   box-shadow: 0 0 10px var(--accent);
+}
+
+.status-dot-ping {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--accent);
+  opacity: 0.75;
+  animation: radarPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes radarPing {
+  0% { transform: scale(1); opacity: 0.8; }
+  75%, 100% { transform: scale(2.4); opacity: 0; }
 }
 
 /* Sections */
@@ -442,18 +478,245 @@ body {
   margin-bottom: 8px;
 }
 
-/* Code Block */
+/* Code Block & Interactive Copy Button */
+.code-block-wrap {
+  position: relative;
+  margin: 14px 0;
+}
+
 .code-block {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12.5px;
   background: var(--surface-elevated);
   border: 1px solid var(--hair);
   border-radius: 8px;
-  padding: 14px;
+  padding: 16px 18px;
   overflow-x: auto;
   color: var(--ink);
   white-space: pre-wrap;
-  margin: 12px 0;
+  margin: 0;
+}
+
+.copy-snippet-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--mute);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copy-snippet-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ==============================================================================
+   INTERACTIVE LIVE SOC TRIAGE TERMINAL
+   ============================================================================== */
+.soc-terminal-wrap {
+  margin: 44px 0 20px;
+}
+
+.soc-terminal {
+  background: var(--terminal-bg);
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--terminal-text);
+}
+
+.terminal-titlebar {
+  background: var(--terminal-bar);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--hair);
+}
+
+.terminal-dots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.terminal-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.dot-red { background: #EF4444; }
+.dot-yellow { background: #F59E0B; }
+.dot-green { background: #10B981; }
+
+.terminal-title {
+  font-size: 12.5px;
+  color: #94A3B8;
+  letter-spacing: -0.01em;
+}
+
+.terminal-status-indicator {
+  font-size: 11.5px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.terminal-presets-bar {
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--hair);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.terminal-preset-label {
+  font-size: 11.5px;
+  color: #94A3B8;
+  margin-right: 4px;
+}
+
+.preset-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.08);
+  color: #FB923C;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-chip:hover {
+  background: rgba(249, 115, 22, 0.2);
+  border-color: #F97316;
+  color: #FFFFFF;
+}
+
+.terminal-body {
+  padding: 20px 22px;
+  min-height: 240px;
+  max-height: 380px;
+  overflow-y: auto;
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.terminal-body .cmd-line {
+  color: #38BDF8;
+}
+
+.terminal-body .output-info {
+  color: #94A3B8;
+}
+
+.terminal-body .output-alert {
+  color: #F59E0B;
+}
+
+.terminal-body .output-drop {
+  color: #EF4444;
+}
+
+.terminal-body .output-success {
+  color: #10B981;
+}
+
+.terminal-body .output-accent {
+  color: #FB923C;
+  font-weight: 500;
+}
+
+.terminal-input-bar {
+  padding: 12px 18px;
+  background: var(--terminal-bar);
+  border-top: 1px solid var(--hair);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.terminal-prompt {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.terminal-input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--terminal-text);
+}
+
+/* ==============================================================================
+   MITRE ATT&CK ENTERPRISE MATRIX NAVIGATOR
+   ============================================================================== */
+.mitre-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.mitre-card {
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.mitre-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow);
+}
+
+.mitre-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.mitre-tactic-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: var(--accent-text);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.mitre-tech-id {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.mitre-case-count {
+  font-size: 12.5px;
+  color: var(--mute);
 }
 
 /* Modal */
@@ -594,6 +857,21 @@ footer {
   border-top: 1px solid var(--hair);
 }
 
+/* Print styles for Executive Reports */
+@media print {
+  .site-header, footer, .btn, .hamburger-btn, .mobile-menu, .terminal-presets-bar, .terminal-input-bar {
+    display: none !important;
+  }
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .card, .analysis-box, .workflow-box {
+    border: 1px solid #CCCCCC !important;
+    box-shadow: none !important;
+  }
+}
+
 article.case-article {
   padding: 48px 0 80px;
 }
@@ -716,7 +994,8 @@ article.case-article {
     <nav class="desktop-nav" aria-label="Primary navigation">
       <a href="../index.html" class="">Home</a>
       <a href="../investigations.html" class="active">Investigations (17)</a>
-      <a href="../index.html#methodology">Methodology</a>
+      <a href="../index.html#terminal">Interactive Terminal</a>
+      <a href="../index.html#mitre">MITRE Matrix</a>
       <a href="../index.html#capabilities">Capabilities</a>
       <a href="../contact.html" class="">Contact &amp; Connect</a>
     </nav>
@@ -735,7 +1014,8 @@ article.case-article {
       <nav class="mobile-nav-links">
         <a href="../index.html" class="">Home</a>
         <a href="../investigations.html" class="active">Investigations (17)</a>
-        <a href="../index.html#methodology">Methodology</a>
+        <a href="../index.html#terminal">Interactive Terminal</a>
+        <a href="../index.html#mitre">MITRE ATT&amp;CK Matrix</a>
         <a href="../index.html#capabilities">Capabilities</a>
         <a href="../contact.html" class="">Contact &amp; Connect</a>
       </nav>
@@ -749,7 +1029,10 @@ article.case-article {
 
 <main class="container">
   <article class="case-article">
-    <a href="../investigations.html" class="back-link">&larr; Back to All 17 Investigations</a>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+      <a href="../investigations.html" class="back-link" style="margin-bottom: 0;">&larr; Back to All 17 Investigations</a>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mute);">Estimated Reading: 5 min · Technical Playbook</span>
+    </div>
     
     <div>
       <span class="project-cat">Network & Perimeter</span>
@@ -789,11 +1072,14 @@ article.case-article {
 
     <div class="section-block">
       <h2>Diagnostic Query / Logic Sample</h2>
-      <div class="code-block">WAFEvents
+      <div class="code-block-wrap">
+        <button type="button" class="copy-snippet-btn" onclick="copyCodeText(this)">Copy Query</button>
+        <div class="code-block">WAFEvents
 | where TimeGenerated >= ago(6h)
 | where client_ip == "34.26.159.138"
 | summarize RequestCount = count(), TargetPaths = make_set(request_uri) by client_ip, action, http_status
 | order by RequestCount desc</div>
+      </div>
     </div>
 
     <div class="section-block">
@@ -813,7 +1099,10 @@ article.case-article {
 
     <div class="case-footer-nav">
       <a href="../investigations.html" class="btn">&larr; View All 17 Investigations</a>
-      <a href="../contact.html" class="btn btn-primary">Discuss This Investigation &rarr;</a>
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="btn" onclick="copyEmail(window.location.href); showToast('Link copied to clipboard!');">Share Case Study</button>
+        <a href="../contact.html" class="btn btn-primary">Discuss This Investigation &rarr;</a>
+      </div>
     </div>
   </article>
 </main>
@@ -935,6 +1224,34 @@ function initDecryptedText() {
   });
 }
 
+// Reading Progress Bar
+function initReadingProgress() {
+  const bar = document.querySelector('.scroll-progress-bar');
+  if (!bar) return;
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+  });
+}
+
+// Copy Code Button Helper
+function copyCodeText(btn) {
+  const codeBlock = btn.closest('.code-block-wrap').querySelector('.code-block');
+  if (!codeBlock) return;
+  const text = codeBlock.innerText;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      const old = btn.innerText;
+      btn.innerText = '✔ Copied!';
+      setTimeout(() => { btn.innerText = old; }, 2000);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
 function showToast(msg) {
   let t = document.getElementById('toast');
   if (!t) {
@@ -977,6 +1294,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initSpotlights();
   initDecryptedText();
+  initReadingProgress();
 });
 </script>
 
