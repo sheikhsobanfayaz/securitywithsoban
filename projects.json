@@ -1,0 +1,46 @@
+[
+  {
+    "id": "sonicwall-vpn",
+    "category": "network",
+    "categoryLabel": "Network & SonicWall",
+    "title": "SSL VPN Brute-Force & Impossible Travel Triage",
+    "summary": "Correlating SonicWall SSL VPN authentication logs with cloud identity sign-ins to separate credential-stuffing noise from account compromise.",
+    "tags": ["SonicWall", "SSL VPN", "SIEM", "Geo-IP"],
+    "scenario": "High-volume failed SSL VPN logins across multiple MSSP client firewalls followed by a single successful authentication from an atypical ASN.",
+    "steps": "1. Group failed attempts by source IP and username across a 15-minute window.\n2. Cross-reference the successful login IP against corporate VPN egress ranges and Entra ID MFA logs.\n3. Check for post-auth internal lateral movement or unusual DNS queries.",
+    "snippet": "source_type=\"sonicwall_vpn\" action=\"login_failed\" | stats count by src_ip, user | where count > 15"
+  },
+  {
+    "id": "mssp-tuning",
+    "category": "siem",
+    "categoryLabel": "SIEM & Detection",
+    "title": "Multi-Tenant SIEM False-Positive Tuning Playbook",
+    "summary": "Systematic approach to auditing noisy recurring alerts in an MSSP queue and proposing scoped exclusions without creating blind spots.",
+    "tags": ["SIEM", "MITRE ATT&CK", "Tuning", "MSSP"],
+    "scenario": "Repeated benign vulnerability-scanner and backup-agent alerts flooding L1 shift queues across three client tenants.",
+    "steps": "1. Tag recurring alerts over 14 days by rule ID, host, and parent process.\n2. Verify authorized maintenance windows and asset ownership with the client.\n3. Scope exclusions strictly to signed binary hash + source IP + destination port.",
+    "snippet": "title: Scoped Authorized Scanner Exclusion\nstatus: experimental\ndetection:\n  selection:\n    src_ip: [\"10.14.2.50\"]\n    user_agent|contains: \"AuthorizedScanner\""
+  },
+  {
+    "id": "ai-triage-harness",
+    "category": "ai",
+    "categoryLabel": "AI & Automation",
+    "title": "Anonymized Log Summarizer & Triage Harness",
+    "summary": "A privacy-first workflow for stripping client PII and internal IPs before using LLMs to decode obfuscated PowerShell and summarize timelines.",
+    "tags": ["AI SecOps", "Python", "Sanitization", "Privacy"],
+    "scenario": "Analysts need rapid explanation of base64-encoded PowerShell or unfamiliar Linux one-liners without exposing client hostnames or credentials.",
+    "steps": "1. Run a local regex sanitizer to replace client domains, IPs, and usernames with deterministic tokens.\n2. Pass only the sanitized command tree to the LLM with a structured MITRE ATT&CK prompt.\n3. Validate every returned indicator directly in the SIEM before documenting.",
+    "snippet": "sanitized = re.sub(r\"\\\\b(?:\\\\d{1,3}\\\\.){3}\\\\d{1,3}\\\\b\", \"[INTERNAL_IP]\", raw_log)"
+  },
+  {
+    "id": "sysmon-c2",
+    "category": "siem",
+    "categoryLabel": "SIEM & Detection",
+    "title": "Windows 4688 + Sysmon C2 Beaconing Correlation",
+    "summary": "Bridging network firewall outbound alerts to endpoint process creation events to confirm command-and-control callbacks.",
+    "tags": ["Sysmon", "Event 4688", "EDR", "Network"],
+    "scenario": "Perimeter firewall flags periodic outbound HTTPS connections on a non-standard port from a workstation.",
+    "steps": "1. Pivot from the firewall source IP and timestamp to Sysmon Event ID 3 (Network Connection).\n2. Identify the owning ProcessGuid and trace back to Event ID 1 / 4688 parent process.\n3. Inspect command-line arguments and isolate the host if an unsigned binary initiated the beacon.",
+    "snippet": "EventID IN (1, 3, 4688) | where DestinationPort NOT IN (80, 443) | project TimeGenerated, Computer, Image, CommandLine, DestinationIp"
+  }
+]
