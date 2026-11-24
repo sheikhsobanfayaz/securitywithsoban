@@ -1,1 +1,92 @@
 
+name: Publish Write-Up to Portfolio
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    if: github.event.label.name == 'publish'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse issue and update projects.json
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python3 - << 'PY'
+          import json, os, re
+
+          title = os.environ["ISSUE_TITLE"].strip()
+          body = os.environ["ISSUE_BODY"] or ""
+
+          def extract(section):
+              m = re.search(rf"###\s*{re.escape(section)}\s*\n(.*?)(?=\n###\s|\Z)", body, re.S | re.I)
+              return m.group(1).strip() if m else ""
+
+          category_raw = extract("Category").lower()
+          cat_map = {
+              "network": ("network", "Network & SonicWall"),
+              "siem": ("siem", "SIEM & Detection"),
+              "ai": ("ai", "AI & Automation"),
+          }
+          category, category_label = cat_map.get(category_raw, ("siem", "SIEM & Detection"))
+
+          tags = [t.strip() for t in extract("Tags").split(",") if t.strip()] or ["SOC", "Write-Up"]
+          slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")[:48]
+
+          entry = {
+              "id": slug,
+              "category": category,
+              "categoryLabel": category_label,
+              "title": title,
+              "summary": extract("Summary") or title,
+              "tags": tags,
+              "scenario": extract("Scenario") or "Details pending.",
+              "steps": extract("Steps") or "1. Review telemetry.",
+              "snippet": extract("Snippet") or "// No query snippet provided"
+          }
+
+          with open("projects.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          data = [item for item in data if item.get("id") != slug]
+          data.insert(0, entry)
+
+          with open("projects.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2)
+              f.write("\n")
+          PY
+
+      - name: Commit updated projects.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects.json
+          git diff --cached --quiet || git commit -m "Add write-up: ${{ github.event.issue.title }}"
+          git push
+
+      - name: Close issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "Published to `projects.json`. GitHub Pages will redeploy shortly."
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: "closed"
+            });
