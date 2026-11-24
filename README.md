@@ -14,7 +14,7 @@ network | siem | ai
 One-sentence overview of the investigation.
 
 ### Tags
-SonicWall, SIEM, MITRE ATT&CK
+Firewall, SIEM, MITRE ATT&CK
 
 ### Scenario
 Brief context of the alert or lab.
@@ -24,7 +24,7 @@ Brief context of the alert or lab.
 2. Step two
 
 ### Snippet
-source_type="sonicwall" | stats count by src_ip
+source_type="firewall_vpn" | stats count by src_ip
 ```
 4. Add the **`publish`** label to the Issue.
 5. GitHub Actions will append the write-up to `projects.json`, commit the change, close the Issue, and trigger a GitHub Pages redeploy.

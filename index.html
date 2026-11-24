@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
+  color-scheme: light;
   --paper: #FFFFFF;
   --surface: #F8FAFC;
   --ink: #0F172A;
@@ -22,6 +23,7 @@
 }
 
 [data-theme="dark"] {
+  color-scheme: dark;
   --paper: #0B0F17;
   --surface: #111827;
   --ink: #F8FAFC;
@@ -40,6 +42,8 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--paper);
+  color: var(--ink);
 }
 
 body {
@@ -531,8 +535,20 @@ footer {
 }
 
 @media (max-width: 820px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+    gap: 10px;
+  }
   .nav-links {
-    display: none;
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--hair);
+    overflow-x: auto;
   }
   .exp-grid, .projects-grid, .stack-grid, .contact-grid {
     grid-template-columns: 1fr;
@@ -560,11 +576,11 @@ footer {
   <section class="hero">
     <div class="status-pill">
       <span class="status-dot"></span>
-      <span>MSSP SOC Analyst · ISC2 CC · Ex-SonicWall</span>
+      <span>MSSP SOC Analyst · ISC2 CC · Network Security</span>
     </div>
     <h1>Network security roots. Modern SOC execution.</h1>
     <p class="hero-sub">
-      I'm Sheikh Soban Fayaz, a Security Operations Center (SOC) analyst in an MSSP environment. Combining hands-on network security experience from SonicWall with ISC2 Certified in Cybersecurity (CC) fundamentals, I focus on fast alert triage, endpoint-to-network correlation, and practical AI-assisted workflows.
+      I'm Sheikh Soban Fayaz, a Security Operations Center (SOC) analyst in an MSSP environment. Combining hands-on enterprise network security experience with ISC2 Certified in Cybersecurity (CC) fundamentals, I focus on fast alert triage, endpoint-to-network correlation, and practical AI-assisted workflows.
     </p>
     <div class="hero-cta">
       <a href="#projects" class="btn btn-primary">Explore Case Studies</a>
@@ -586,7 +602,7 @@ footer {
         <p>Monitoring multi-tenant SIEM and EDR queues, validating true-positive incidents against MITRE ATT&amp;CK, and writing clear client-ready escalation reports under strict SLAs.</p>
       </div>
       <div class="exp-item">
-        <span class="exp-meta">PRIOR · SONICWALL INC.</span>
+        <span class="exp-meta">PRIOR · NETWORK SECURITY</span>
         <h3>Network Security Engineer</h3>
         <p>Diagnosed firewall policies, NAT translations, SSL VPN tunnels, and IPS/IDS traffic anomalies, building deep packet-level intuition for perimeter defense.</p>
       </div>
@@ -606,7 +622,7 @@ footer {
       </div>
       <div class="filter-bar" role="group" aria-label="Filter projects by category">
         <button type="button" class="filter-btn active" data-filter="all">All</button>
-        <button type="button" class="filter-btn" data-filter="network">Network &amp; SonicWall</button>
+        <button type="button" class="filter-btn" data-filter="network">Network &amp; Perimeter</button>
         <button type="button" class="filter-btn" data-filter="siem">SIEM &amp; Detection</button>
         <button type="button" class="filter-btn" data-filter="ai">AI &amp; Automation</button>
       </div>
@@ -625,7 +641,7 @@ footer {
       <div class="stack-col">
         <h3>Network &amp; Perimeter</h3>
         <ul class="stack-list">
-          <li><span>SonicWall Firewalls &amp; NAT</span><span class="stack-level">Production</span></li>
+          <li><span>Enterprise Firewalls &amp; NAT</span><span class="stack-level">Production</span></li>
           <li><span>SSL VPN &amp; Site-to-Site</span><span class="stack-level">Production</span></li>
           <li><span>IPS/IDS Signature Triage</span><span class="stack-level">Production</span></li>
           <li><span>Packet &amp; DNS Analysis</span><span class="stack-level">Wireshark</span></li>
@@ -707,15 +723,15 @@ footer {
 <script>
 const DEFAULT_PROJECTS = [
   {
-    id: 'sonicwall-vpn',
+    id: 'ssl-vpn-triage',
     category: 'network',
-    categoryLabel: 'Network & SonicWall',
+    categoryLabel: 'Network & Perimeter',
     title: 'SSL VPN Brute-Force & Impossible Travel Triage',
-    summary: 'Correlating SonicWall SSL VPN authentication logs with cloud identity sign-ins to separate credential-stuffing noise from account compromise.',
-    tags: ['SonicWall', 'SSL VPN', 'SIEM', 'Geo-IP'],
+    summary: 'Correlating enterprise SSL VPN authentication logs with cloud identity sign-ins to separate credential-stuffing noise from account compromise.',
+    tags: ['Firewall', 'SSL VPN', 'SIEM', 'Geo-IP'],
     scenario: 'High-volume failed SSL VPN logins across multiple MSSP client firewalls followed by a single successful authentication from an atypical ASN.',
     steps: '1. Group failed attempts by source IP and username across a 15-minute window.\n2. Cross-reference the successful login IP against corporate VPN egress ranges and Entra ID MFA logs.\n3. Check for post-auth internal lateral movement or unusual DNS queries.',
-    snippet: 'source_type="sonicwall_vpn" action="login_failed" | stats count by src_ip, user | where count > 15'
+    snippet: 'source_type="firewall_vpn" action="login_failed" | stats count by src_ip, user | where count > 15'
   },
   {
     id: 'mssp-tuning',

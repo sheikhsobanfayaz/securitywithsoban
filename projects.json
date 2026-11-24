@@ -1,14 +1,14 @@
 [
   {
-    "id": "sonicwall-vpn",
+    "id": "ssl-vpn-triage",
     "category": "network",
-    "categoryLabel": "Network & SonicWall",
+    "categoryLabel": "Network & Perimeter",
     "title": "SSL VPN Brute-Force & Impossible Travel Triage",
-    "summary": "Correlating SonicWall SSL VPN authentication logs with cloud identity sign-ins to separate credential-stuffing noise from account compromise.",
-    "tags": ["SonicWall", "SSL VPN", "SIEM", "Geo-IP"],
+    "summary": "Correlating enterprise SSL VPN authentication logs with cloud identity sign-ins to separate credential-stuffing noise from account compromise.",
+    "tags": ["Firewall", "SSL VPN", "SIEM", "Geo-IP"],
     "scenario": "High-volume failed SSL VPN logins across multiple MSSP client firewalls followed by a single successful authentication from an atypical ASN.",
     "steps": "1. Group failed attempts by source IP and username across a 15-minute window.\n2. Cross-reference the successful login IP against corporate VPN egress ranges and Entra ID MFA logs.\n3. Check for post-auth internal lateral movement or unusual DNS queries.",
-    "snippet": "source_type=\"sonicwall_vpn\" action=\"login_failed\" | stats count by src_ip, user | where count > 15"
+    "snippet": "source_type=\"firewall_vpn\" action=\"login_failed\" | stats count by src_ip, user | where count > 15"
   },
   {
     "id": "mssp-tuning",
