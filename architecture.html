@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Architecture &amp; Systems Engineering | Sheikh Soban Fayaz</title>
+<meta name="description" content="Technical breakdown of the static-first, zero-telemetry architecture, client-side SOC sandboxes, and automated CI/CD pipelines behind this security portfolio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+(function() {
+  try {
+    const saved = localStorage.getItem('soban_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', saved);
+  } catch(e) {}
+})();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --paper: #FAF8F5;
+  --surface: #FFFFFF;
+  --surface-elevated: #F5EFEB;
+  --ink: #1C1917;
+  --ink2: #44403C;
+  --mute: #78716C;
+  --hair: #E7E0D8;
+  --hair-hover: #D6CBC0;
+  --accent: #EA580C;
+  --accent-text: #C2410C;
+  --accent-soft: #FFEDD5;
+  --accent-glow: rgba(234, 88, 12, 0.18);
+  --emerald: #059669;
+  --emerald-soft: #D1FAE5;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 16px 32px -8px rgba(234, 88, 12, 0.18);
+  --grid-color: rgba(234, 88, 12, 0.04);
+  --terminal-bg: #14151C;
+  --terminal-text: #F8FAFC;
+  --terminal-bar: #1E202C;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0B0C10;
+  --surface: #13141B;
+  --surface-elevated: #1B1D27;
+  --ink: #F9FAFB;
+  --ink2: #A1A1AA;
+  --mute: #71717A;
+  --hair: #232533;
+  --hair-hover: #35384D;
+  --accent: #F97316;
+  --accent-text: #FB923C;
+  --accent-soft: rgba(249, 115, 22, 0.12);
+  --accent-glow: rgba(249, 115, 22, 0.28);
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.15);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
+  --card-shadow-hover: 0 16px 36px -8px rgba(249, 115, 22, 0.25);
+  --grid-color: rgba(249, 115, 22, 0.035);
+  --terminal-bg: #0E0F15;
+  --terminal-text: #F8FAFC;
+  --terminal-bar: #181922;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.12) 0%, transparent 65%),
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 100% 100%, 36px 36px, 36px 36px;
+  background-repeat: no-repeat, repeat, repeat;
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+main.container {
+  padding-top: 24px;
+}
+
+/* Anchor Scroll Clearance for Floating Island Navbar */
+#terminal,
+#mitre,
+#capabilities,
+#experience,
+#projects,
+#methodology,
+section[id],
+article[id],
+div[id] {
+  scroll-margin-top: 96px;
+}
+
+/* ==============================================================================
+   HIGH-END FLOATING GLASS ISLAND NAVBAR & DOCK
+   ============================================================================== */
+.site-header-wrap {
+  position: sticky;
+  top: 14px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  pointer-events: auto;
+}
+
+.nav-island {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 58px;
+  padding: 6px 10px 6px 14px;
+  background: rgba(14, 15, 21, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 9999px;
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(249, 115, 22, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] .nav-island {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(234, 88, 12, 0.08);
+}
+
+/* Brand Identity */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brand-avatar-box {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  box-shadow: 0 2px 10px rgba(249, 115, 22, 0.35);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.nav-brand:hover .brand-avatar-box {
+  transform: scale(1.05);
+}
+
+.pulse-radar {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: #10B981;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10B981;
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 15.5px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.brand-name strong {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.brand-tag {
+  font-size: 10.5px;
+  color: var(--mute);
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+/* Desktop Dock Navigation */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 3px 6px;
+  border-radius: 9999px;
+  border: 1px solid var(--hair);
+}
+
+[data-theme="light"] .desktop-nav {
+  background: rgba(0, 0, 0, 0.035);
+}
+
+.desktop-nav a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink2);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  transition: all 0.16s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.desktop-nav a:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.desktop-nav a.active {
+  color: #FFFFFF !important;
+  background: var(--accent) !important;
+  box-shadow: 0 2px 10px rgba(249, 115, 22, 0.35);
+}
+
+.nav-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: rgba(249, 115, 22, 0.2);
+  color: var(--accent);
+}
+
+.desktop-nav a.active .nav-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.dock-icon {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.desktop-nav a.active .dock-icon {
+  color: #FFFFFF;
+}
+
+/* Navigation Actions */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  cursor: pointer;
+  color: var(--ink);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.icon-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+}
+
+.nav-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  border-radius: 9999px;
+  text-decoration: none;
+  border: none;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-cta-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45);
+  color: #FFFFFF;
+}
+
+.cta-arrow {
+  transition: transform 0.2s ease;
+}
+
+.nav-cta-btn:hover .cta-arrow {
+  transform: translateX(2px);
+}
+
+/* Minimalist Hamburger Button */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hamburger-btn:hover {
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.hamburger-line {
+  display: block;
+  width: 17px;
+  height: 2px;
+  background-color: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+.hamburger-btn.open .hamburger-line:nth-child(1) {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.hamburger-btn.open .hamburger-line:nth-child(2) {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+/* Floating Mobile Menu Drawer */
+.mobile-menu {
+  display: none;
+  position: absolute;
+  top: 66px;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(249, 115, 22, 0.1);
+  z-index: 110;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.mobile-menu.open {
+  display: block;
+  animation: floatDown 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes floatDown {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.mobile-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.mobile-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: var(--mute);
+}
+
+.pulse-radar-sm {
+  width: 7px;
+  height: 7px;
+  background: #10B981;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #10B981;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.mobile-nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--hair);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-nav-links a:hover, .mobile-nav-links a.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.mobile-menu-footer {
+  padding-top: 12px;
+  border-top: 1px solid var(--hair);
+}
+
+@media (max-width: 920px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .hamburger-btn {
+    display: flex !important;
+  }
+  .nav-cta-btn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-tag {
+    display: none;
+  }
+  .linkedin-nav-btn {
+    display: none !important;
+  }
+  .site-header-wrap {
+    padding: 0 10px;
+    top: 10px;
+  }
+  .nav-island {
+    height: 52px;
+    padding: 4px 8px 4px 10px;
+  }
+  .brand-avatar-box {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+  .brand-name {
+    font-size: 14px;
+  }
+}
+
+/* ==============================================================================
+   APPLE-INSPIRED BENTO & ARCHITECTURE PAGE STYLES
+   ============================================================================== */
+.hero {
+  padding: 56px 0 44px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink2);
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.status-dot-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8px;
+  height: 8px;
+}
+
+.status-dot-ping {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #10B981;
+  opacity: 0.75;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.status-dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(34px, 5.5vw, 56px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 0 0 20px;
+  color: var(--ink);
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2.2vw, 19px);
+  color: var(--ink2);
+  line-height: 1.6;
+  max-width: 820px;
+  margin: 0 0 32px;
+}
+
+.sec {
+  padding: 48px 0;
+}
+
+.sec-head {
+  margin-bottom: 32px;
+}
+
+.sec-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(24px, 3.5vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.sec-sub {
+  font-size: 15px;
+  color: var(--mute);
+  margin: 0;
+}
+
+/* Apple Bento Cards */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+.bento-card {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--hair-hover);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.bento-card.col-6 { grid-column: span 6; }
+.bento-card.col-4 { grid-column: span 4; }
+.bento-card.col-8 { grid-column: span 8; }
+.bento-card.col-12 { grid-column: span 12; }
+
+@media (max-width: 900px) {
+  .bento-card.col-6,
+  .bento-card.col-4,
+  .bento-card.col-8 {
+    grid-column: span 12;
+  }
+}
+
+.bento-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(249, 115, 22, 0.15);
+}
+
+.bento-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.bento-desc {
+  font-size: 14.5px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.bento-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.bento-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--hair);
+  color: var(--mute);
+}
+
+/* Architecture Flow Steps */
+.pipeline-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.pipeline-step {
+  display: flex;
+  gap: 18px;
+  padding: 18px 22px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  align-items: flex-start;
+  transition: all 0.2s ease;
+}
+
+.pipeline-step:hover {
+  border-color: var(--accent);
+  transform: translateX(4px);
+}
+
+.step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 10px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.step-desc {
+  font-size: 13.5px;
+  color: var(--ink2);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Stats / Telemetry Bento */
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+@media (max-width: 820px) {
+  .telemetry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.metric-bento-card {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.metric-bento-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.metric-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  display: block;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.metric-label {
+  font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--mute);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Code Snippet Box */
+.terminal-code-box {
+  background: var(--terminal-bg);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  padding: 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--terminal-text);
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.terminal-code-box .code-comment {
+  color: var(--mute);
+}
+
+.terminal-code-box .code-highlight {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  color: #FFFFFF !important;
+  border: none;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.5);
+  transform: translateY(-2px);
+}
+
+/* ==============================================================================
+   APPLE-INSPIRED BENTO FOOTER & TELEMETRY STRIP
+   ============================================================================== */
+.site-footer {
+  margin-top: 80px;
+  padding: 64px 0 40px;
+  background: linear-gradient(180deg, transparent 0%, rgba(14, 15, 21, 0.5) 100%);
+  border-top: 1px solid var(--hair);
+  position: relative;
+}
+
+[data-theme="light"] .site-footer {
+  background: linear-gradient(180deg, transparent 0%, rgba(245, 239, 235, 0.6) 100%);
+}
+
+.footer-bento {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.3fr 1.2fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+@media (max-width: 960px) {
+  .footer-bento {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .footer-col-brand {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .footer-bento {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .footer-col-brand {
+    grid-column: span 1;
+  }
+}
+
+.footer-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.brand-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 2px 8px var(--accent-glow);
+  flex-shrink: 0;
+}
+
+.footer-brand-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.footer-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+.footer-name strong {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.footer-role {
+  font-size: 11.5px;
+  color: var(--mute);
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+.footer-bio {
+  font-size: 13.5px;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin: 0 0 16px;
+  max-width: 380px;
+}
+
+.footer-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: #10B981;
+  margin-bottom: 10px;
+}
+
+.footer-geo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--mute);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.footer-col-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  margin: 0 0 16px;
+}
+
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links-list li a, .footer-static-item {
+  font-size: 13px;
+  color: var(--ink2);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.footer-links-list li a:hover {
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+.footer-static-item {
+  color: var(--mute);
+  cursor: default;
+}
+
+.verified-cred-link {
+  color: var(--accent) !important;
+  font-weight: 600;
+}
+
+.verified-badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.credly-arrow {
+  transition: transform 0.15s ease;
+}
+
+.verified-cred-link:hover .credly-arrow {
+  transform: translateX(3px);
+}
+
+.footer-bottom-bar {
+  padding-top: 24px;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-legal {
+  font-size: 12px;
+  color: var(--mute);
+  max-width: 620px;
+  line-height: 1.5;
+}
+
+.footer-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.telemetry-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  color: var(--mute);
+}
+
+.back-to-top-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  color: var(--ink2);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.back-to-top-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+}
+
+.top-arrow {
+  transition: transform 0.2s ease;
+}
+
+.back-to-top-btn:hover .top-arrow {
+  transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+
+<header class="site-header-wrap">
+  <div class="nav-container">
+    <nav class="nav-island" aria-label="Primary Navigation">
+      <!-- Brand & Status -->
+      <a href="index.html" class="nav-brand" aria-label="Sheikh Soban Fayaz Home">
+        <div class="brand-avatar-box">
+          <span class="avatar-monogram">SF</span>
+          <span class="pulse-radar" title="SOC Security Analyst Active"></span>
+        </div>
+        <div class="brand-info">
+          <span class="brand-name">Sheikh <strong>Soban</strong> Fayaz</span>
+          <span class="brand-tag">SOC &bull; Network Security</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Pill Dock -->
+      <div class="desktop-nav" role="menubar">
+        <a href="index.html" class="">Home</a>
+        <a href="investigations.html" class="">
+          Investigations <span class="nav-badge">17</span>
+        </a>
+        <a href="index.html#terminal">
+          <span class="dock-icon">&gt;_</span> Terminal
+        </a>
+        <a href="architecture.html" class="active">Architecture</a>
+        <a href="contact.html" class="">Contact</a>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle-btn icon-btn" aria-label="Toggle dark/light theme" title="Toggle Theme">
+          <span class="theme-icon">☾</span>
+        </button>
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="icon-btn linkedin-nav-btn" aria-label="LinkedIn Profile" title="LinkedIn Profile">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
+        </a>
+        <a href="contact.html" class="nav-cta-btn">
+          Connect <span class="cta-arrow">&rarr;</span>
+        </a>
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle mobile navigation menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Floating Mobile Dropdown Drawer -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-brand-row">
+        <div class="mobile-status-indicator">
+          <span class="pulse-radar-sm"></span>
+          <span>Security Operations Ready</span>
+        </div>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="index.html" class="">
+          <span class="link-label">Home</span>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+        <a href="investigations.html" class="">
+          <span class="link-label">Investigations &amp; Case Studies</span>
+          <span class="nav-badge">17</span>
+        </a>
+        <a href="index.html#terminal">
+          <span class="link-label"><span class="dock-icon">&gt;_</span> Interactive SOC Terminal</span>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+        <a href="index.html#mitre">
+          <span class="link-label">MITRE ATT&amp;CK Navigator</span>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+        <a href="architecture.html" class="active">
+          <span class="link-label">Site Architecture &amp; Engineering</span>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+        <a href="contact.html" class="">
+          <span class="link-label">Contact &amp; Connect</span>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+      </div>
+      <div class="mobile-menu-footer">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">
+          Connect on LinkedIn &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="status-pill">
+      <div class="status-dot-wrap">
+        <span class="status-dot-ping"></span>
+        <span class="status-dot"></span>
+      </div>
+      <span>Systems Architecture &bull; Zero Telemetry &bull; Headless CI/CD</span>
+    </div>
+
+    <h1>Architecting a High-Performance, Zero-Surface SecOps Portfolio</h1>
+
+    <p class="hero-sub">
+      Why conventional web frameworks introduce unnecessary attack surface, how headless deterministic compilation powers client-side SOC sandboxes, and the defensive engineering principles behind this platform.
+    </p>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <a href="#philosophy" class="btn btn-primary">Core Threat Model &darr;</a>
+      <a href="#bento" class="btn">Explore Architectural Layers &darr;</a>
+      <a href="#pipeline" class="btn">CI/CD Quality Gates &darr;</a>
+    </div>
+
+    <div class="telemetry-grid">
+      <div class="metric-bento-card">
+        <span class="metric-val">0</span>
+        <span class="metric-label">Tracking Beacons</span>
+      </div>
+      <div class="metric-bento-card">
+        <span class="metric-val">&lt; 300ms</span>
+        <span class="metric-label">Edge Load Time</span>
+      </div>
+      <div class="metric-bento-card">
+        <span class="metric-val">100%</span>
+        <span class="metric-label">Static Edge Delivery</span>
+      </div>
+      <div class="metric-bento-card">
+        <span class="metric-val">17</span>
+        <span class="metric-label">Rich Incident Datasets</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Security Philosophy & Threat Model -->
+  <section id="philosophy" class="sec">
+    <div class="sec-head">
+      <h2 class="sec-title">The Security-First Threat Model</h2>
+      <p class="sec-sub">Why dynamic content management systems and monolithic frameworks are architectural antipatterns for cybersecurity professionals.</p>
+    </div>
+
+    <div class="bento-grid">
+      <div class="bento-card col-6">
+        <div class="bento-icon-badge">&#128737;</div>
+        <h3 class="bento-title">Zero Server-Side Attack Surface</h3>
+        <p class="bento-desc">
+          Conventional portfolios frequently rely on dynamic application servers (Node.js, PHP, or Python SSR) paired with SQL backends. This introduces unneeded attack vectors: SQL injection, SSRF, remote code execution (RCE) via unpatched dependencies, and deserialization vulnerabilities.
+        </p>
+        <p class="bento-desc">
+          By adopting a 100% immutable static edge model, this website has zero listening ports, zero database backends, and zero server-side state. The entire attack surface is reduced to static content distribution.
+        </p>
+        <div class="bento-tags">
+          <span class="bento-tag">Immutable Static Edge</span>
+          <span class="bento-tag">Zero Server Runtimes</span>
+          <span class="bento-tag">Reduced Attack Surface</span>
+        </div>
+      </div>
+
+      <div class="bento-card col-6">
+        <div class="bento-icon-badge">&#128274;</div>
+        <h3 class="bento-title">Zero Third-Party Telemetry &amp; Privacy Hardening</h3>
+        <p class="bento-desc">
+          Modern web tracking introduces persistent client-side surveillance: third-party analytics pixels, ad network beacons, and intrusive canvas fingerprinting that leak visitor IP addresses, browsing sessions, and device telemetry to external brokers.
+        </p>
+        <p class="bento-desc">
+          This platform enforces a strict Zero-Telemetry Policy: no tracking scripts, no analytics cookies, and zero external network calls during browsing. All typography and styles are self-contained, guaranteeing cryptographic privacy for every visitor.
+        </p>
+        <div class="bento-tags">
+          <span class="bento-tag">Zero Trackers</span>
+          <span class="bento-tag">No Third-Party CDNs</span>
+          <span class="bento-tag">GDPR Compliant</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Apple-Style Bento Grid Layers -->
+  <section id="bento" class="sec">
+    <div class="sec-head">
+      <h2 class="sec-title">The Four Architectural Planes</h2>
+      <p class="sec-sub">How data normalization, in-browser sandbox simulation, and GPU compositing unify into a seamless experience.</p>
+    </div>
+
+    <div class="bento-grid">
+      <!-- Card 1: Data Plane -->
+      <div class="bento-card col-8">
+        <div class="bento-icon-badge">&#128451;</div>
+        <h3 class="bento-title">Data Plane &amp; Schema Normalization</h3>
+        <p class="bento-desc">
+          Rather than dispersing incident data across disjointed files, all 17 multi-tenant enterprise SOC investigations are compiled into a normalized single source of truth (structured schema). Each incident record defines structured telemetry:
+        </p>
+        <div class="terminal-code-box">
+          <span class="code-comment">// Normalized Incident Schema Structure (Sample Slice)</span><br>
+          {<br>
+          &nbsp;&nbsp;<span class="code-highlight">"id"</span>: "unsloth-lora-secops",<br>
+          &nbsp;&nbsp;<span class="code-highlight">"title"</span>: "Fast-LoRA Offline SOC Triage",<br>
+          &nbsp;&nbsp;<span class="code-highlight">"mitre"</span>: ["T1027", "T1059", "T1071.001"],<br>
+          &nbsp;&nbsp;<span class="code-highlight">"telemetry"</span>: ["Sentinel", "Sysmon", "Zeek", "PCAP"],<br>
+          &nbsp;&nbsp;<span class="code-highlight">"triage_workflow"</span>: ["Ingest", "Normalize", "LoRA Infer", "Contain"]<br>
+          }
+        </div>
+        <div class="bento-tags" style="margin-top: 16px;">
+          <span class="bento-tag">Structured Schemas</span>
+          <span class="bento-tag">MITRE ATT&amp;CK Mappings</span>
+          <span class="bento-tag">Zero Schema Drift</span>
+        </div>
+      </div>
+
+      <!-- Card 2: In-Memory Sandbox -->
+      <div class="bento-card col-4">
+        <div class="bento-icon-badge">&#128187;</div>
+        <h3 class="bento-title">Client-Side SOC Sandbox Engine</h3>
+        <p class="bento-desc">
+          The interactive terminal simulates enterprise SIEM correlation, C2 beacon hunting, and offline LoRA LLM log analysis.
+        </p>
+        <p class="bento-desc">
+          Instead of connecting to a remote backend API, the terminal executes an in-memory event bus and stream parser locally inside the browser. This eliminates remote execution risk while providing sub-millisecond command feedback.
+        </p>
+        <div class="bento-tags">
+          <span class="bento-tag">In-Memory Event Bus</span>
+          <span class="bento-tag">O(1) Memory Footprint</span>
+          <span class="bento-tag">Deterministic Streams</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Design System & Compositor -->
+      <div class="bento-card col-4">
+        <div class="bento-icon-badge">&#10024;</div>
+        <h3 class="bento-title">Spatial Glassmorphism &amp; GPU Pipeline</h3>
+        <p class="bento-desc">
+          UI components leverage CSS custom properties, hardware-accelerated transforms, and dynamic backdrop blur filters.
+        </p>
+        <p class="bento-desc">
+          Transitions utilize cubic-bezier curves (0.16, 1, 0.3, 1) to replicate Apple-style fluid micro-interactions, ensuring steady 60fps rendering across desktop and mobile displays.
+        </p>
+        <div class="bento-tags">
+          <span class="bento-tag">GPU Compositing</span>
+          <span class="bento-tag">Backdrop Blur Matrix</span>
+          <span class="bento-tag">Fluid Spring Curves</span>
+        </div>
+      </div>
+
+      <!-- Card 4: CI/CD Quality Gates -->
+      <div class="bento-card col-8">
+        <div class="bento-icon-badge">&#9881;</div>
+        <h3 class="bento-title">Automated Synthesis &amp; Headless Quality Gates</h3>
+        <p class="bento-desc">
+          Every modification triggers a multi-stage validation harness before production deployment:
+        </p>
+        <div class="pipeline-steps">
+          <div class="pipeline-step">
+            <span class="step-num">GATE 01</span>
+            <div class="step-content">
+              <div class="step-title">Schema &amp; AST Integrity Validation</div>
+              <div class="step-desc">Validates data formats and verifies JavaScript syntax via headless Node.js evaluation to guarantee zero runtime exceptions.</div>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <span class="step-num">GATE 02</span>
+            <div class="step-content">
+              <div class="step-title">Security &amp; Vendor Neutrality Heuristics</div>
+              <div class="step-desc">Scans markup against policy rules, enforcing vendor-neutral firewall terminology and strict brand tokenization.</div>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <span class="step-num">GATE 03</span>
+            <div class="step-content">
+              <div class="step-title">Atomic Git Packaging &amp; Edge CDN Delivery</div>
+              <div class="step-desc">Generates cryptographically signed commits pushed to GitHub Pages for instant edge distribution across global edge nodes.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Automated Delivery Pipeline -->
+  <section id="pipeline" class="sec">
+    <div class="sec-head">
+      <h2 class="sec-title">Automated Continuous Integration Flow</h2>
+      <p class="sec-sub">How code changes progress from local synthesis to verified edge distribution.</p>
+    </div>
+
+    <div class="terminal-code-box" style="line-height: 1.8;">
+      <span class="code-comment"># Stage 1: Local Synthesis &amp; Mutation</span><br>
+      $ python build_updates.py &bull;&bull;&bull; <span class="code-highlight">[INGESTION COMPLETE: 17 CASSETS COMPILED]</span><br><br>
+      <span class="code-comment"># Stage 2: Quality Gates &amp; AST Verification</span><br>
+      $ python verify_all.py<br>
+      &nbsp;&nbsp;[OK] projects.json schema validated.<br>
+      &nbsp;&nbsp;[OK] 21 HTML files checked: Zero long dashes detected.<br>
+      &nbsp;&nbsp;[OK] Vendor neutrality verified: Zero proprietary employer mentions.<br>
+      &nbsp;&nbsp;[OK] Headless Node.js AST parsing: 45 script blocks passed syntax check.<br>
+      &nbsp;&nbsp;[PASS] Pre-flight verification completed with 0 errors.<br><br>
+      <span class="code-comment"># Stage 3: Atomic Edge Distribution</span><br>
+      $ git commit -m "Deploy verified static release" &amp;&amp; git push origin main<br>
+      &nbsp;&nbsp;To https://github.com/sheikhsobanfayaz/securitywithsoban.git<br>
+      &nbsp;&nbsp;[DEPLOYED] Edge cache purged. Atomic deployment live at edge nodes.
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="sec" style="text-align: center;">
+    <div class="bento-card" style="max-width: 820px; margin: 0 auto; padding: 48px 32px; text-align: center;">
+      <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; margin: 0 0 12px;">Explore Technical Implementations</h2>
+      <p style="font-size: 16px; color: var(--ink2); margin: 0 0 28px; max-width: 580px; margin-left: auto; margin-right: auto;">
+        Test the client-side SOC triage sandbox, examine 17 detailed network defense investigations, or connect directly on LinkedIn.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+        <a href="index.html#terminal" class="btn btn-primary">Launch Interactive Terminal &rarr;</a>
+        <a href="investigations.html" class="btn">View All 17 Investigations</a>
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn">Connect on LinkedIn</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bento">
+      <!-- Col 1: Identity & SOC Telemetry -->
+      <div class="footer-col footer-col-brand">
+        <div class="footer-brand-header">
+          <span class="brand-avatar">SF</span>
+          <div class="footer-brand-title">
+            <span class="footer-name">Sheikh <strong>Soban</strong> Fayaz</span>
+            <span class="footer-role">Enterprise SOC &amp; Network Defense</span>
+          </div>
+        </div>
+        <p class="footer-bio">
+          Multi-tenant MSSP SOC Analyst and ISC2 CC certified practitioner specializing in firewall forensics, cross-telemetry correlation, and offline LLM SecOps triage.
+        </p>
+        <div class="footer-status-pill">
+          <span class="pulse-radar-sm"></span>
+          <span>SOC State: Active Defense &bull; Zero Incidents</span>
+        </div>
+        <div class="footer-geo">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span>Dubai, UAE (UTC+4) &bull; Global &amp; Remote Ready</span>
+        </div>
+      </div>
+
+      <!-- Col 2: Navigation & Engineering -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Navigation</h4>
+        <ul class="footer-links-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="investigations.html">Investigations <span class="nav-badge">17</span></a></li>
+          <li><a href="index.html#terminal"><span class="dock-icon">&gt;_</span> Interactive Terminal</a></li>
+          <li><a href="index.html#mitre">MITRE ATT&amp;CK Matrix</a></li>
+          <li><a href="architecture.html">Site Architecture &amp; Design</a></li>
+          <li><a href="contact.html">Contact &amp; Connect</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Verified Credentials -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Verification &amp; Standards</h4>
+        <ul class="footer-links-list">
+          <li>
+            <a href="https://www.credly.com/badges/1d1902d2-5a61-4795-b01a-6ee418bbfae1" target="_blank" rel="noopener noreferrer" class="verified-cred-link" title="Verify ISC2 CC on Credly">
+              <span class="verified-badge-icon">&#10003;</span>
+              <span>ISC2 CC Certified</span>
+              <span class="credly-arrow">&rarr;</span>
+            </a>
+          </li>
+          <li><span class="footer-static-item">Next-Gen Enterprise Firewalls</span></li>
+          <li><span class="footer-static-item">SIEM Multi-Tenant Triage</span></li>
+          <li><span class="footer-static-item">Sysmon &amp; EDR Correlation</span></li>
+          <li><span class="footer-static-item">Unsloth Fast-LoRA Offline AI</span></li>
+          <li><span class="footer-static-item">Zero-Trust Network Access</span></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Verified Channels -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Secure Channels</h4>
+        <ul class="footer-links-list">
+          <li>
+            <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
+              <span>LinkedIn Profile</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.credly.com/badges/1d1902d2-5a61-4795-b01a-6ee418bbfae1" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm4.2 13.3-3.2-1.9-3.2 1.9.8-3.7-2.8-2.5 3.8-.3 1.4-3.5 1.4 3.5 3.8.3-2.8 2.5.8 3.7Z"/></svg>
+              <span>Credly Official Badge</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+              <span>GitHub Projects</span>
+            </a>
+          </li>
+          <li>
+            <a href="mailto:sheikhsobanfayaz@gmail.com">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span>sheikhsobanfayaz@gmail.com</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Apple-Style Bottom Telemetry Strip -->
+    <div class="footer-bottom-bar">
+      <div class="footer-legal">
+        <span>&copy; 2026 Sheikh <strong>Soban</strong> Fayaz. Built with static-first architecture, zero telemetry, and vendor-neutral SecOps defense.</span>
+      </div>
+      <div class="footer-telemetry">
+        <span class="telemetry-chip">TLS 1.3</span>
+        <span class="telemetry-chip">SHA-256 Validated</span>
+        <button type="button" class="back-to-top-btn" id="backToTopBtn" aria-label="Scroll back to top">
+          <span>Top</span>
+          <span class="top-arrow">&uarr;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Theme Management
+function initThemeManager() {
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'dark';
+  }
+  function updateButtons(theme) {
+    document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+      const icon = btn.querySelector('.theme-icon') || btn;
+      icon.textContent = theme === 'dark' ? '☀' : '☾';
+      btn.setAttribute('aria-label', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode');
+      btn.setAttribute('title', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode');
+    });
+  }
+  function setTheme(newTheme) {
+    document.documentElement.setAttribute('data-theme', newTheme);
+    try {
+      localStorage.setItem('soban_theme', newTheme);
+    } catch(e) {}
+    updateButtons(newTheme);
+  }
+  updateButtons(getTheme());
+  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const current = getTheme();
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  });
+}
+
+// Mobile Hamburger Menu
+function initMobileMenu() {
+  const btn = document.getElementById('hamburgerBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
+// Back to Top Smooth Scroll
+function initBackToTop() {
+  const btn = document.getElementById('backToTopBtn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initThemeManager();
+  initMobileMenu();
+  initBackToTop();
+});
+</script>
+</body>
+</html>
