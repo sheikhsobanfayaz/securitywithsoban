@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,37 +9,33 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <div class="scroll-progress-bar"></div>
 <script>
-(function() {
-  try {
-    const saved = localStorage.getItem('soban_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', saved);
-  } catch(e) {}
-})();
+document.documentElement.setAttribute('data-theme', 'dark');
+try { localStorage.setItem('soban_theme', 'dark'); } catch(e) {}
 </script>
 <style>
 
 :root {
-  color-scheme: light;
-  --paper: #FAF8F5;
-  --surface: #FFFFFF;
-  --surface-elevated: #F5EFEB;
-  --ink: #1C1917;
-  --ink2: #44403C;
-  --mute: #78716C;
-  --hair: #E7E0D8;
-  --hair-hover: #D6CBC0;
-  --accent: #EA580C;
-  --accent-text: #C2410C;
-  --accent-soft: #FFEDD5;
-  --accent-glow: rgba(234, 88, 12, 0.18);
-  --emerald: #059669;
-  --emerald-soft: #D1FAE5;
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-  --card-shadow-hover: 0 16px 32px -8px rgba(234, 88, 12, 0.18);
-  --grid-color: rgba(234, 88, 12, 0.04);
-  --terminal-bg: #14151C;
+  color-scheme: dark;
+  --paper: #0B0C10;
+  --surface: #13141B;
+  --surface-elevated: #1B1D27;
+  --ink: #F9FAFB;
+  --ink2: #A1A1AA;
+  --mute: #71717A;
+  --hair: #232533;
+  --hair-hover: #35384D;
+  --accent: #F97316;
+  --accent-text: #FB923C;
+  --accent-soft: rgba(249, 115, 22, 0.12);
+  --accent-glow: rgba(249, 115, 22, 0.28);
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.15);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
+  --card-shadow-hover: 0 16px 36px -8px rgba(249, 115, 22, 0.25);
+  --grid-color: rgba(249, 115, 22, 0.035);
+  --terminal-bg: #0E0F15;
   --terminal-text: #F8FAFC;
-  --terminal-bar: #1E202C;
+  --terminal-bar: #181922;
 }
 
 [data-theme="dark"] {
@@ -1695,9 +1691,6 @@ main, .container, .hero, .sec, section, footer, .site-footer {
 
       <!-- Quick Actions -->
       <div class="nav-actions">
-        <button type="button" class="theme-toggle-btn icon-btn" aria-label="Toggle dark/light theme" title="Toggle Theme">
-          <span class="theme-icon">☾</span>
-        </button>
         <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="icon-btn linkedin-nav-btn" aria-label="LinkedIn Profile" title="LinkedIn Profile">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
         </a>
@@ -1944,33 +1937,10 @@ main, .container, .hero, .sec, section, footer, .site-footer {
 
 
 <script>
-// Theme Management
+// Theme Management - Locked to Dark Mode Default
 function initThemeManager() {
-  function getTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'dark';
-  }
-  function updateButtons(theme) {
-    document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
-      const icon = btn.querySelector('.theme-icon') || btn;
-      icon.textContent = theme === 'dark' ? '☀' : '☾';
-      btn.setAttribute('aria-label', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode');
-      btn.setAttribute('title', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode');
-    });
-  }
-  function setTheme(newTheme) {
-    document.documentElement.setAttribute('data-theme', newTheme);
-    try {
-      localStorage.setItem('soban_theme', newTheme);
-    } catch(e) {}
-    updateButtons(newTheme);
-  }
-  updateButtons(getTheme());
-  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const current = getTheme();
-      setTheme(current === 'dark' ? 'light' : 'dark');
-    });
-  });
+  document.documentElement.setAttribute('data-theme', 'dark');
+  try { localStorage.setItem('soban_theme', 'dark'); } catch(e) {}
 }
 
 // Mobile Hamburger Menu
