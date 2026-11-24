@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Investigations &amp; Lab Write-Ups | Sheikh Soban Fayaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+(function() {
+  function getInitialTheme() {
+    try {
+      const saved = localStorage.getItem('soban_theme');
+      if (saved) return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } catch (e) {
+      return 'dark';
+    }
+  }
+  const theme = getInitialTheme();
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+
+<style>
+
+:root {
+  color-scheme: light;
+  --paper: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-elevated: #F1F5F9;
+  --ink: #0F172A;
+  --ink2: #334155;
+  --mute: #64748B;
+  --hair: #E2E8F0;
+  --hair-hover: #CBD5E1;
+  --accent: #0284C7;
+  --accent-text: #0369A1;
+  --accent-soft: #E0F2FE;
+  --accent-glow: rgba(2, 132, 199, 0.18);
+  --emerald: #059669;
+  --emerald-soft: #D1FAE5;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 12px 24px -6px rgba(2, 132, 199, 0.15);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0A0F1D;
+  --surface: #111A2E;
+  --surface-elevated: #17233D;
+  --ink: #F8FAFC;
+  --ink2: #94A3B8;
+  --mute: #64748B;
+  --hair: #1E293B;
+  --hair-hover: #334155;
+  --accent: #38BDF8;
+  --accent-text: #38BDF8;
+  --accent-soft: rgba(56, 189, 248, 0.12);
+  --accent-glow: rgba(56, 189, 248, 0.25);
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.15);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 12px 28px -6px rgba(56, 189, 248, 0.22);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+/* Header & Nav */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hair);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 70px;
+}
+
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand strong {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #FFFFFF !important;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: #0284C7;
+  border-color: #0284C7;
+  box-shadow: 0 4px 14px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: #0284C7;
+  color: #FFFFFF !important;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Status Pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 9999px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  color: var(--accent-text);
+  margin-bottom: 24px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald);
+}
+
+/* Sections */
+.sec {
+  padding: 64px 0;
+  border-top: 1px solid var(--hair);
+}
+
+.sec-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.sec-head h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(24px, 3.5vw, 32px);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.sec-desc {
+  margin: 0;
+  color: var(--ink2);
+  font-size: 15.5px;
+  max-width: 680px;
+}
+
+/* Cards & Hover Effects */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Tags */
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--hair);
+  background: var(--surface-elevated);
+  color: var(--mute);
+}
+
+.project-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: var(--accent-text);
+  font-weight: 500;
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 29, 0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-box {
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  max-width: 840px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.modal-body h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  margin: 20px 0 8px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-body h4::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.modal-body p {
+  margin: 0 0 10px;
+  font-size: 14.5px;
+  color: var(--ink2);
+  line-height: 1.65;
+}
+
+.code-block {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 14px;
+  overflow-x: auto;
+  color: var(--ink);
+  white-space: pre-wrap;
+  margin: 12px 0;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 12px 18px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 120;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Footer */
+footer {
+  padding: 40px 0 54px;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--mute);
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--ink2);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+}
+
+@media (max-width: 820px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+    gap: 12px;
+  }
+  .nav-links {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+    overflow-x: auto;
+    padding-top: 6px;
+  }
+}
+
+.hub-hero {
+  padding: 56px 0 36px;
+}
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 24px 0 32px;
+}
+.filter-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.filter-btn.active {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-color: var(--accent);
+}
+.search-box {
+  width: 100%;
+  max-width: 440px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14.5px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color 0.15s ease;
+}
+.search-box:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.project-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.project-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  margin: 0 0 10px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+.project-card p {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink2);
+  line-height: 1.6;
+}
+@media (max-width: 820px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">Sheikh <strong>Soban</strong> Fayaz</a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="index.html" class="">Home</a>
+      <a href="investigations.html" class="active">Investigations (16)</a>
+      <a href="index.html#methodology">Methodology</a>
+      <a href="index.html#capabilities">Capabilities</a>
+      <a href="contact.html" class="">Contact &amp; Connect</a>
+    </nav>
+    <div class="nav-actions">
+      <button type="button" class="btn btn-sm theme-toggle-btn" aria-label="Toggle dark mode">☾ Dark</button>
+    </div>
+  </div>
+</header>
+
+
+<main class="container">
+  <section class="hub-hero">
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      <span>16 Technical Investigations · Network &amp; SOC Telemetry</span>
+    </div>
+    <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 4.5vw, 40px); letter-spacing: -0.02em; margin: 0 0 14px;">Investigations &amp; Lab Write-Ups</h1>
+    <p style="font-size: 17px; color: var(--ink2); max-width: 760px; line-height: 1.6; margin: 0;">
+      Real-world scenarios, triage workflows, analytical considerations, and forensic queries across Next-Gen Firewalls, Microsoft Sentinel, Netskope DLP, WAF, and endpoint EDR telemetry.
+    </p>
+
+    <div style="margin-top: 28px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <div class="filter-bar" style="margin: 0;">
+        <button type="button" class="filter-btn active" data-filter="all">All (16)</button>
+        <button type="button" class="filter-btn" data-filter="network">Network &amp; Perimeter (8)</button>
+        <button type="button" class="filter-btn" data-filter="siem">SIEM &amp; Detection (7)</button>
+        <button type="button" class="filter-btn" data-filter="ai">AI &amp; Automation (1)</button>
+      </div>
+      <input type="text" id="searchInput" class="search-box" placeholder="Search by tool, keyword, or indicator...">
+    </div>
+  </section>
+
+  <section style="padding-bottom: 80px;">
+    <div id="projectsGrid" class="projects-grid"></div>
+    <div id="emptyNotice" style="display: none; padding: 48px 0; text-align: center; color: var(--mute);">
+      No investigations matched your filter criteria. Try clearing your search query.
+    </div>
+  </section>
+</main>
+
+<div id="projectModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div>
+        <span id="modalCat" class="project-cat"></span>
+        <h3 id="modalTitle" style="font-size: 22px; font-family: 'Space Grotesk', sans-serif; margin: 4px 0 0;"></h3>
+      </div>
+      <button type="button" id="closeModalBtn" class="btn btn-sm" aria-label="Close modal">Close</button>
+    </div>
+    <div id="modalBody" class="modal-body"></div>
+  </div>
+</div>
+
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; color: var(--ink); margin-bottom: 4px;">Sheikh Soban Fayaz</div>
+        <div style="font-size: 13.5px; color: var(--mute);">MSSP SOC Analyst · ISC2 CC Certified · Network Security Defense</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://www.credly.com/users/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm4.2 13.3-3.2-1.9-3.2 1.9.8-3.7-2.8-2.5 3.8-.3 1.4-3.5 1.4 3.5 3.8.3-2.8 2.5.8 3.7Z"/></svg>
+          ISC2 CC Credly
+        </a>
+        <a href="https://github.com/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+          GitHub
+        </a>
+        <a href="mailto:sheikhsobanfayaz@gmail.com">sheikhsobanfayaz@gmail.com</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Sheikh Soban Fayaz · Cybersecurity &amp; SOC Analyst Portfolio</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">Dubai, UAE · Open to Remote &amp; Global Opportunities</span>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+function initThemeManager() {
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'dark';
+  }
+  function updateButtons(theme) {
+    document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+      btn.textContent = theme === 'dark' ? '☀ Light' : '☾ Dark';
+      btn.setAttribute('aria-label', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode');
+    });
+  }
+  function setTheme(newTheme) {
+    document.documentElement.setAttribute('data-theme', newTheme);
+    try {
+      localStorage.setItem('soban_theme', newTheme);
+    } catch(e) {}
+    updateButtons(newTheme);
+  }
+  updateButtons(getTheme());
+  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const current = getTheme();
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  });
+}
+
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.className = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function copyEmail(email) {
+  const target = email || 'sheikhsobanfayaz@gmail.com';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(target).then(() => showToast('Copied: ' + target)).catch(() => fallbackCopy(target));
+  } else {
+    fallbackCopy(target);
+  }
+}
+
+function fallbackCopy(text) {
+  const el = document.createElement('textarea');
+  el.value = text;
+  document.body.appendChild(el);
+  el.select();
+  try {
+    document.execCommand('copy');
+    showToast('Copied: ' + text);
+  } catch(e) {
+    showToast('Email: ' + text);
+  }
+  document.body.removeChild(el);
+}
+
+document.addEventListener('DOMContentLoaded', initThemeManager);
+</script>
+
+
+<script>
+const CASES_DATA = [{"id": "sentinel-c2-indicator", "category": "siem", "categoryLabel": "SIEM & Detection", "title": "Microsoft Sentinel Custom Network Indicator & Possible C2 Triage", "summary": "Correlating endpoint process network events with perimeter firewall disposition to validate custom threat intelligence C2 indicator alerts.", "tags": ["Microsoft Sentinel", "KQL", "Endpoint Telemetry", "C2 Detection", "Palo Alto Logs"], "scenario": "A Microsoft Sentinel high-severity incident flagged a custom network indicator for potential command-and-control (C2) communication. Telemetry recorded an internal workstation (workstation-alpha, IP 10.16.56.241) executing an msedge.exe process that initiated communication to an external document utility domain, accompanied by specific SHA-256 and SHA-1 file hashes in the incident context.", "steps": "1. Scoped the Sentinel incident, extracting affected host, authenticated user, initiating process name, external destination domain, internal IPs, and file hashes.\n2. Queried host-level endpoint network telemetry to evaluate whether the local operating system recorded a successful TCP connection or socket failure.\n3. Queried perimeter firewall logs (CommonSecurityLog) for the source IP and timestamp window, inspecting the DeviceAction field (allow, deny, or drop) to determine actual perimeter disposition.\n4. Audited SIEM events across all enterprise endpoints to establish if the custom indicator or external domain was observed on any other assets.\n5. Validated file hashes against cloud sandbox detonation reports and threat intelligence reputation databases to assess payload malice.\n6. Correlated timeline events to confirm whether subsequent lateral movement, persistence registry keys, or credential access occurred.", "analysis": "A common pitfall in SOC alert triage is assuming that a high-severity alert or an endpoint connection event equals an active compromise. In modern enterprise environments, host-level telemetry (such as Sysmon Event ID 3 or EDR NetworkConnect) describes what the client operating system attempted or observed locally. If an endpoint reports 'ConnectionSuccess', that only indicates the local TCP socket handshake initiated; it does not account for perimeter security controls.\n\nConversely, perimeter firewalls (such as Palo Alto or enterprise NGFWs logging via CommonSecurityLog) track stateful inspection and enforcement. An event with DeviceAction equal to 'deny' or 'drop' proves the traffic was blocked before leaving the perimeter, rendering an automated C2 callback harmless. Furthermore, indicators pointing to dual-use utility domains (such as online PDF conversion or file-sharing tools) frequently trigger custom threat intelligence rules when users interact with unapproved web utilities.\n\nRather than isolating the asset immediately based solely on an indicator match, the analyst must verify the exact URI, analyze DNS resolution history, inspect parent-child process relationships (e.g. browser vs unauthorized executable), evaluate payload hashes against cloud sandbox detonations, and determine if identical indicators appear across other enterprise nodes before making a defensible containment decision.", "valueDemonstrated": ["Correlation of SIEM alert context with endpoint and network evidence", "Clear analytical distinction between an alert trigger and confirmed compromise", "Deep log-interpretation understanding of endpoint socket events versus perimeter firewall DeviceAction disposition", "Structured multi-source scoping across internal endpoints to confirm incident blast radius", "Defensible, evidence-driven escalation and incident documentation under strict SLAs"], "outcomeStatus": "Investigation established that perimeter firewall controls blocked the outbound connection attempt (DeviceAction: drop). Compromise was not established from the evidence reviewed. The host remained operational under ongoing monitoring.", "snippet": "CommonSecurityLog\n| where TimeGenerated >= ago(24h)\n| where SourceIP == \"10.16.56.241\" or DestinationIP == \"10.16.56.241\"\n| project TimeGenerated, DeviceAction, SourceIP, DestinationIP, DestinationPort, Activity"}, {"id": "internal-portscan-analysis", "category": "network", "categoryLabel": "Network & Perimeter", "title": "Internal High-Volume Traffic & Port-Scan Investigation", "summary": "Distinguishing malicious internal network reconnaissance from automated backup sweeps, vulnerability scanners, and repetitive infrastructure polling.", "tags": ["Traffic Analysis", "Anomaly Detection", "Internal Network", "Port Scan", "Wireshark"], "scenario": "Network security telemetry flagged abnormal connection spikes across internal subnets. One host pair exhibited over 107,000 connection attempts between private IPv4 addresses (10.12.8.254 -> 10.12.7.114), while another internal node (10.32.116.175) recorded 3,913 connections to its gateway, with grouped telemetry indicating activity involving over 100 private IP addresses.", "steps": "1. Consolidated source and destination IP addresses, timestamps, and total connection volumes across the alert timeframe.\n2. Compared connection counts to identify statistical anomalies between persistent high-volume sessions and widespread multi-host activity.\n3. Distinguished point-to-point repetitive communication from multi-host horizontal sweeps (IP scanning) or multi-port vertical sweeps (port scanning).\n4. Identified data-visibility limitations in summarized SIEM tables and pivoted to granular raw flow logs to enumerate target destination ports.\n5. Analyzed TCP handshake flags (SYN-only vs established sessions vs RST packets) to measure connection success rates.\n6. Cross-referenced the initiating private IP with enterprise CMDB asset inventories to verify if the node was an authorized vulnerability scanner or backup server.", "analysis": "High connection volume across private IP subnets is a classic detection anomaly, but raw volume alone cannot distinguish malicious reconnaissance from routine enterprise operations. Modern enterprise networks frequently generate massive connection bursts due to legitimate infrastructure processes, including vulnerability assessment scanners (e.g., Qualys, Nessus), centralized backup agents (e.g., Veeam, Commvault) pulling VM snapshots, database replication jobs, and syslog collectors.\n\nTo isolate malicious port scans, the analyst must evaluate four dimensions:\n1. Target Diversity: Does the source attempt connections to a wide range of unique destination IPs (horizontal scan / IP sweep) or cycle through hundreds of sequential TCP/UDP ports on a single host (vertical port scan)?\n2. Timing and Distribution: Are connections spaced with randomized jitter (stealth scan) or concentrated in an aggressive multi-threaded flood?\n3. TCP Flag Analysis: Malicious scanners frequently send SYN packets without completing the three-way handshake (SYN stealth scan), resulting in elevated RST (reset) responses from closed ports, whereas valid services negotiate full connections.\n4. Data Visibility Constraints: High-level SIEM summary widgets often truncate connection records, hiding port scope. Pivoting to granular raw event logs is essential to confirm whether the target ports represent administrative services (SSH 22, RDP 3389, SMB 445) or ephemeral application sockets.", "valueDemonstrated": ["Recognition of unusual traffic volume and rapid baseline anomaly isolation", "Grouping and contextual comparison of internal network communications", "Identification of data-visibility limitations in summary dashboard widgets", "Avoidance of unsupported conclusions when port-level telemetry is incomplete", "Clear technical definition of next required evidence for triage closure"], "outcomeStatus": "Traffic was classified as high-volume internal administrative synchronization following asset inventory verification. Confirmed malicious scanning was ruled out, and monitoring thresholds were fine-tuned.", "snippet": "NetworkConnections\n| where TimeGenerated >= ago(4h)\n| where SourceIp in (\"10.12.8.254\", \"10.32.116.175\")\n| summarize ConnectionCount = count(), UniquePorts = dcount(DestinationPort), UniqueIPs = dcount(DestinationIp) by SourceIp, bin(TimeGenerated, 10m)"}, {"id": "netskope-dlp-justification", "category": "siem", "categoryLabel": "SIEM & Detection", "title": "Cloud DLP Policy Alert & User Justification Triage", "summary": "Investigating enterprise cloud DLP alerts in Microsoft Sentinel and validating employee business justifications against corporate data governance policies.", "tags": ["Netskope", "DLP", "Microsoft Sentinel", "Insider Threat", "Data Governance"], "scenario": "A cloud DLP policy alert (DLP_INTERNAL_Label_User_Justification) triggered in Microsoft Sentinel when an internal user attempted to upload restricted-label technical documents to an external cloud application. The user supplied a self-reported business justification string to bypass the client prompt.", "steps": "1. Scoped the investigation window in Microsoft Sentinel over a 7-day lookback using the Netskope_Alerts_CL dataset.\n2. Filtered records by the specific user account, destination cloud application, and exact DLP rule trigger.\n3. Parsed key fields: TimeGenerated, user_s, app_s, activity_s, action_s, justification_reason_s, and justification_type_s.\n4. Evaluated the user's supplied explanation against corporate information security handling policies and sanctioned vendor lists.\n5. Differentiated between self-asserted business rationale and verifiable managerial approval.\n6. Correlated the event with sensitive document repository audit logs to determine the exact data classification, sensitivity label, and file hash.\n7. Documented evidence and escalated to data governance officers for authorization verification.", "analysis": "Data Loss Prevention (DLP) alerts in hybrid enterprise environments frequently incorporate user prompting, allowing employees to submit business justification strings to override standard block policies. While user justifications provide immediate qualitative context, they represent self-reported assertions rather than verified administrative authorization.\n\nIn a structured SecOps investigation, the analyst must evaluate the justification within a zero-trust verification model:\n1. Entity & Role Alignment: Does the user's role require sharing sensitive documents externally, and does the stated business reason align with authorized corporate projects?\n2. Destination Classification: Is the destination cloud storage platform (e.g., personal Google Drive or Dropbox vs approved corporate OneDrive) sanctioned under the enterprise cloud governance policy?\n3. File Sensitivity & Cryptographic Evidence: Querying the Sentinel DLP repository allows the analyst to extract metadata regarding information protection labels, exact keyword matches, regular expression hits (e.g., PII, payment card data, intellectual property), and file hashes.\n4. Pattern Detection: Evaluating 7-day and 30-day historical lookbacks reveals whether the user exhibits recurring override patterns or escalating data exfiltration volumes prior to planned departures.\n\nA defensible investigation requires corroborating the user justification against formal ticket approvals and cross-referencing with manager confirmation before closing the alert as authorized.", "valueDemonstrated": ["Investigation of cloud DLP alerts using Microsoft Sentinel and KQL", "Filtering and scoping security telemetry by user, application, and policy trigger", "Deep understanding of user justification context versus independently verified authorization", "Preservation of evidentiary chain of custody in data-handling policy reviews", "Structured escalation workflows balancing business productivity with risk mitigation"], "outcomeStatus": "Investigation established that the upload targeted an unapproved personal repository. While user asserted project urgency, managerial authorization was absent. File transfer was revoked and referred for governance review.", "snippet": "Netskope_Alerts_CL\n| where TimeGenerated >= ago(7d)\n| where alert_name_s contains \"Label_User_Justification\"\n| project TimeGenerated, user_s, app_s, activity_s, action_s, justification_reason_s, justification_type_s"}, {"id": "waf-recon-investigation", "category": "network", "categoryLabel": "Network & Perimeter", "title": "WAF Alert Triage: Web Reconnaissance & Path Probing", "summary": "Analyzing Web Application Firewall (WAF) alerts targeting sensitive system paths, credentials, and configuration endpoints to separate automated noise from targeted attacks.", "tags": ["WAF", "Web Security", "Reconnaissance", "Vulnerability Defense", "HTTP Logs"], "scenario": "A Web Application Firewall (WAF) generated security alerts regarding multiple suspicious HTTP requests from external IP 34.26.159.138 targeting an enterprise web application. Telemetry revealed systematic attempts to access sensitive system files, configuration files, credentials, and administrative endpoints.", "steps": "1. Identified external source IP, targeted domain name, and internal web application server IP.\n2. Extracted the complete chronological sequence of requested URIs, HTTP methods, user-agent strings, and request headers.\n3. Classified probed targets into configuration files (e.g., .env, config.json), administrative panels, credential stores, and API endpoints.\n4. Assessed whether request cadence and path diversity indicated automated scanner tools or interactive manual discovery.\n5. Audited WAF action (block vs alert) and examined backend web server access logs to inspect HTTP response status codes (e.g., 404 Not Found vs 200 OK).\n6. Separated evidence of attempted resource probing from confirmed successful exploitation or data disclosure.\n7. Recommended dynamic IP blocklist enforcement at the edge firewall and tuned WAF signature sensitivity.", "analysis": "Web Application Firewall (WAF) logs capture a constant baseline of Internet-wide automated scanning. The critical analytical objective is distinguishing low-impact background noise from targeted application reconnaissance and identifying whether any probes succeeded.\n\nWhen an external actor systematically requests URIs such as '/.env', '/wp-config.php', '/phpmyadmin', or '/api/v1/auth/tokens', the attacker is actively seeking exposed environment configurations, database credentials, or unprotected API endpoints. The investigation must evaluate three core aspects:\n1. WAF Action vs Backend Response: An analyst must compare the WAF action (e.g., 'blocked', 'challenged', 'monitored') with the backend web server HTTP status code. If the WAF blocked the request (HTTP 403 / drop), perimeter defense held. However, if the probe bypassed filtering and the backend returned HTTP 200 with substantial response byte length, the analyst must investigate potential sensitive data disclosure or application configuration leakage.\n2. Path & Payload Diversity: High-volume uniform requests typically indicate automated vulnerability scanners (e.g., Nuclei, Nikto). In contrast, tailored payloads with contextual parameters, SQL injection syntax, or path traversal sequences indicate targeted manual probing.\n3. Infrastructure Reputation & Scope: Cross-referencing the external source IP against known hosting providers (AWS, DigitalOcean, Linode) and Tor exit nodes determines whether an immediate dynamic firewall block rule or geo-blocking policy should be applied to prevent subsequent exploitation phases.", "valueDemonstrated": ["Analysis of web application security alerts and reverse-proxy telemetry", "Recognition of automated reconnaissance patterns versus targeted application exploration", "Mapping external source vectors to target domain assets and internal server IPs", "Clear analytical separation of attempted access from successful application exploitation", "Evidence-driven documentation of full attack URIs for firewall perimeter blacklisting"], "outcomeStatus": "Confirmed automated vulnerability scanning activity. WAF blocked 100% of malicious requests (HTTP 403), with backend servers returning no sensitive data. Source IP was added to edge perimeter drop rules.", "snippet": "WAFEvents\n| where TimeGenerated >= ago(6h)\n| where client_ip == \"34.26.159.138\"\n| summarize RequestCount = count(), TargetPaths = make_set(request_uri) by client_ip, action, http_status\n| order by RequestCount desc"}, {"id": "ip-reputation-correlation", "category": "siem", "categoryLabel": "SIEM & Detection", "title": "Suspicious IP Reputation & Directional Egress Analysis", "summary": "Correlating threat intelligence IP reputation feeds with perimeter firewall logs to verify bidirectional communication and threat exposure.", "tags": ["Threat Intel", "Firewall Logs", "Traffic Analysis", "Egress Defense", "Palo Alto"], "scenario": "Threat intelligence feeds reported a cluster of five external IP addresses (69.5.169.66, 69.5.169.167, 69.5.169.242, 64.23.214.73, 193.163.125.165) sharing suspicious reputation characteristics. The investigation required determining whether internal enterprise assets had communicated with these addresses and establishing traffic direction and disposition.", "steps": "1. Consolidated all five external IP indicators into a unified search filter across network telemetry.\n2. Queried perimeter firewall logs to identify all inbound sessions targeting enterprise gateways and any outbound sessions originating internally.\n3. Examined traffic direction, destination ports, protocols, timestamps, and firewall disposition (allow, deny, drop).\n4. Evaluated reputation feed context, checking confidence scores, report freshness, and categorization tags.\n5. Differentiated reputation indicator matches from proof of malicious activity, checking for shared hosting or CDN noise.\n6. Queried host telemetry for communicating internal endpoints to determine initiating executable processes where traffic was permitted.", "analysis": "Threat intelligence feeds continuously generate reputation scores and malicious flags for IP addresses associated with botnets, phishing, or scanner infrastructure. However, treating an IP reputation score as an unquestionable verdict leads to false positives and unnecessary operational disruption.\n\nIn this investigation, analytical rigor requires dissecting the reputation context:\n1. IP Ownership and Dynamics: Is the flagged IP a dedicated bulletproof hosting server, or does it belong to a multi-tenant cloud provider (e.g., Cloudflare, Akamai, AWS CloudFront) where thousands of legitimate websites share the same egress IP?\n2. Directional Traffic Analysis: Inbound connection drops indicate that perimeter firewalls are successfully mitigating external probe traffic. Conversely, outbound sessions initiated from internal workstations to a flagged IP represent potential compromise, data exfiltration, or malware C2 callbacks.\n3. Stateful Handshake Validation: A packet log showing a SYN packet from an internal host does not prove data transfer; the analyst must inspect return ACK packets, session byte counters, and connection duration to confirm if a two-way TCP session was established.\n4. Host Process Correlation: If outbound communication was established, the internal IP must be immediately pivoted to endpoint EDR and Sysmon logs to identify the parent process, command-line arguments, and user identity responsible for opening the socket.", "valueDemonstrated": ["Indicator-based network investigation and threat intelligence triage", "Multi-source correlation of inbound probe drops versus internal outbound initiation", "Verification of threat intelligence freshness and provider ownership context", "Defensible analysis avoiding knee-jerk conclusions based solely on reputation flags", "Identification of precise follow-up host evidence required for true positive confirmation"], "outcomeStatus": "All inbound traffic from the five IPs was confirmed dropped at the perimeter firewall. No internal endpoints initiated outbound sessions to the indicators. Zero internal exposure confirmed.", "snippet": "CommonSecurityLog\n| where TimeGenerated >= ago(48h)\n| where DestinationIP in (\"69.5.169.66\", \"69.5.169.167\", \"69.5.169.242\", \"64.23.214.73\", \"193.163.125.165\")\n| project TimeGenerated, SourceIP, DestinationIP, DestinationPort, DeviceAction, Protocol"}, {"id": "multi-vpn-routing-conflict", "category": "network", "categoryLabel": "Network & Perimeter", "title": "Enterprise SSL VPN Route Interception & Packet Isolation", "summary": "Resolving 'No response from server' connection failures in multi-client VPN environments through dual-end packet captures and routing metric isolation.", "tags": ["SSL VPN", "Packet Analysis", "Routing", "Wireshark", "Network Troubleshooting"], "scenario": "Remote enterprise users experienced persistent 'No response from server' connection timeouts when attempting to connect to an enterprise SSL VPN gateway. The failure occurred specifically on workstations with multiple corporate or third-party VPN clients installed, requiring isolation of traffic paths and routing table precedence.", "steps": "1. Replicated the connection failure in a test environment with multiple active VPN clients.\n2. Audited the local Windows routing table (route print / netstat -rn) to identify interface metric conflicts and default route (0.0.0.0/0) overrides.\n3. Formulated a simultaneous packet capture strategy: Wireshark on the client workstation and packet monitor on the perimeter firewall WAN interface.\n4. Executed connection attempts while tracing whether SSL/TLS Client Hello packets egressed the physical adapter or were captured by a virtual adapter.\n5. Monitored firewall WAN interface to establish whether packets arrived at the appliance or were swallowed upstream.\n6. Configured explicit split-tunnel routing exclusions and interface metric priorities to prevent secondary tunnel encapsulation.\n7. Validated successful end-to-end SSL VPN tunnel establishment with concurrent client profiles.", "analysis": "In enterprise technical support and network security troubleshooting, connection errors like 'No response from server' during SSL VPN negotiation are frequently misdiagnosed as firewall daemon outages or ISP carrier drops. In modern remote-work environments where users may have multiple corporate, client, or third-party VPN clients installed (e.g., client SSL VPN, customer IPsec VPN, cloud zero-trust agents), routing table collisions represent a common root cause.\n\nWhen multiple VPN adapters coexist, each client may inject default routes (0.0.0.0/0) or conflicting subnet routes with aggressive interface metrics into the local Windows routing table. If an active secondary VPN claims default route precedence, outbound SSL VPN initiation packets directed toward the primary enterprise firewall WAN IP are encapsulated into the secondary tunnel and routed out through an alien gateway, preventing the packets from ever reaching the target firewall.\n\nThe definitive troubleshooting methodology requires simultaneous packet captures:\n1. Client-side Wireshark capture on the physical Wi-Fi/Ethernet adapter and virtual adapter to observe if SSL/TLS Client Hello packets leave the device.\n2. Firewall-side packet monitor on the WAN interface filtering on the client's public IP and SSL VPN port. If packets appear on the client interface but never arrive at the firewall, intermediate route interception or ISP port filtering is confirmed. Inspecting 'route print' / 'netstat -rn' reveals the metric collision, and configuring explicit split-tunnel routing exclusions restores direct communication.", "valueDemonstrated": ["Advanced VPN traffic-path troubleshooting and route-table fault isolation", "Understanding of multi-VPN routing collisions and virtual adapter metric inheritance", "Simultaneous dual-end packet capture analysis (client host vs perimeter firewall)", "Correlation of network-layer evidence to separate client routing issues from firewall service outages", "Formulation of reproducible test procedures and enterprise-wide configuration fixes"], "outcomeStatus": "Packet capture correlation confirmed that packets were intercepted by an active secondary VPN adapter. Adjusting route metric priorities and split-tunnel definitions completely resolved the connection timeouts.", "snippet": "# Dual capture analysis strategy\nClient: tcpdump -i any -n \"host <FIREWALL_WAN> and port 4433\"\nFirewall: capture interface X1 match proto 6 ip <CLIENT_PUBLIC_IP> port 4433"}, {"id": "ipsec-s2s-payload-error", "category": "network", "categoryLabel": "Network & Perimeter", "title": "Site-to-Site IPsec VPN Payload Negotiation Fault Isolation", "summary": "Diagnosing Phase 1 and Phase 2 proposal mismatches, traffic selector discrepancies, and cryptographic parameter symmetry in enterprise site-to-site tunnels.", "tags": ["IPsec", "Site-to-Site", "IKEv2", "Firewall Diagnostics", "Crypto Protocols"], "scenario": "An enterprise branch site-to-site IPsec VPN tunnel failed to negotiate, generating recurring 'payload processing error' events in the firewall diagnostic logs. The failure prevented inter-branch traffic between local and remote enterprise subnets, requiring cryptographic proposal auditing.", "steps": "1. Extracted timestamped IKE negotiation logs on both peer security gateways to isolate the failure to Phase 1 (IKE SA) or Phase 2 (Child / IPsec SA).\n2. Audited Phase 1 proposals: IKE version (IKEv1 vs IKEv2), Diffie-Hellman group, encryption cipher, hash algorithm, and peer ID authentication.\n3. Audited Phase 2 proposals: transform sets, encryption algorithms (AES-GCM vs AES-CBC), integrity algorithms, Perfect Forward Secrecy (PFS), and SA lifetimes.\n4. Audited traffic selectors and crypto access-lists on both gateways to verify that local and remote encryption domains were exact mirror images.\n5. Examined NAT-Traversal (NAT-T) and UDP encapsulation settings across intermediate upstream carrier routes.\n6. Resolved subnet definition discrepancies and verified tunnel stability across Phase 1 and Phase 2 re-keying intervals.", "analysis": "Enterprise site-to-site IPsec VPNs rely on a two-phase cryptographic handshake governed by strict parameter symmetry between peer gateways. When a tunnel fails with a generic 'payload processing error', relying on the error message alone is insufficient because payload errors can originate at multiple negotiation stages.\n\nIn Phase 1 (IKE SA), peers must agree on IKE version (IKEv1 vs IKEv2), Diffie-Hellman (DH) exchange group, encryption cipher (e.g., AES-CBC-256 vs AES-GCM-256), hashing algorithm (SHA-256 vs SHA-384), authentication type (Pre-Shared Key vs X.509 Certificate), and lifetime parameters. A single mismatched parameter triggers an immediate negotiation abort.\n\nIn Phase 2 (IPsec / Child SA), peers negotiate the security association transform set and validate traffic selectors (crypto access control lists). Traffic selector asymmetry is the single most frequent cause of payload processing errors: if Gateway A defines its local encryption domain as 10.100.0.0/24 and remote domain as 10.200.0.0/24, Gateway B must define its local domain as 10.200.0.0/24 and remote domain as 10.100.0.0/24. If Gateway B configures a broader subnet mask (such as 10.200.0.0/16) or an overlapping address object, the security association proposals clash, causing Phase 2 payload validation to fail. Debugging requires capturing timestamped IKE negotiation logs on both peer gateways, validating crypto ACL symmetry, and confirming Perfect Forward Secrecy (PFS) settings.", "valueDemonstrated": ["Site-to-site IPsec VPN architecture and protocol negotiation mastery", "Granular understanding of IKE Phase 1 and Phase 2 proposal compatibility parameters", "Methodical comparison of peer gateway cryptographic configurations and crypto ACLs", "Log-driven diagnostic isolation rather than reliance on ambiguous error strings", "Root-cause isolation of traffic selector subnet mask asymmetries"], "outcomeStatus": "Log analysis revealed a Phase 2 traffic selector mismatch where the remote gateway defined a /16 supernet while the local gateway expected /24 subnets. Aligning address objects resolved the error and restored tunnel stability.", "snippet": "# VPN diagnostic log inspection\nIKEv2 Phase 2 negotiation failed: NO_PROPOSAL_CHOSEN / Payload mismatch\nVerification: Validate LocalSubnet (10.100.0.0/24) <-> RemoteSubnet (10.200.0.0/24) matching crypto ACL"}, {"id": "firewall-config-persistence", "category": "network", "categoryLabel": "Network & Perimeter", "title": "Firewall Configuration Persistence & Firmware State Triage", "summary": "Isolating appliance firmware state transitions, non-volatile configuration commit issues, and dual-boot recovery partition rollback behaviors.", "tags": ["Firewall Firmware", "Configuration Audit", "Disaster Recovery", "Hardware", "Storage Integrity"], "scenario": "An enterprise branch edge firewall exhibited abnormal behavior wherein applied interface configurations and static route entries reverted to previous states following maintenance reboots and recovery procedures. The investigation evaluated firmware build history, storage commit mechanics, and partition persistence.", "steps": "1. Documented the exact operational sequence: configuration changes made, commit commands issued, and reboot timestamps.\n2. Compared device behavior between controlled software reboots (CLI reboot) and ungraceful hardware power-cycles.\n3. Audited active firmware versions and bootloader partition flags to verify whether dual-boot fallback was triggering.\n4. Preserved automated configuration backups and system state exports prior to any diagnostic state modifications.\n5. Reviewed vendor firmware release notes and errata for known non-volatile flash storage commit bugs or file system defects.\n6. Verified file system integrity via console diagnostics and confirmed persistent storage writes across reboot sequences.", "analysis": "Network appliances and Next-Gen Firewalls employ layered storage architectures to separate volatile runtime memory (RAM) from non-volatile flash storage and dual-boot recovery partitions. When an administrator observes that network interfaces, static routes, or security policies revert to prior states following a maintenance reboot, systematic diagnostic analysis is required to identify the root cause among three distinct failure modes:\n\n1. Volatile vs Non-Volatile Commit Failure: In appliance operating systems, configuration changes applied in the web management interface or CLI may modify the active running configuration without properly flushing transactional changes to the persistent flash file system. If a power disruption or hard reboot occurs before a formal commit, changes are lost.\n2. Dual-Boot Firmware Partition Rollback: Enterprise firewalls feature active and backup firmware partitions. If the appliance fails to boot the primary partition successfully within an automated watchdog timer, the hardware bootloader automatically falls back to the secondary firmware partition, which retains an earlier configuration state.\n3. Corrupt Non-Volatile Storage / Hardware Flash Degradation: Aging NAND flash memory can experience bad blocks or write-lock conditions, preventing new configuration files from being written to disk while returning success status to the UI. The methodical investigation approach involves generating manual configuration exports before rebooting, auditing bootloader partition flags via console CLI, comparing soft reboot versus hard power-cycle behavior, and verifying file system integrity checks.", "valueDemonstrated": ["Enterprise firewall firmware architecture and operating system troubleshooting", "Configuration persistence and non-volatile flash commit diagnostics", "Dual-boot partition behavior and watchdog recovery analysis", "Meticulous documentation of operational change sequences and recovery procedures", "Preservation of system backups and disaster-recovery safeguards during triage"], "outcomeStatus": "Isolated the issue to an uncommitted memory buffer caused by a known firmware build defect during rapid reboot cycles. Upgrading to a certified maintenance release restored full flash persistence.", "snippet": "# Firmware and flash persistence validation\nshow system status\nshow boot-summary\nexport preferences current-config.exp"}, {"id": "firewall-service-reachability", "category": "network", "categoryLabel": "Network & Perimeter", "title": "Firewall Management Access & NAT Reachability Diagnostics", "summary": "Differentiating listening service availability from firewall policy, zone assignment, and asymmetrical routing drops.", "tags": ["Firewall Rules", "NAT", "Service Triage", "Access Control", "Packet Monitor"], "scenario": "Administrative services and hosted internal resources were reported unreachable on specific management interfaces and TCP/UDP ports. The objective was to isolate whether the failure stemmed from daemon availability, interface management rules, NAT translation errors, or return-path routing drops.", "steps": "1. Verified destination IP address, TCP/UDP port numbers, and transport layer protocols.\n2. Verified whether the target service daemon was actively listening locally using socket inspection tools (netstat / ss).\n3. Traced incoming physical interface, source zone, and destination zone across firewall security access policies.\n4. Audited interface management access settings where the target was the firewall appliance itself.\n5. Reviewed NAT policies (Inbound NAT, Outbound NAT, Hairpin NAT) for missing address or port translation directives.\n6. Configured firewall packet monitor sessions to observe packet arrival, policy lookup verdict, NAT translation, and egress interface forwarding.\n7. Audited routing tables and gateway configurations to rule out asymmetric routing return-path drops.", "analysis": "When an administrative management service (e.g., HTTPS management, SSH, SNMP) or an internal published server behind an enterprise firewall is reported unreachable on a specific TCP or UDP port, inexperienced technicians often assume a faulty firewall access rule. However, reachability across an enterprise security gateway depends on an interconnected chain of five network layers:\n\n1. Local Service Daemon State: Is the target service actively bound and listening on the designated port (0.0.0.0 or the specific interface IP), and is local host firewall software (e.g., Windows Defender, iptables) permitting ingress?\n2. Firewall Ingress Zone & Access Rule: Does the inbound packet match a specific, unshadowed security policy allowing traffic from the source zone (WAN/LAN) to the destination zone with correct service port definitions?\n3. Network Address Translation (NAT): If the destination is an internal host behind a public IP, is Inbound NAT configured correctly, and is Hairpin / NAT Loopback present if accessed internally?\n4. Management Interface Binding: If managing the firewall appliance directly, is management access explicitly enabled on that physical interface in the zone configuration?\n5. Routing & Return-Path Asymmetry: Stateful firewalls drop return packets if outbound traffic egresses via a different interface or gateway without passing through the state table (asymmetric routing). The definitive fault isolation tool is the firewall's internal packet monitor: tracing ingress arrival, policy lookup verdict, NAT translation, and egress interface forwarding.", "valueDemonstrated": ["Firewall management access policy and service reachability triage", "TCP/UDP port availability analysis and socket-state verification", "Deep understanding of access rule shadowing and NAT translation dependencies", "Layered network troubleshooting separating server-side from firewall-side causes", "Packet monitor filtering for real-time drop reason diagnostics"], "outcomeStatus": "Packet monitor diagnostics revealed that inbound packets were permitted by access rules but dropped due to a missing Hairpin NAT rule for internal clients. Adding the NAT translation restored immediate reachability.", "snippet": "# Firewall packet monitor filter\nMonitor: Source IP [X.X.X.X] -> Destination IP [Y.Y.Y.Y] Port [8443, 443]\nStatus: Packet Received -> Policy Lookup [ALLOWED] -> NAT Translated -> Egress Interface [LAN]"}, {"id": "layer2-bridge-mac-spoof", "category": "network", "categoryLabel": "Network & Perimeter", "title": "Layer 2 Bridge Architecture & MAC-IP Anti-Spoofing Controls", "summary": "Troubleshooting transparent bridge interface security, member port inheritance, and Layer 2 ARP/IP spoofing prevention controls.", "tags": ["Layer 2", "Bridging", "Anti-Spoofing", "Network Architecture", "ARP Security"], "scenario": "A customer reported that security policies failed to bind properly on bridged interface segments, causing transparent bridge traffic to bypass expected MAC-IP Anti-Spoof protection. The investigation evaluated bridge architecture, member port inheritance, and Layer 2 security controls.", "steps": "1. Audited the firewall bridge architecture, comparing native transparent bridging with routed Layer 2 sub-interface pairings.\n2. Examined the operational relationship between parent bridge objects and underlying physical member interfaces.\n3. Verified whether security enforcement policies and anti-spoof filters must be bound directly to individual member interfaces rather than the logical bridge master.\n4. Audited ARP translation tables, MAC-address learning databases, and IP-MAC binding enforcement rules.\n5. Evaluated bridge type and firmware capabilities to determine whether observed behavior was by design or anomalous.\n6. Configured static IP-MAC binding lists and validated packet dropping for unauthorized spoofed ARP announcements.", "analysis": "Enterprise firewalls operating in Layer 2 transparent bridge mode insert deep packet inspection into an existing network broadcast domain without requiring IP subnet redesign. However, implementing security controls such as MAC-IP Anti-Spoofing and ARP inspection in bridged environments introduces complex architectural interdependencies.\n\nWhen two physical ports form a transparent bridge pair, the firewall creates a logical bridge object while retaining individual member interfaces. A common configuration mistake occurs when administrators assume that enabling anti-spoof protection on the parent bridge object automatically applies enforcement to all transit frames. In many enterprise firewall operating systems, MAC-IP binding tables and ARP anti-spoof policies must be explicitly associated with the individual physical member interfaces where packets enter the physical chassis. If member interfaces lack explicit binding, transit ARP requests and forged MAC packets bypass inspection.\n\nFurthermore, in virtualized environments with hypervisor switch uplinks, virtual machines frequently move between physical NICs or share MAC addresses (e.g., CARP, VRRP, HSRP, NLB). A rigid MAC-IP anti-spoof policy without static ARP table overrides or dynamic lease snooping can inadvertently drop legitimate high-availability heartbeat traffic. The troubleshooting workflow requires inspecting ARP translation tables, verifying member port inheritance, and isolating static IP-MAC bindings from dynamic DHCP leases.", "valueDemonstrated": ["Enterprise firewall Layer 2 bridge architecture and transparent inspection knowledge", "MAC-IP Anti-Spoofing control implementation and ARP inspection mechanics", "Configuration inheritance analysis between bridge objects and physical member ports", "Ability to isolate firmware architectural specifications from configuration errors", "Rigorous testing of Layer 2 broadcast containment and anti-spoof dropping"], "outcomeStatus": "Identified that anti-spoof controls were configured only on the logical bridge object; binding enforcement rules directly to physical member interfaces enabled full anti-spoof filtering as designed.", "snippet": "# Layer 2 bridge security enforcement\nBridge: Parent [Bridge_Pair_01] -> Members [Interface X2, Interface X3]\nSecurity Policy: MAC-IP Anti-Spoofing enabled on individual member interfaces with static ARP inspection"}, {"id": "physical-interface-diagnostics", "category": "network", "categoryLabel": "Network & Perimeter", "title": "Physical Ethernet Fault Isolation & Hardware Diagnostics", "summary": "Systematic methodology for diagnosing physical Ethernet port degradation, link negotiation failures, CRC errors, and interface hardware defects.", "tags": ["Hardware Diagnostics", "Ethernet", "Layer 1/2", "Physical Security", "Fault Isolation"], "scenario": "A suspected faulty physical Ethernet port on an enterprise perimeter firewall caused intermittent link flapping and packet drops, threatening high-availability cluster failover stability. The investigation required methodical isolation of cable plant, transceivers, and internal PHY electronics.", "steps": "1. Conducted physical loopback plug tests to isolate internal transceiver electronics and MAC controllers from external structured cabling.\n2. Audited physical interface LED indicators for link presence, activity cadence, speed indication, and duplex state.\n3. Verified auto-negotiation status, evaluating potential speed/duplex mismatches (e.g., 1 Gbps Full Duplex vs auto-negotiated Half Duplex).\n4. Inspected physical structured cabling and patch cords using calibrated cable testers.\n5. Tested link stability by connecting the interface to a known-good isolated switch port and cross-checking link-state persistence.\n6. Audited interface hardware error counters: CRC errors, collisions, runt frames, and input/output buffer drops.\n7. Evaluated port assignment and VLAN isolation configurations to rule out logical port group anomalies.", "analysis": "Physical layer (OSI Layer 1) degradation and Ethernet transceiver faults frequently manifest as subtle, intermittent application drops that are easily misdiagnosed as firewall policy or software bugs. When a firewall interface experiences flapping links, interface restarts, or degraded throughput, methodical physical fault isolation is necessary to prevent premature hardware replacement or erroneous configuration changes:\n\n1. Hardware Loopback Testing: Inserting a physical loopback plug (or bridging Tx and Rx on fiber transceivers) into the interface port isolates the internal physical layer electronics, MAC controller, and PHY chip from external structured cabling and remote switches. If link state stabilizes and zero errors accumulate under loopback, internal hardware is verified healthy.\n2. Interface LED State & Carrier Transitions: Observing amber/green LED cadence and checking console syslog for carrier loss reveals whether link loss correlates with cable physical movement, power fluctuations, or link-down negotiation events.\n3. Auto-Negotiation & Speed Mismatches: Duplex mismatches (e.g., one side forced to 1000 Mbps Full Duplex while the peer auto-negotiates to Half Duplex) do not prevent link establishment, but cause severe throughput degradation and late collisions during high-volume transfers.\n4. Error Counter Diagnostics: Analyzing interface hardware statistics provides definitive diagnostic clues: CRC errors point to damaged copper cabling or electromagnetic interference; runt frames indicate collision domain issues; input drops point to buffer exhaustion; and carrier errors indicate transceiver optic degradation.", "valueDemonstrated": ["Hardware fault isolation and physical Ethernet diagnostic methodology", "Structured use of physical loopback testing to isolate external cabling from internal PHY electronics", "Carrier signal, link-state negotiation, and auto-negotiation diagnostics", "Interface hardware statistics analysis (CRC errors, collisions, drops)", "Clear differentiation between physical layer faults and logical configuration issues"], "outcomeStatus": "Loopback testing confirmed the firewall internal PHY chip and port electronics were operating without errors. Replacing a degraded Cat6 patch cord eliminated all CRC errors and link flapping.", "snippet": "# Interface hardware statistics check\nInterface X0/X1 Status: 1000 Mbps Full Duplex, Auto-Negotiation: Resolved\nCounters: Rx Packets: 14,291,020 | Rx Errors: 0 | CRC Errors: 0 | Collisions: 0"}, {"id": "cloud-sandbox-edr-correlation", "category": "siem", "categoryLabel": "SIEM & Detection", "title": "Cloud Sandbox ATP & Endpoint EDR Telemetry Correlation", "summary": "Bridging cloud sandbox malware detonation alerts at the perimeter with endpoint EDR process trees and host telemetry to determine true compromise impact.", "tags": ["Cloud Sandbox", "ATP", "EDR", "Malware Defense", "Incident Response"], "scenario": "A perimeter Next-Gen Firewall cloud sandbox Advanced Threat Protection (ATP) service flagged a zero-day executable download as malicious. The alert required immediate investigation to determine whether the payload reached any enterprise workstation, whether execution occurred, and what containment actions were required.", "steps": "1. Retrieved the cloud sandbox behavioral detonation report: behavioral score, dropped files, registry modifications, process injection targets, and external C2 callback domains.\n2. Extracted cryptographic file hashes (SHA-256 and MD5) and queried enterprise EDR telemetry across all endpoints.\n3. Audited endpoint file event logs (DeviceFileEvents) to verify whether the binary was downloaded, saved to disk, or intercepted by local antivirus.\n4. Inspected host process execution trees (DeviceProcessEvents) to confirm whether any user or script executed the payload.\n5. Queried perimeter firewall egress logs for the external C2 callback IPs/domains identified in the sandbox report to determine if two-way communication occurred.\n6. Formulated containment actions: automated EDR host isolation and enterprise-wide perimeter indicator blocking.", "analysis": "Advanced Threat Protection (ATP) platforms utilize cloud-based sandbox environments to execute suspicious, previously unseen email attachments and web downloads in isolated virtual machines. While cloud sandbox analysis provides rich behavioral detonation telemetry (such as registry modifications, process injection, dropped payloads, and outbound C2 domains), a perimeter sandbox verdict alone does not answer the critical incident response question: Did the malicious payload execute on the target enterprise endpoint?\n\nCorrelating perimeter sandbox detections with host-level Endpoint Detection and Response (EDR) telemetry is essential to establish scope and impact:\n1. Hash Propagation & EDR Search: Upon receiving a malicious sandbox verdict, the analyst immediately queries enterprise EDR telemetry across all workstations for the file's SHA-256 hash.\n2. Process Tree & Lifecycle Analysis: If the file was written to disk, did the local antivirus/EDR agent quarantine it prior to execution, or did an end-user double-click the file? Inspecting parent-child process relationships (e.g. outlook.exe -> winword.exe -> powershell.exe) confirms execution attempts.\n3. Behavioral Indicator Matching: The analyst cross-references the registry keys and mutex names identified during sandbox detonation against host forensic artifacts.\n4. Perimeter Egress Validation: If host execution occurred, perimeter firewall traffic logs must be queried for the specific C2 callback IPs and domains identified in the sandbox report to confirm whether command-and-control communication was established or blocked.", "valueDemonstrated": ["Integration of perimeter cloud sandbox detonation telemetry with endpoint EDR investigations", "Layered threat validation connecting network gateway alerts to host-level process trees", "Rapid querying of cryptographic hashes across multi-tenant endpoint fleets", "Identification of malware execution lifecycle phases (delivery vs staging vs execution)", "Evidence-driven containment planning balancing threat eradication with operational uptime"], "outcomeStatus": "EDR telemetry verified the file was quarantined upon download by endpoint protection before execution occurred. No C2 callbacks were observed in firewall logs. Zero enterprise compromise confirmed.", "snippet": "DeviceFileEvents\n| where SHA256 == \"3a1b8c2d9e0f...\" or FileName endswith \".exe\"\n| join kind=inner (DeviceProcessEvents | where InitiatingProcessFileName in (\"outlook.exe\", \"msedge.exe\")) on DeviceId\n| project TimeGenerated, DeviceName, ActionType, FileName, FolderPath, ProcessCommandLine"}, {"id": "ssl-vpn-triage", "category": "network", "categoryLabel": "Network & Perimeter", "title": "Enterprise SSL VPN Brute-Force & Impossible Travel Correlation", "summary": "Correlating enterprise SSL VPN authentication logs with cloud identity sign-ins to separate credential-stuffing noise from legitimate account takeover.", "tags": ["Firewall", "SSL VPN", "SIEM", "Geo-IP", "Identity Defense"], "scenario": "A high volume of failed SSL VPN authentication attempts flooded multi-tenant perimeter firewalls, followed shortly by a single successful authentication from an atypical ASN and geographical region. The alert required rapid correlation to determine if user credentials had been compromised.", "steps": "1. Aggregated failed authentication attempts by source IP, destination firewall gateway, and targeted username across a 15-minute window.\n2. Extracted the successful login event, identifying source public IP, allocated internal VPN IP, timestamp, and user identity.\n3. Cross-referenced the successful login IP against known corporate VPN egress pools and Entra ID / Okta cloud identity sign-in records.\n4. Evaluated Geo-IP and velocity metrics to establish whether 'impossible travel' occurred relative to recent corporate logins.\n5. Monitored post-authentication internal network traffic for immediate lateral movement, internal port scanning, or Kerberos ticket requests.\n6. Initiated user session revocation and forced credential reset upon confirming unauthorized location access.", "analysis": "In an MSSP operating environment, managing multi-tenant perimeter firewalls means confronting relentless credential stuffing and brute-force campaigns targeting enterprise SSL VPN portals. Attackers deploy automated botnets distributed across hundreds of residential proxy ASNs, generating continuous streams of failed authentication alerts. The primary SecOps challenge is separating background noise from a legitimate account takeover.\n\nAnalyzing SSL VPN authentication logs requires cross-layer correlation:\n1. Authentication Velocity & User Spacing: An automated brute-force campaign typically attempts hundreds of common usernames against a single IP or cycles through passwords against valid accounts with fixed sleep intervals.\n2. Geo-IP & Impossible Travel Verification: When an SSL VPN login succeeds, the analyst must immediately compare the client IP geo-location and ASN with the user's recent cloud identity sign-in history (e.g. Entra ID / Okta logs). If a user authenticates to cloud email from London and connects to the corporate SSL VPN from an anomalous foreign ASN 20 minutes later, impossible travel indicates compromised credentials.\n3. Post-Authentication Network Egress: A successful VPN login is not the end of the investigation; it is the beginning. The analyst must inspect the internal IP assigned to the VPN session and monitor internal firewall traffic for immediate anomalous lateral movement, port scanning, or SMB/Kerberos enumeration targeting domain controllers.", "valueDemonstrated": ["Multi-source correlation linking firewall VPN logs with cloud identity providers", "Impossible travel and geographical velocity analysis", "Separation of automated credential stuffing noise from true positive compromise", "Post-authentication lateral movement monitoring in internal network traffic", "Rapid incident containment through session termination and credential revocation"], "outcomeStatus": "Confirmed unauthorized authentication via compromised credentials. The active SSL VPN session was terminated immediately, internal access was blocked, and MFA reset was enforced.", "snippet": "source_type=\"firewall_vpn\" action=\"login_failed\" | stats count by src_ip, user | where count > 15"}, {"id": "mssp-tuning", "category": "siem", "categoryLabel": "SIEM & Detection", "title": "Multi-Tenant SIEM False-Positive Tuning & Scoped Exclusions", "summary": "Systematic approach to auditing noisy recurring alerts in an MSSP queue and proposing scoped exclusions without creating security blind spots.", "tags": ["SIEM", "MITRE ATT&CK", "Tuning", "MSSP", "Sigma Rules"], "scenario": "Repeated benign vulnerability scanner and backup agent alerts flooded L1 shift queues across three client tenants in an MSSP environment, contributing to alert fatigue and threatening SLA commitments.", "steps": "1. Audited recurring alerts over a 14-day baseline, grouping by rule ID, affected host, and initiating parent process.\n2. Verified authorized maintenance schedules, scanner IP allocations, and backup software service accounts directly with client IT teams.\n3. Drafted tightly scoped exclusion criteria restricted to the intersection of signed binary hash, initiating source IP, and specific destination ports.\n4. Modeled proposed exclusion logic in Sigma / KQL rules and backtested against 30 days of historical telemetry to ensure no malicious activity was suppressed.\n5. Submitted formal change request documentation for client approval and monitored post-implementation queues for alert reduction.", "analysis": "In high-volume multi-tenant SOC operations, false positive alert floods degrade analyst alertness and jeopardize Service Level Agreements (SLAs). However, improper or overly broad rule suppression introduces severe blind spots that attackers can exploit. Tuning detection logic requires an audit methodology grounded in verifiable entity baselines:\n\n1. Repetition Clustering: Grouping recurring alerts over a 14-day or 30-day baseline reveals noisy rule patterns, frequently generated by scheduled vulnerability scanners, automated backup scripts, health monitors, or endpoint inventory tools.\n2. Verification of Legitimate Business Need: Before any exclusion is drafted, the analyst must verify asset ownership, confirmed maintenance windows, and authorized administrative scope directly with client IT stakeholders.\n3. Scoped Multi-Field Exclusions: Broad exclusions (such as whitelisting an entire IP subnet or disabling a rule outright) are strictly prohibited. A defensible detection rule exclusion must be scoped to the intersection of multiple immutable attributes: cryptographic file hash (SHA-256) of the authorized utility, verified parent process path, specific source IP, and target destination port.\n4. Detection Rule As Code & Versioning: Tuning changes should be modeled in Sigma or SIEM query repositories with clear comments, peer-reviewed by senior detection engineers, and monitored in staging for 72 hours before production commit.", "valueDemonstrated": ["Systematic false-positive reduction in multi-tenant MSSP detection environments", "Preservation of detection integrity through strict multi-attribute scoping", "Collaboration with client stakeholders to validate authorized IT administrative behavior", "Backtesting detection rule modifications against historical SIEM datasets", "Significant reduction in queue noise and SLA response time improvement"], "outcomeStatus": "Successfully tuned 4 high-frequency detection rules with zero degradation to coverage. Shift queue false positive volume dropped by 38% across affected client tenants.", "snippet": "title: Scoped Authorized Scanner Exclusion\nstatus: experimental\ndetection:\n  selection:\n    src_ip: [\"10.14.2.50\"]\n    user_agent|contains: \"AuthorizedScanner\""}, {"id": "ai-triage-harness", "category": "ai", "categoryLabel": "AI & Automation", "title": "Privacy-First Anonymized Log Summarizer & Triage Harness", "summary": "A privacy-first workflow for stripping client PII and internal IPs before using LLMs to decode obfuscated PowerShell and summarize technical timelines.", "tags": ["AI SecOps", "Python", "Sanitization", "Privacy", "Automation"], "scenario": "SOC analysts required rapid explanation of complex, base64-encoded PowerShell scripts and unfamiliar command-line executions without violating client data confidentiality or exposing internal network architectures to public AI platforms.", "steps": "1. Engineered a local client-side Python regex sanitizer to detect and replace client domain names, internal IP ranges, MAC addresses, and usernames with deterministic pseudonym tokens.\n2. Verified that obfuscated code structures, syntax trees, and execution logic remained intact while stripping sensitive metadata.\n3. Built structured system prompts instructing the language model to decode obfuscation and map tactics to the MITRE ATT&CK framework.\n4. Evaluated returned technical summaries and verified all extracted network indicators directly against raw SIEM telemetry.\n5. Integrated the sanitization pipeline into analyst triage workflows to accelerate script deobfuscation while maintaining compliance.", "analysis": "Large Language Models (LLMs) provide transformative speedups in decoding obfuscated PowerShell scripts, explaining complex regex patterns, and summarizing technical incident timelines. However, pasting raw enterprise security logs or incident tickets into public or untrusted AI tools presents severe data governance, regulatory, and confidentiality risks, potentially exposing client Personally Identifiable Information (PII), proprietary hostnames, internal IP address schemes, and active credentials.\n\nThe engineering solution is an automated, client-side privacy-first sanitization harness:\n1. Deterministic Tokenization: Before log data touches any language model API, a local Python pipeline processes raw strings through deterministic regex and hash replacements. Internal IPv4/IPv6 addresses, enterprise domain names, MAC addresses, employee emails, and usernames are replaced with consistent pseudonyms (e.g., '10.14.2.50' becomes '[INTERNAL_IP_1]').\n2. Context Preservation: Deterministic replacement ensures that the relational structure of the log is fully preserved, allowing the LLM to trace lateral movement from '[HOST_A]' to '[HOST_B]' without ever seeing actual hostnames.\n3. Zero-Trust Indicator Validation: Analysts must never treat LLM outputs as ground-truth evidence; every indicator, script analysis, and MITRE ATT&CK mapping produced by the model must be validated directly in the SIEM against raw telemetry before inclusion in formal client escalations.", "valueDemonstrated": ["Engineering privacy-first SecOps workflows combining AI automation with data governance", "Development of deterministic tokenization algorithms for structured log sanitization", "Rapid deobfuscation of complex malicious PowerShell and Linux one-liners", "Zero-trust validation of AI-generated threat intelligence against raw telemetry", "Significant reduction in L1 triage time for heavily obfuscated scripts"], "outcomeStatus": "The sanitization harness successfully processed over 200 obfuscated script samples with zero data leaks. Analyst triage time for obfuscated commands decreased by over 60%.", "snippet": "sanitized = re.sub(r\"\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b\", \"[INTERNAL_IP]\", raw_log)"}, {"id": "sysmon-c2", "category": "siem", "categoryLabel": "SIEM & Detection", "title": "Windows 4688 & Sysmon Event Correlation for C2 Beaconing", "summary": "Bridging network firewall outbound alerts to endpoint process creation events to confirm command-and-control callbacks and living-off-the-land binaries.", "tags": ["Sysmon", "Event 4688", "EDR", "Network", "Threat Hunting"], "scenario": "A perimeter firewall flagged recurring, periodic outbound HTTPS connections on a non-standard port (8443) from an internal accounting workstation. The alert required rapid host-level correlation to identify the initiating process and determine whether the host was compromised by C2 beaconing.", "steps": "1. Extracted source IP, destination IP, non-standard port, and exact beaconing timestamps from firewall alerts.\n2. Queried Sysmon Event ID 3 (Network Connection) on the originating workstation to map the outbound network socket to a specific ProcessId and ProcessGuid.\n3. Traced the owning ProcessGuid back to Windows Security Event ID 4688 and Sysmon Event ID 1 (Process Creation) to inspect the parent-child process tree.\n4. Audited command-line arguments, parent process execution paths, and cryptographic image hashes.\n5. Confirmed whether the initiating executable was a signed enterprise utility or an unapproved living-off-the-land binary.\n6. Formulated host containment and isolated the workstation via EDR to prevent lateral movement.", "analysis": "Modern malware and Advanced Persistent Threat (APT) actors frequently establish Command and Control (C2) communication using standard encrypted protocols (HTTPS over port 443) or non-standard high ports, making perimeter traffic alone insufficient to distinguish benign web browsing from malicious beaconing. To definitively confirm C2 callbacks, the SOC analyst must bridge network telemetry with endpoint process execution trees using Windows Security Event ID 4688 and Sysmon logs:\n\n1. Pivoting Network to Host: A perimeter firewall alert identifies a suspicious outbound connection with source IP, destination IP, and timestamp. Querying Sysmon Event ID 3 (Network Connection) on the originating host maps the network socket to an exact ProcessId, ProcessGuid, and Image path.\n2. Parent-Child Process Hierarchy: Inspecting Sysmon Event ID 1 / Security Event ID 4688 allows the analyst to trace the process ancestry. An outbound network connection spawned by 'msedge.exe' launched by 'explorer.exe' is typical user activity; however, an outbound connection initiated by 'rundll32.exe', 'powershell.exe', or an unsigned binary residing in 'C:\\Users\\Public\\' or 'C:\\ProgramData\\' indicates living-off-the-land execution or staged malware.\n3. Command-Line & Argument Analysis: Auditing full process command-line arguments reveals hidden parameters (e.g. '-enc' base64 scripts, memory injection flags, hidden window directives).\n4. Immediate Containment: Confirming an unauthorized executable initiating outbound beaconing justifies immediate host isolation via EDR and enterprise-wide perimeter domain blocking.", "valueDemonstrated": ["Pivoting seamlessly between network firewall session logs and endpoint Sysmon events", "Reconstructing parent-child process ancestry to detect living-off-the-land execution", "Command-line forensic analysis and decoding of obfuscated execution parameters", "Identification of command-and-control beaconing intervals in transport telemetry", "Rapid host containment and threat eradication under enterprise incident playbooks"], "outcomeStatus": "Correlation revealed an unsigned executable in a user temp directory communicating with an external C2 server. Host was isolated via EDR within 12 minutes of alert generation, preventing lateral movement.", "snippet": "EventID IN (1, 3, 4688) | where DestinationPort NOT IN (80, 443) | project TimeGenerated, Computer, Image, CommandLine, DestinationIp"}];
+let activeFilter = 'all';
+let searchQuery = '';
+
+function renderCases() {
+  const grid = document.getElementById('projectsGrid');
+  const empty = document.getElementById('emptyNotice');
+  
+  const filtered = CASES_DATA.filter(item => {
+    const matchesCategory = activeFilter === 'all' || item.category === activeFilter;
+    if (!matchesCategory) return false;
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    const titleMatch = item.title.toLowerCase().includes(q);
+    const summaryMatch = item.summary.toLowerCase().includes(q);
+    const tagMatch = item.tags.some(t => t.toLowerCase().includes(q));
+    const scenarioMatch = item.scenario.toLowerCase().includes(q);
+    return titleMatch || summaryMatch || tagMatch || scenarioMatch;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  grid.innerHTML = filtered.map(p => `
+    <article class="card project-card">
+      <div>
+        <span class="project-cat">${p.categoryLabel}</span>
+        <h3>${p.title}</h3>
+        <p>${p.summary}</p>
+        <div class="tag-row">
+          ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; border-top: 1px solid var(--hair); padding-top: 14px;">
+        <button type="button" class="btn btn-sm" data-id="${p.id}">Quick Preview</button>
+        <a href="./cases/${p.id}.html" class="btn btn-sm btn-primary">Read Deep-Dive Analysis &rarr;</a>
+      </div>
+    </article>
+  `).join('');
+
+  grid.querySelectorAll('[data-id]').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.getAttribute('data-id')));
+  });
+}
+
+function openModal(id) {
+  const p = CASES_DATA.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('modalCat').textContent = p.categoryLabel;
+  document.getElementById('modalTitle').textContent = p.title;
+
+  const analysisHtml = p.analysis.split('\n\n').map(para => `<p style="margin-bottom: 10px;">${para}</p>`).join('');
+  const valuesHtml = p.valueDemonstrated.map(v => `<li style="margin-bottom: 6px;">✔ ${v}</li>`).join('');
+
+  document.getElementById('modalBody').innerHTML = `
+    <h4>Scenario &amp; Context</h4>
+    <p>${p.scenario}</p>
+
+    <h4>Investigation Workflow</h4>
+    <p style="white-space: pre-line; background: var(--surface); padding: 14px; border-radius: 8px; border: 1px solid var(--hair); font-size: 14px; line-height: 1.7;">${p.steps}</p>
+
+    <h4>Technical Analysis &amp; Telemetry Insights</h4>
+    <div style="background: var(--surface); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 6px; font-size: 14px; line-height: 1.65; color: var(--ink2); margin-bottom: 16px;">
+      ${analysisHtml}
+    </div>
+
+    <h4>Diagnostic Query / Logic Sample</h4>
+    <div class="code-block">${p.snippet}</div>
+
+    <h4>Competencies &amp; Value Demonstrated</h4>
+    <ul style="list-style: none; padding-left: 0; font-size: 14px; color: var(--ink2); line-height: 1.6;">${valuesHtml}</ul>
+
+    <h4>Verified Incident Outcome</h4>
+    <div style="background: var(--accent-soft); border: 1px solid var(--accent); padding: 12px 16px; border-radius: 8px; font-size: 14px; color: var(--ink2);">
+      <strong>Disposition:</strong> ${p.outcomeStatus}
+    </div>
+
+    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--hair); display: flex; justify-content: flex-end;">
+      <a href="./cases/${p.id}.html" class="btn btn-primary">Open Full Standalone Page &rarr;</a>
+    </div>
+  `;
+  document.getElementById('projectModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('projectModal').classList.remove('open');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.getAttribute('data-filter');
+    renderCases();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value.trim();
+  renderCases();
+});
+
+document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+document.getElementById('projectModal').addEventListener('click', (e) => {
+  if (e.target.id === 'projectModal') closeModal();
+});
+
+document.addEventListener('DOMContentLoaded', renderCases);
+</script>
+</body>
+</html>

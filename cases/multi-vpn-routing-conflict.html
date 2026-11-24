@@ -7,33 +7,63 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+(function() {
+  function getInitialTheme() {
+    try {
+      const saved = localStorage.getItem('soban_theme');
+      if (saved) return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } catch (e) {
+      return 'dark';
+    }
+  }
+  const theme = getInitialTheme();
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+
 <style>
+
 :root {
   color-scheme: light;
-  --paper: #FFFFFF;
-  --surface: #F8FAFC;
+  --paper: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-elevated: #F1F5F9;
   --ink: #0F172A;
   --ink2: #334155;
-  --mute: #475569;
+  --mute: #64748B;
   --hair: #E2E8F0;
-  --accent: #2563EB;
-  --accent-text: #1E40AF;
-  --accent-soft: #EFF6FF;
-  --emerald: #0D9488;
+  --hair-hover: #CBD5E1;
+  --accent: #0284C7;
+  --accent-text: #0369A1;
+  --accent-soft: #E0F2FE;
+  --accent-glow: rgba(2, 132, 199, 0.18);
+  --emerald: #059669;
+  --emerald-soft: #D1FAE5;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 12px 24px -6px rgba(2, 132, 199, 0.15);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --paper: #0B0F17;
-  --surface: #111827;
+  --paper: #0A0F1D;
+  --surface: #111A2E;
+  --surface-elevated: #17233D;
   --ink: #F8FAFC;
-  --ink2: #CBD5E1;
-  --mute: #94A3B8;
+  --ink2: #94A3B8;
+  --mute: #64748B;
   --hair: #1E293B;
-  --accent: #3B82F6;
-  --accent-text: #60A5FA;
-  --accent-soft: #172554;
-  --emerald: #2DD4BF;
+  --hair-hover: #334155;
+  --accent: #38BDF8;
+  --accent-text: #38BDF8;
+  --accent-soft: rgba(56, 189, 248, 0.12);
+  --accent-glow: rgba(56, 189, 248, 0.25);
+  --emerald: #10B981;
+  --emerald-soft: rgba(16, 185, 129, 0.15);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 12px 28px -6px rgba(56, 189, 248, 0.22);
 }
 
 *, *::before, *::after {
@@ -53,24 +83,26 @@ body {
   color: var(--ink);
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.65;
   transition: background-color 0.2s ease, color 0.2s ease;
   -webkit-font-smoothing: antialiased;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 0 clamp(20px, 5vw, 48px);
 }
 
-/* Header */
+/* Header & Nav */
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 40;
+  z-index: 50;
   background: var(--paper);
   border-bottom: 1px solid var(--hair);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .nav-inner {
@@ -78,13 +110,13 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  height: 68px;
+  height: 70px;
 }
 
 .brand {
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 19px;
   letter-spacing: -0.02em;
   color: var(--ink);
   text-decoration: none;
@@ -93,12 +125,13 @@ body {
 
 .brand strong {
   font-weight: 700;
+  color: var(--accent);
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 8px;
 }
 
 .nav-links a {
@@ -106,55 +139,340 @@ body {
   font-weight: 500;
   color: var(--ink2);
   text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
 }
 
-.nav-links a:hover {
+.nav-links a:hover, .nav-links a.active {
   color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
   font-weight: 500;
-  padding: 8px 14px;
+  padding: 9px 16px;
   border-radius: 8px;
   border: 1px solid var(--hair);
   background: var(--surface);
   color: var(--ink);
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn:hover {
-  border-color: var(--ink2);
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
 }
 
 .btn-primary {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
+  background: var(--accent);
+  color: #FFFFFF !important;
+  border-color: var(--accent);
 }
 
 .btn-primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #FFFFFF;
+  background: #0284C7;
+  border-color: #0284C7;
+  box-shadow: 0 4px 14px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: #0284C7;
+  color: #FFFFFF !important;
 }
 
 .btn-sm {
-  padding: 5px 10px;
+  padding: 6px 12px;
   font-size: 12px;
 }
 
-/* Article */
-article.case-article {
-  padding: 40px 0 80px;
+/* Status Pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 9999px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  color: var(--accent-text);
+  margin-bottom: 24px;
 }
 
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald);
+}
+
+/* Sections */
+.sec {
+  padding: 64px 0;
+  border-top: 1px solid var(--hair);
+}
+
+.sec-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.sec-head h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(24px, 3.5vw, 32px);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.sec-desc {
+  margin: 0;
+  color: var(--ink2);
+  font-size: 15.5px;
+  max-width: 680px;
+}
+
+/* Cards & Hover Effects */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Tags */
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--hair);
+  background: var(--surface-elevated);
+  color: var(--mute);
+}
+
+.project-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: var(--accent-text);
+  font-weight: 500;
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 29, 0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-box {
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  max-width: 840px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.modal-body h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  margin: 20px 0 8px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-body h4::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.modal-body p {
+  margin: 0 0 10px;
+  font-size: 14.5px;
+  color: var(--ink2);
+  line-height: 1.65;
+}
+
+.code-block {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 14px;
+  overflow-x: auto;
+  color: var(--ink);
+  white-space: pre-wrap;
+  margin: 12px 0;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 12px 18px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 120;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Footer */
+footer {
+  padding: 40px 0 54px;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--mute);
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--ink2);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+}
+
+@media (max-width: 820px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+    gap: 12px;
+  }
+  .nav-links {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+    overflow-x: auto;
+    padding-top: 6px;
+  }
+}
+
+article.case-article {
+  padding: 48px 0 80px;
+}
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -165,70 +483,15 @@ article.case-article {
   text-decoration: none;
   margin-bottom: 24px;
 }
-
 .back-link:hover {
   text-decoration: underline;
 }
-
-.case-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.project-cat {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--accent-text);
-  font-weight: 500;
-  background: var(--accent-soft);
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-.tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 16px 0 28px;
-}
-
-.tag {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--hair);
-  background: var(--surface);
-  color: var(--mute);
-}
-
-h1.case-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(26px, 4vw, 36px);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  margin: 0 0 16px;
-}
-
-.case-summary {
-  font-size: 18px;
-  color: var(--ink2);
-  line-height: 1.6;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--hair);
-}
-
 .section-block {
   margin: 36px 0;
 }
-
 .section-block h2 {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 21px;
+  font-size: 20px;
   letter-spacing: -0.01em;
   margin: 0 0 14px;
   color: var(--ink);
@@ -236,7 +499,6 @@ h1.case-title {
   align-items: center;
   gap: 10px;
 }
-
 .section-block h2::before {
   content: "";
   display: inline-block;
@@ -245,50 +507,32 @@ h1.case-title {
   background: var(--accent);
   border-radius: 2px;
 }
-
-.analysis-card {
+.analysis-box {
   background: var(--surface);
   border: 1px solid var(--hair);
   border-left: 4px solid var(--accent);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 24px;
-  margin: 16px 0;
 }
-
-.analysis-card p {
+.analysis-box p {
   margin: 0 0 14px;
   color: var(--ink2);
-  font-size: 15.5px;
+  font-size: 15px;
+  line-height: 1.7;
 }
-
-.analysis-card p:last-child {
+.analysis-box p:last-child {
   margin-bottom: 0;
 }
-
-.workflow-steps {
+.workflow-box {
   white-space: pre-line;
   background: var(--surface);
   border: 1px solid var(--hair);
   border-radius: 10px;
-  padding: 20px 24px;
-  font-size: 15px;
+  padding: 22px 26px;
+  font-size: 14.5px;
   color: var(--ink2);
   line-height: 1.8;
 }
-
-.code-block {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  background: var(--surface);
-  border: 1px solid var(--hair);
-  border-radius: 8px;
-  padding: 16px;
-  overflow-x: auto;
-  color: var(--ink);
-  white-space: pre-wrap;
-  margin: 14px 0;
-}
-
 .value-list {
   list-style: none;
   padding: 0;
@@ -297,7 +541,6 @@ h1.case-title {
   flex-direction: column;
   gap: 10px;
 }
-
 .value-list li {
   display: flex;
   align-items: flex-start;
@@ -305,109 +548,82 @@ h1.case-title {
   font-size: 15px;
   color: var(--ink2);
 }
-
 .value-list li::before {
   content: "✔";
   color: var(--emerald);
   font-size: 14px;
   margin-top: 2px;
 }
-
-.outcome-box {
+.outcome-callout {
   background: var(--accent-soft);
   border: 1px solid var(--accent);
   border-radius: 10px;
-  padding: 20px;
-  margin: 20px 0;
+  padding: 22px;
 }
-
-.outcome-box h3 {
+.outcome-callout h3 {
   margin: 0 0 8px;
   font-size: 16px;
   color: var(--accent-text);
   font-family: 'Space Grotesk', sans-serif;
 }
-
-.outcome-box p {
+.outcome-callout p {
   margin: 0;
   font-size: 15px;
   color: var(--ink2);
 }
-
-.article-nav {
+.case-footer-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-top: 50px;
+  margin-top: 48px;
   padding-top: 28px;
   border-top: 1px solid var(--hair);
   flex-wrap: wrap;
 }
-
-footer {
-  padding: 32px 0 48px;
-  border-top: 1px solid var(--hair);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13.5px;
-  color: var(--mute);
-}
-
-@media (max-width: 680px) {
-  .nav-inner {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 12px 0;
-  }
-  .article-nav {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
 </style>
 </head>
 <body>
+
 <header class="site-header">
   <div class="container nav-inner">
     <a href="../index.html" class="brand">Sheikh <strong>Soban</strong> Fayaz</a>
     <nav class="nav-links" aria-label="Primary navigation">
-      <a href="../index.html#experience">Background</a>
+      <a href="../index.html" class="">Home</a>
+      <a href="../investigations.html" class="active">Investigations (16)</a>
       <a href="../index.html#methodology">Methodology</a>
-      <a href="../index.html#projects">Write-Ups</a>
-      <a href="../index.html#stack">Stack</a>
-      <a href="../index.html#contact">Contact</a>
+      <a href="../index.html#capabilities">Capabilities</a>
+      <a href="../contact.html" class="">Contact &amp; Connect</a>
     </nav>
-    <button type="button" id="themeToggle" class="btn btn-sm" aria-label="Toggle dark mode">Dark Mode</button>
+    <div class="nav-actions">
+      <button type="button" class="btn btn-sm theme-toggle-btn" aria-label="Toggle dark mode">☾ Dark</button>
+    </div>
   </div>
 </header>
 
+
 <main class="container">
   <article class="case-article">
-    <a href="../index.html#projects" class="back-link">&larr; Back to All Investigations &amp; Write-Ups</a>
+    <a href="../investigations.html" class="back-link">&larr; Back to All 16 Investigations</a>
     
-    <div class="case-meta">
+    <div>
       <span class="project-cat">Network & Perimeter</span>
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mute);">Technical Case Study</span>
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4vw, 36px); letter-spacing: -0.02em; margin: 8px 0 14px; line-height: 1.25;">Enterprise SSL VPN Route Interception & Packet Isolation</h1>
+      <p style="font-size: 18px; color: var(--ink2); line-height: 1.6; margin-bottom: 24px;">Resolving 'No response from server' connection failures in multi-client VPN environments through dual-end packet captures and routing metric isolation.</p>
     </div>
 
-    <h1 class="case-title">Enterprise SSL VPN Route Interception & Packet Isolation</h1>
-    <p class="case-summary">Resolving 'No response from server' connection failures in multi-client VPN environments through dual-end packet captures and routing metric isolation.</p>
-
-    <div class="tag-row">
+    <div class="tag-row" style="margin-bottom: 32px;">
       <span class="tag">SSL VPN</span><span class="tag">Packet Analysis</span><span class="tag">Routing</span><span class="tag">Wireshark</span><span class="tag">Network Troubleshooting</span>
     </div>
 
     <div class="section-block">
       <h2>Incident Scenario &amp; Environmental Context</h2>
-      <p style="font-size: 15.5px; color: var(--ink2);">Remote enterprise users experienced persistent 'No response from server' connection timeouts when attempting to connect to an enterprise SSL VPN gateway. The failure occurred specifically on workstations with multiple corporate or third-party VPN clients installed, requiring isolation of traffic paths and routing table precedence.</p>
+      <p style="font-size: 15.5px; color: var(--ink2); line-height: 1.7;">Remote enterprise users experienced persistent 'No response from server' connection timeouts when attempting to connect to an enterprise SSL VPN gateway. The failure occurred specifically on workstations with multiple corporate or third-party VPN clients installed, requiring isolation of traffic paths and routing table precedence.</p>
     </div>
 
     <div class="section-block">
       <h2>Investigation Workflow</h2>
-      <div class="workflow-steps">1. Replicated the connection failure in a test environment with multiple active VPN clients.
+      <div class="workflow-box">1. Replicated the connection failure in a test environment with multiple active VPN clients.
 2. Audited the local Windows routing table (route print / netstat -rn) to identify interface metric conflicts and default route (0.0.0.0/0) overrides.
 3. Formulated a simultaneous packet capture strategy: Wireshark on the client workstation and packet monitor on the perimeter firewall WAN interface.
 4. Executed connection attempts while tracing whether SSL/TLS Client Hello packets egressed the physical adapter or were captured by a virtual adapter.
@@ -418,7 +634,7 @@ footer {
 
     <div class="section-block">
       <h2>Technical Analysis &amp; Telemetry Insights</h2>
-      <div class="analysis-card">
+      <div class="analysis-box">
         <p>In enterprise technical support and network security troubleshooting, connection errors like 'No response from server' during SSL VPN negotiation are frequently misdiagnosed as firewall daemon outages or ISP carrier drops. In modern remote-work environments where users may have multiple corporate, client, or third-party VPN clients installed (e.g., client SSL VPN, customer IPsec VPN, cloud zero-trust agents), routing table collisions represent a common root cause.</p><p>When multiple VPN adapters coexist, each client may inject default routes (0.0.0.0/0) or conflicting subnet routes with aggressive interface metrics into the local Windows routing table. If an active secondary VPN claims default route precedence, outbound SSL VPN initiation packets directed toward the primary enterprise firewall WAN IP are encapsulated into the secondary tunnel and routed out through an alien gateway, preventing the packets from ever reaching the target firewall.</p><p>The definitive troubleshooting methodology requires simultaneous packet captures:
 1. Client-side Wireshark capture on the physical Wi-Fi/Ethernet adapter and virtual adapter to observe if SSL/TLS Client Hello packets leave the device.
 2. Firewall-side packet monitor on the WAN interface filtering on the client's public IP and SSL VPN port. If packets appear on the client interface but never arrive at the firewall, intermediate route interception or ISP port filtering is confirmed. Inspecting 'route print' / 'netstat -rn' reveals the metric collision, and configuring explicit split-tunnel routing exclusions restores direct communication.</p>
@@ -441,51 +657,117 @@ Firewall: capture interface X1 match proto 6 ip <CLIENT_PUBLIC_IP> port 4433</di
 
     <div class="section-block">
       <h2>Incident Outcome &amp; Verification Status</h2>
-      <div class="outcome-box">
+      <div class="outcome-callout">
         <h3>Verified Disposition</h3>
         <p>Packet capture correlation confirmed that packets were intercepted by an active secondary VPN adapter. Adjusting route metric priorities and split-tunnel definitions completely resolved the connection timeouts.</p>
       </div>
     </div>
 
-    <div class="article-nav">
-      <a href="../index.html#projects" class="btn">&larr; Return to All Write-Ups</a>
-      <a href="../index.html#contact" class="btn btn-primary">Discuss This Case Study &rarr;</a>
+    <div class="case-footer-nav">
+      <a href="../investigations.html" class="btn">&larr; View All Investigations</a>
+      <a href="../contact.html" class="btn btn-primary">Discuss This Investigation &rarr;</a>
     </div>
   </article>
-
-  <footer>
-    <span>Sheikh Soban Fayaz · Security Operations Portfolio</span>
-    <span style="font-family: 'IBM Plex Mono', monospace;">ISC2 CC · Network &amp; SOC</span>
-  </footer>
 </main>
 
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; color: var(--ink); margin-bottom: 4px;">Sheikh Soban Fayaz</div>
+        <div style="font-size: 13.5px; color: var(--mute);">MSSP SOC Analyst · ISC2 CC Certified · Network Security Defense</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://www.credly.com/users/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm4.2 13.3-3.2-1.9-3.2 1.9.8-3.7-2.8-2.5 3.8-.3 1.4-3.5 1.4 3.5 3.8.3-2.8 2.5.8 3.7Z"/></svg>
+          ISC2 CC Credly
+        </a>
+        <a href="https://github.com/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+          GitHub
+        </a>
+        <a href="mailto:sheikhsobanfayaz@gmail.com">sheikhsobanfayaz@gmail.com</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Sheikh Soban Fayaz · Cybersecurity &amp; SOC Analyst Portfolio</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">Dubai, UAE · Open to Remote &amp; Global Opportunities</span>
+    </div>
+  </div>
+</footer>
+
+
 <script>
-function applyTheme(theme) {
-  const btn = document.getElementById('themeToggle');
-  if (theme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    btn.textContent = 'Light Mode';
-  } else {
-    document.documentElement.removeAttribute('data-theme');
-    btn.textContent = 'Dark Mode';
+function initThemeManager() {
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'dark';
   }
-  try {
-    localStorage.setItem('soban_theme', theme);
-  } catch (e) {}
+  function updateButtons(theme) {
+    document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+      btn.textContent = theme === 'dark' ? '☀ Light' : '☾ Dark';
+      btn.setAttribute('aria-label', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode');
+    });
+  }
+  function setTheme(newTheme) {
+    document.documentElement.setAttribute('data-theme', newTheme);
+    try {
+      localStorage.setItem('soban_theme', newTheme);
+    } catch(e) {}
+    updateButtons(newTheme);
+  }
+  updateButtons(getTheme());
+  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const current = getTheme();
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  });
 }
 
-document.getElementById('themeToggle').addEventListener('click', () => {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  applyTheme(isDark ? 'light' : 'dark');
-});
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.className = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
 
-(function() {
-  let saved = 'light';
+function copyEmail(email) {
+  const target = email || 'sheikhsobanfayaz@gmail.com';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(target).then(() => showToast('Copied: ' + target)).catch(() => fallbackCopy(target));
+  } else {
+    fallbackCopy(target);
+  }
+}
+
+function fallbackCopy(text) {
+  const el = document.createElement('textarea');
+  el.value = text;
+  document.body.appendChild(el);
+  el.select();
   try {
-    saved = localStorage.getItem('soban_theme') || 'light';
-  } catch (e) {}
-  applyTheme(saved);
-})();
+    document.execCommand('copy');
+    showToast('Copied: ' + text);
+  } catch(e) {
+    showToast('Email: ' + text);
+  }
+  document.body.removeChild(el);
+}
+
+document.addEventListener('DOMContentLoaded', initThemeManager);
 </script>
+
 </body>
 </html>
