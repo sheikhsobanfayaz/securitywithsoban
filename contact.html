@@ -28,42 +28,46 @@
 
 :root {
   color-scheme: light;
-  --paper: #F8FAFC;
+  --paper: #FAF8F5;
   --surface: #FFFFFF;
-  --surface-elevated: #F1F5F9;
-  --ink: #0F172A;
-  --ink2: #334155;
-  --mute: #64748B;
-  --hair: #E2E8F0;
-  --hair-hover: #CBD5E1;
-  --accent: #0284C7;
-  --accent-text: #0369A1;
-  --accent-soft: #E0F2FE;
-  --accent-glow: rgba(2, 132, 199, 0.18);
+  --surface-elevated: #F5EFEB;
+  --ink: #1C1917;
+  --ink2: #44403C;
+  --mute: #78716C;
+  --hair: #E7E0D8;
+  --hair-hover: #D6CBC0;
+  --accent: #EA580C;
+  --accent-text: #C2410C;
+  --accent-soft: #FFEDD5;
+  --accent-glow: rgba(234, 88, 12, 0.18);
+  --accent-gradient: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
   --emerald: #059669;
   --emerald-soft: #D1FAE5;
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-  --card-shadow-hover: 0 12px 24px -6px rgba(2, 132, 199, 0.15);
+  --card-shadow-hover: 0 16px 32px -8px rgba(234, 88, 12, 0.18);
+  --ambient-glow: radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.09) 0%, transparent 60%);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --paper: #0A0F1D;
-  --surface: #111A2E;
-  --surface-elevated: #17233D;
-  --ink: #F8FAFC;
-  --ink2: #94A3B8;
-  --mute: #64748B;
-  --hair: #1E293B;
-  --hair-hover: #334155;
-  --accent: #38BDF8;
-  --accent-text: #38BDF8;
-  --accent-soft: rgba(56, 189, 248, 0.12);
-  --accent-glow: rgba(56, 189, 248, 0.25);
+  --paper: #0B0C10;
+  --surface: #13141B;
+  --surface-elevated: #1B1D27;
+  --ink: #F9FAFB;
+  --ink2: #A1A1AA;
+  --mute: #71717A;
+  --hair: #232533;
+  --hair-hover: #35384D;
+  --accent: #F97316;
+  --accent-text: #FB923C;
+  --accent-soft: rgba(249, 115, 22, 0.12);
+  --accent-glow: rgba(249, 115, 22, 0.28);
+  --accent-gradient: linear-gradient(135deg, #FB923C 0%, #F97316 100%);
   --emerald: #10B981;
   --emerald-soft: rgba(16, 185, 129, 0.15);
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --card-shadow-hover: 0 12px 28px -6px rgba(56, 189, 248, 0.22);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
+  --card-shadow-hover: 0 16px 36px -8px rgba(249, 115, 22, 0.25);
+  --ambient-glow: radial-gradient(circle at 50% -10%, rgba(249, 115, 22, 0.16) 0%, transparent 65%);
 }
 
 *, *::before, *::after {
@@ -80,6 +84,9 @@ body {
   margin: 0;
   padding: 0;
   background: var(--paper);
+  background-image: var(--ambient-glow);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--ink);
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
@@ -94,15 +101,15 @@ body {
   padding: 0 clamp(20px, 5vw, 48px);
 }
 
-/* Header & Nav */
+/* Header & Hamburger Navigation */
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 60;
   background: var(--paper);
   border-bottom: 1px solid var(--hair);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .nav-inner {
@@ -110,7 +117,8 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  height: 70px;
+  height: 72px;
+  position: relative;
 }
 
 .brand {
@@ -128,23 +136,23 @@ body {
   color: var(--accent);
 }
 
-.nav-links {
+.desktop-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-.nav-links a {
+.desktop-nav a {
   font-size: 14px;
   font-weight: 500;
   color: var(--ink2);
   text-decoration: none;
-  padding: 7px 14px;
+  padding: 7px 13px;
   border-radius: 8px;
   transition: all 0.15s ease;
 }
 
-.nav-links a:hover, .nav-links a.active {
+.desktop-nav a:hover, .desktop-nav a.active {
   color: var(--accent);
   background: var(--accent-soft);
 }
@@ -152,9 +160,118 @@ body {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
+/* Hamburger Button */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hamburger-btn:hover {
+  border-color: var(--accent);
+}
+
+.hamburger-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background-color: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+.hamburger-btn.open .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger-btn.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-btn.open .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile Dropdown Menu */
+.mobile-menu {
+  display: none;
+  position: absolute;
+  top: 72px;
+  left: 0;
+  right: 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hair);
+  padding: 20px 24px 28px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  z-index: 55;
+}
+
+.mobile-menu.open {
+  display: block;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.mobile-nav-links a {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 11px 16px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  transition: all 0.15s ease;
+}
+
+.mobile-nav-links a:hover, .mobile-nav-links a.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.mobile-menu-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+}
+
+@media (max-width: 820px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .hamburger-btn {
+    display: flex !important;
+  }
+}
+
+/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -184,18 +301,18 @@ body {
   background: var(--accent);
   color: #FFFFFF !important;
   border-color: var(--accent);
+  box-shadow: 0 4px 12px var(--accent-glow);
 }
 
 .btn-primary:hover {
-  background: #0284C7;
-  border-color: #0284C7;
-  box-shadow: 0 4px 14px var(--accent-glow);
+  background: #C2410C;
+  border-color: #C2410C;
+  box-shadow: 0 6px 20px var(--accent-glow);
   transform: translateY(-1px);
 }
 
 [data-theme="dark"] .btn-primary:hover {
-  background: #0284C7;
-  color: #FFFFFF !important;
+  background: #EA580C;
 }
 
 .btn-sm {
@@ -222,13 +339,13 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--emerald);
-  box-shadow: 0 0 8px var(--emerald);
+  background-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
 }
 
 /* Sections */
 .sec {
-  padding: 64px 0;
+  padding: 68px 0;
   border-top: 1px solid var(--hair);
 }
 
@@ -254,9 +371,10 @@ body {
   color: var(--ink2);
   font-size: 15.5px;
   max-width: 680px;
+  line-height: 1.6;
 }
 
-/* Cards & Hover Effects */
+/* ReactBits Spotlight Card */
 .card {
   background: var(--surface);
   border: 1px solid var(--hair);
@@ -264,12 +382,34 @@ body {
   padding: 24px;
   box-shadow: var(--card-shadow);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .card:hover {
   border-color: var(--accent);
   transform: translateY(-3px);
   box-shadow: var(--card-shadow-hover);
+}
+
+.card.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--accent-soft), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card.spotlight:hover::after {
+  opacity: 1;
+}
+
+.card > * {
+  position: relative;
+  z-index: 2;
 }
 
 /* Tags */
@@ -302,17 +442,31 @@ body {
   margin-bottom: 8px;
 }
 
+/* Code Block */
+.code-block {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  padding: 14px;
+  overflow-x: auto;
+  color: var(--ink);
+  white-space: pre-wrap;
+  margin: 12px 0;
+}
+
 /* Modal */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(10, 15, 29, 0.75);
+  background: rgba(11, 12, 16, 0.8);
   display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
   z-index: 100;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
 }
 
 .modal-backdrop.open {
@@ -328,7 +482,7 @@ body {
   max-height: 88vh;
   overflow-y: auto;
   padding: 32px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
 }
 
 .modal-top {
@@ -367,19 +521,6 @@ body {
   line-height: 1.65;
 }
 
-.code-block {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12.5px;
-  background: var(--surface);
-  border: 1px solid var(--hair);
-  border-radius: 8px;
-  padding: 14px;
-  overflow-x: auto;
-  color: var(--ink);
-  white-space: pre-wrap;
-  margin: 12px 0;
-}
-
 /* Toast */
 .toast {
   position: fixed;
@@ -405,7 +546,7 @@ body {
 
 /* Footer */
 footer {
-  padding: 40px 0 54px;
+  padding: 44px 0 56px;
   border-top: 1px solid var(--hair);
   display: flex;
   flex-direction: column;
@@ -453,23 +594,6 @@ footer {
   border-top: 1px solid var(--hair);
 }
 
-@media (max-width: 820px) {
-  .nav-inner {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 12px 0;
-    gap: 12px;
-  }
-  .nav-links {
-    order: 3;
-    width: 100%;
-    justify-content: space-between;
-    gap: 8px;
-    overflow-x: auto;
-    padding-top: 6px;
-  }
-}
-
 .contact-hero {
   padding: 56px 0 36px;
 }
@@ -489,9 +613,9 @@ footer {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding: 16px;
+  padding: 18px;
   border: 1px solid var(--hair);
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--surface);
   transition: all 0.2s ease;
 }
@@ -501,9 +625,9 @@ footer {
   box-shadow: var(--card-shadow);
 }
 .connect-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   background: var(--accent-soft);
   color: var(--accent);
   display: flex;
@@ -551,15 +675,36 @@ footer {
 <header class="site-header">
   <div class="container nav-inner">
     <a href="index.html" class="brand">Sheikh <strong>Soban</strong> Fayaz</a>
-    <nav class="nav-links" aria-label="Primary navigation">
+    
+    <nav class="desktop-nav" aria-label="Primary navigation">
       <a href="index.html" class="">Home</a>
-      <a href="investigations.html" class="">Investigations (16)</a>
+      <a href="investigations.html" class="">Investigations (17)</a>
       <a href="index.html#methodology">Methodology</a>
       <a href="index.html#capabilities">Capabilities</a>
       <a href="contact.html" class="active">Contact &amp; Connect</a>
     </nav>
+    
     <div class="nav-actions">
       <button type="button" class="btn btn-sm theme-toggle-btn" aria-label="Toggle dark mode">☾ Dark</button>
+      <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle mobile menu" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <nav class="mobile-nav-links">
+        <a href="index.html" class="">Home</a>
+        <a href="investigations.html" class="">Investigations (17)</a>
+        <a href="index.html#methodology">Methodology</a>
+        <a href="index.html#capabilities">Capabilities</a>
+        <a href="contact.html" class="active">Contact &amp; Connect</a>
+      </nav>
+      <div class="mobile-menu-footer">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">Connect on LinkedIn &rarr;</a>
+      </div>
     </div>
   </div>
 </header>
@@ -581,11 +726,11 @@ footer {
     <div class="connect-card">
       <div class="connect-item">
         <div class="connect-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.9 0-1.63.73-1.63 1.63s.73 1.63 1.63 1.63 1.63-.73 1.63-1.63-.73-1.63-1.63-1.63Z"/></svg>
         </div>
         <div style="flex-grow: 1;">
           <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink);">LinkedIn Professional Profile</div>
-          <div style="font-size: 13px; color: var(--ink2); margin: 2px 0 8px;">Connect, message, or view my career background directly.</div>
+          <div style="font-size: 13px; color: var(--ink2); margin: 2px 0 8px;">Connect, message, or review career recommendations directly.</div>
           <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">
             Visit linkedin.com/in/sheikhsobanfayaz &rarr;
           </a>
@@ -594,7 +739,7 @@ footer {
 
       <div class="connect-item">
         <div class="connect-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm4.2 13.3-3.2-1.9-3.2 1.9.8-3.7-2.8-2.5 3.8-.3 1.4-3.5 1.4 3.5 3.8.3-2.8 2.5.8 3.7Z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm4.2 13.3-3.2-1.9-3.2 1.9.8-3.7-2.8-2.5 3.8-.3 1.4-3.5 1.4 3.5 3.8.3-2.8 2.5.8 3.7Z"/></svg>
         </div>
         <div style="flex-grow: 1;">
           <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink);">ISC2 Certified in Cybersecurity (CC)</div>
@@ -607,7 +752,7 @@ footer {
 
       <div class="connect-item">
         <div class="connect-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
         </div>
         <div style="flex-grow: 1;">
           <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink);">Direct Email Contact</div>
@@ -618,21 +763,21 @@ footer {
 
       <div class="connect-item">
         <div class="connect-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
         </div>
         <div>
-          <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink);">Operational Base &amp; Relocation</div>
-          <div style="font-size: 13.5px; color: var(--ink2); margin-top: 2px;">
-            Currently located in Dubai, United Arab Emirates.<br>
-            Open to on-site roles in Dubai/UAE, India, and global remote engagements.
+          <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink);">Location &amp; Availability</div>
+          <div style="font-size: 13.5px; color: var(--ink2); margin-top: 2px; line-height: 1.6;">
+            Based in Dubai, United Arab Emirates.<br>
+            Available for on-site roles in Dubai/UAE, India, and global remote opportunities.
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card spotlight">
       <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 21px; margin: 0 0 8px;">Send a Direct Message</h2>
-      <p style="font-size: 14.5px; color: var(--ink2); margin: 0 0 20px;">Feel free to drop a note regarding open roles, technical questions, or incident response topics.</p>
+      <p style="font-size: 14.5px; color: var(--ink2); margin: 0 0 20px;">Reach out regarding open SOC Analyst positions, technical security projects, or incident response discussions.</p>
       
       <form id="contactForm" class="contact-form">
         <div class="field">
@@ -645,7 +790,7 @@ footer {
         </div>
         <div class="field">
           <label for="senderTopic">Topic / Purpose</label>
-          <input id="senderTopic" type="text" placeholder="Role opportunity, consulting, or project inquiry">
+          <input id="senderTopic" type="text" placeholder="Role opportunity, project consultation, or inquiry">
         </div>
         <div class="field">
           <label for="senderMsg">Message</label>
@@ -683,13 +828,14 @@ footer {
     </div>
     <div class="footer-bottom">
       <span>Sheikh Soban Fayaz · Cybersecurity &amp; SOC Analyst Portfolio</span>
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">Dubai, UAE · Open to Remote &amp; Global Opportunities</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px;">Dubai, UAE · Open to Remote &amp; Global Roles</span>
     </div>
   </div>
 </footer>
 
 
 <script>
+// Theme Management
 function initThemeManager() {
   function getTheme() {
     return document.documentElement.getAttribute('data-theme') || 'dark';
@@ -713,6 +859,63 @@ function initThemeManager() {
       const current = getTheme();
       setTheme(current === 'dark' ? 'light' : 'dark');
     });
+  });
+}
+
+// Mobile Hamburger Menu
+function initMobileMenu() {
+  const btn = document.getElementById('hamburgerBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+
+  btn.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
+// ReactBits Spotlight Mouse Tracking
+function initSpotlights() {
+  document.querySelectorAll('.card.spotlight').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', x + 'px');
+      card.style.setProperty('--mouse-y', y + 'px');
+    });
+  });
+}
+
+// ReactBits Cyber Decrypted Text Effect
+function initDecryptedText() {
+  const chars = '01#*&%?$@_~<>/[]{}';
+  document.querySelectorAll('[data-scramble]').forEach(el => {
+    const targetText = el.getAttribute('data-scramble');
+    let iteration = 0;
+    const interval = setInterval(() => {
+      el.innerText = targetText.split('').map((char, index) => {
+        if (index < iteration) {
+          return targetText[index];
+        }
+        if (char === ' ' || char === '\n') return char;
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+
+      if (iteration >= targetText.length) {
+        clearInterval(interval);
+      }
+      iteration += 1;
+    }, 28);
   });
 }
 
@@ -753,7 +956,12 @@ function fallbackCopy(text) {
   document.body.removeChild(el);
 }
 
-document.addEventListener('DOMContentLoaded', initThemeManager);
+document.addEventListener('DOMContentLoaded', () => {
+  initThemeManager();
+  initMobileMenu();
+  initSpotlights();
+  initDecryptedText();
+});
 </script>
 
 

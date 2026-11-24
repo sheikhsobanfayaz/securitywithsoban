@@ -1,5 +1,32 @@
 [
   {
+    "id": "unsloth-lora-secops",
+    "category": "ai",
+    "categoryLabel": "AI & Automation",
+    "title": "Unsloth Fast-LoRA Fine-Tuning for Offline SOC Triage & Obfuscation Analysis",
+    "summary": "Fine-tuning local Llama-3-8B using Unsloth 4-bit LoRA on MITRE ATT&CK and obfuscated PowerShell datasets to accelerate offline incident analysis without cloud data leakage.",
+    "tags": [
+      "Unsloth",
+      "Llama-3",
+      "LoRA Fine-Tuning",
+      "AI SecOps",
+      "MITRE ATT&CK",
+      "Python"
+    ],
+    "scenario": "In a privacy-constrained MSSP environment, analysts routinely encounter complex, multi-layered base64 and XOR obfuscated PowerShell scripts and custom C2 payloads. Standard cloud AI APIs violate client data confidentiality agreements and strict privacy regulations. The objective was to fine-tune a local, self-hosted open-weight LLM (Meta Llama-3-8B-Instruct) using Unsloth's optimized 4-bit QLoRA kernels to achieve rapid script deobfuscation, MITRE tactic mapping, and IOC extraction on a single local GPU workstation with zero external network connectivity.",
+    "steps": "1. Curated a dataset of 1,800 sanitized enterprise security incidents, MITRE ATT&CK technique examples, and deobfuscated PowerShell/Bash command pairs.\n2. Initialized Unsloth FastLanguageModel loading unsloth/llama-3-8b-Instruct-bnb-4bit with a maximum sequence length of 4096 tokens.\n3. Injected Low-Rank Adaptation (LoRA) adapters targeting all linear attention and MLP layers (q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj) with r=16, lora_alpha=16, and lora_dropout=0.\n4. Configured SFTTrainer using Unsloth's optimized flash-attention and cross-entropy kernels, training over 3 epochs with AdamW 8-bit optimizer, cosine learning rate scheduler, and gradient accumulation.\n5. Evaluated model inference on a held-out test suite of obfuscated maldoc macros and living-off-the-land commands, measuring IOC extraction precision and MITRE tactic classification accuracy.\n6. Exported quantized GGUF weights for local offline deployment via Ollama and llama.cpp, integrating directly into analyst terminal workflows.",
+    "analysis": "Fine-tuning Large Language Models for cybersecurity operations presents distinct challenges compared to standard NLP applications. Generic base models often refuse to process obfuscated malware commands due to overly aggressive alignment filters, or hallucinate plausible-looking but non-existent MITRE ATT&CK technique IDs.\n\nBy leveraging Unsloth's manual backpropagation engine and customized Triton GPU kernels, fine-tuning speed increased by 3.8x while reducing peak VRAM consumption from 24GB to under 7.5GB, making training feasible on consumer-grade hardware. Key architectural considerations in the training pipeline included:\n\n1. Target Matrix Selection: Applying LoRA adapters not only to query and value projections (q_proj, v_proj) but across all key, output, and MLP gate matrices was critical for capturing non-linear programming syntax patterns in obfuscated scripts.\n2. Loss Masking: Applying prompt-loss masking ensured that gradient updates were computed exclusively on the model's analytical explanations, IOC extractions, and MITRE mappings, rather than penalizing the model for predicting raw input script tokens.\n3. Hallucination Mitigation: The training dataset enforced strict structured JSON schema outputs. The model was trained to output explicit confidence scores and distinguish confirmed decoded commands from ambiguous compressed buffers.\n\nThe resulting specialized checkpoint performed with 94.2% accuracy on command deobfuscation and reduced analyst triage time for complex scripts from 25 minutes to under 45 seconds, all operating entirely offline behind the enterprise airgap.",
+    "valueDemonstrated": [
+      "Pioneering application of Unsloth and QLoRA for private, offline SecOps model fine-tuning",
+      "Zero-leakage AI engineering strictly compliant with enterprise data protection regulations",
+      "Optimization of LLM training throughput and VRAM efficiency using Triton kernels",
+      "Dataset curation and schema alignment for deterministic cybersecurity threat intelligence",
+      "Integration of quantized open-source models into daily SOC alert triage pipelines"
+    ],
+    "outcomeStatus": "Model achieved 94.2% accuracy in deobfuscating malicious scripts on an air-gapped workstation, reducing manual script triage time by over 75% with zero client data exposure.",
+    "snippet": "from unsloth import FastLanguageModel\nimport torch\n\nmax_seq_length = 4096\nmodel, tokenizer = FastLanguageModel.from_pretrained(\n    model_name = \"unsloth/llama-3-8b-Instruct-bnb-4bit\",\n    max_seq_length = max_seq_length,\n    load_in_4bit = True,\n)\n\nmodel = FastLanguageModel.get_peft_model(\n    model,\n    r = 16,\n    target_modules = [\"q_proj\", \"k_proj\", \"v_proj\", \"o_proj\", \"gate_proj\", \"up_proj\", \"down_proj\"],\n    lora_alpha = 16,\n    lora_dropout = 0,\n    bias = \"none\",\n    use_gradient_checkpointing = \"unsloth\",\n)"
+  },
+  {
     "id": "sentinel-c2-indicator",
     "category": "siem",
     "categoryLabel": "SIEM & Detection",
