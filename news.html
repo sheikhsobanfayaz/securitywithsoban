@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cybersecurity News Briefings | Sheikh Soban Fayaz</title>
+<meta name="description" content="Daily cybersecurity advisories, threat intelligence, and security news curated automatically for security analysts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=20261125f">
+</head>
+<body>
+<div class="scroll-progress-bar"></div>
+
+<header class="site-header-wrap">
+  <div class="nav-container">
+    <nav class="nav-island" aria-label="Primary Navigation">
+      <a href="index.html" class="nav-brand" aria-label="Sheikh Soban Fayaz Home">
+        <div class="brand-avatar-box">SF</div>
+        <div class="brand-info">
+          <span class="brand-name">Sheikh <strong class="soban-bold">Soban</strong> Fayaz</span>
+          <span class="brand-tag">Security Analyst</span>
+        </div>
+      </a>
+
+      <div class="desktop-nav" role="menubar">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">Home <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <a href="index.html#terminal"><span class="dd-title">Practice Terminal</span><span class="dd-sub">Try sample investigations</span></a>
+            <a href="index.html#experience"><span class="dd-title">Experience &amp; Background</span><span class="dd-sub">Roles and certifications</span></a>
+            <a href="index.html#projects"><span class="dd-title">Featured Cases</span><span class="dd-sub">Selected security cases</span></a>
+            <a href="index.html#mitre"><span class="dd-title">Attack Stages</span><span class="dd-sub">MITRE threat coverage</span></a>
+            <a href="index.html#methodology"><span class="dd-title">Investigation Workflow</span><span class="dd-sub">Step-by-step alert triage</span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="investigations.html" class="nav-link">Investigations <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <a href="investigations.html"><span class="dd-title">Write-Ups</span><span class="dd-sub">Complete case study archive</span></a>
+            <a href="investigations.html?cat=network"><span class="dd-title">Networks &amp; Firewalls</span><span class="dd-sub">VPN, routing, and hardware</span></a>
+            <a href="investigations.html?cat=siem"><span class="dd-title">Alerts &amp; Logs</span><span class="dd-sub">SIEM correlation &amp; triage</span></a>
+            <a href="investigations.html?cat=ai"><span class="dd-title">AI &amp; Scripts</span><span class="dd-sub">Offline privacy tooling</span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="tools.html" class="nav-link">Tools <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <a href="cc-simulator.html"><span class="dd-title">CC Practice Quiz</span><span class="dd-sub">Exam questions with explanations</span></a>
+            <a href="ai-sanitizer.html"><span class="dd-title">SanitizeAI Log Cleaner</span><span class="dd-sub">Mask sensitive data offline</span></a>
+            <a href="tools.html"><span class="dd-title">All Tools</span><span class="dd-sub">Explore browser utilities</span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="news.html" class="nav-link active">News <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <a href="news.html"><span class="dd-title">Latest Briefings</span><span class="dd-sub">Daily top cybersecurity stories</span></a>
+            <a href="news.html?cat=advisories"><span class="dd-title">Advisories</span><span class="dd-sub">Official CISA alerts &amp; notices</span></a>
+            <a href="news.html?cat=threat-intel"><span class="dd-title">Threat Intel</span><span class="dd-sub">Research &amp; incident diaries</span></a>
+            <a href="news.html?cat=security-news"><span class="dd-title">Security News</span><span class="dd-sub">Breach &amp; vulnerability coverage</span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="architecture.html" class="nav-link">Architecture <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <a href="architecture.html#philosophy"><span class="dd-title">Design Principles</span><span class="dd-sub">Zero backend, zero tracking</span></a>
+            <a href="architecture.html#bento"><span class="dd-title">Site Structure</span><span class="dd-sub">Data and client-side tools</span></a>
+            <a href="architecture.html#pipeline"><span class="dd-title">Verification Checks</span><span class="dd-sub">Checks before publishing</span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">Contact <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <a href="contact.html#message-form"><span class="dd-title">Send a Message</span><span class="dd-sub">Direct inquiry form</span></a>
+            <a href="contact.html#channels"><span class="dd-title">Email &amp; Profiles</span><span class="dd-sub">LinkedIn, Credly, and GitHub</span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle-btn" data-theme-toggle aria-label="Switch to dark mode" title="Toggle dark/light mode">
+          <span class="theme-icon-wrap" aria-hidden="true"></span>
+          <span class="theme-toggle-label">Dark</span>
+        </button>
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="icon-btn linkedin-nav-btn" aria-label="LinkedIn Profile" title="LinkedIn Profile">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
+        </a>
+        <a href="contact.html" class="nav-cta-btn">Contact <span class="cta-arrow">&rarr;</span></a>
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle mobile navigation menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-theme-row">
+        <span>Appearance</span>
+        <button type="button" class="theme-toggle-pill" data-theme-toggle data-label-mode="full" aria-label="Switch to dark mode">
+          <span class="theme-icon-wrap" aria-hidden="true"></span>
+          <span class="theme-toggle-label">Dark Mode</span>
+        </button>
+      </div>
+      <div class="mobile-nav-links">
+        <div class="mobile-nav-group">
+          <a href="index.html" class=""><span>Home</span><span>&rarr;</span></a>
+          <a href="index.html#terminal" class="mobile-sublink"><span>Practice Terminal</span><span>&rarr;</span></a>
+          <a href="index.html#mitre" class="mobile-sublink"><span>Attack Stages</span><span>&rarr;</span></a>
+        </div>
+        <a href="investigations.html" class=""><span>Investigations</span><span>&rarr;</span></a>
+        <div class="mobile-nav-group">
+          <a href="tools.html" class=""><span>Tools</span><span>&rarr;</span></a>
+          <a href="cc-simulator.html" class="mobile-sublink"><span>CC Practice Quiz</span><span>&rarr;</span></a>
+          <a href="ai-sanitizer.html" class="mobile-sublink"><span>SanitizeAI Log Cleaner</span><span>&rarr;</span></a>
+        </div>
+        <a href="news.html" class="active"><span>News</span><span>&rarr;</span></a>
+        <a href="architecture.html" class=""><span>Architecture</span><span>&rarr;</span></a>
+        <a href="contact.html" class=""><span>Contact</span><span>&rarr;</span></a>
+      </div>
+      <div class="mobile-menu-footer">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">
+          LinkedIn Profile &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hub-hero">
+    <div class="eyebrow-line">Daily Intelligence Feed</div>
+    <h1 data-scramble="Daily Cybersecurity News" style="font-family: 'Sora', 'Plus Jakarta Sans', sans-serif; font-size: clamp(28px, 4.5vw, 40px); letter-spacing: -0.02em; margin: 0 0 14px;">Daily Cybersecurity News</h1>
+    <p style="font-size: 17px; color: var(--ink2); max-width: 760px; line-height: 1.6; margin: 0;">
+      Curated advisories, threat intelligence, and defensive security reporting aggregated daily from CISA, SANS ISC, Krebs on Security, BleepingComputer, The Hacker News, and Dark Reading.
+    </p>
+
+    <div class="news-meta-strip">
+      <div class="news-status-pill">
+        <span class="news-live-dot" aria-hidden="true"></span>
+        <span>Last Updated: <strong id="newsUpdatedAt">Loading...</strong></span>
+      </div>
+      <div class="news-count-label" id="newsCountLabel">Fetching latest briefings...</div>
+    </div>
+
+    <div style="margin-top: 22px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <div class="filter-bar" role="group" aria-label="Filter news by category">
+        <button type="button" class="filter-btn active" data-filter="all">All</button>
+        <button type="button" class="filter-btn" data-filter="advisories">Advisories</button>
+        <button type="button" class="filter-btn" data-filter="threat-intel">Threat Intel</button>
+        <button type="button" class="filter-btn" data-filter="security-news">Security News</button>
+      </div>
+      <input type="text" id="newsSearchInput" class="search-box" placeholder="Search headlines, vendors, CVEs, or sources...">
+    </div>
+  </section>
+
+  <section style="padding-bottom: 80px;">
+    <div id="newsGrid" class="projects-grid"></div>
+    <div id="newsEmptyNotice" style="display: none; padding: 48px 0; text-align: center; color: var(--mute);">
+      No cybersecurity briefings matched your current filter or search term.
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bento">
+      <div class="footer-col footer-col-brand">
+        <div class="footer-brand-header">
+          <span class="brand-avatar">SF</span>
+          <div class="footer-brand-title">
+            <span class="footer-name">Sheikh <strong class="soban-bold">Soban</strong> Fayaz</span>
+            <span class="footer-role">Security Operations &amp; Network Defense</span>
+          </div>
+        </div>
+        <p class="footer-bio">
+          Security Operations Center (SOC) Analyst specializing in perimeter firewall diagnostics, SIEM telemetry correlation, and privacy-first analyst tooling.
+        </p>
+        <div class="footer-geo">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span>Jammu and Kashmir, India</span>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Pages</h4>
+        <ul class="footer-links-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="investigations.html">Investigations</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="news.html">News</a></li>
+          <li><a href="cc-simulator.html">CC Practice Quiz</a></li>
+          <li><a href="ai-sanitizer.html">SanitizeAI</a></li>
+          <li><a href="architecture.html">Architecture</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Links</h4>
+        <ul class="footer-links-list">
+          <li><a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a></li>
+          <li><a href="https://www.credly.com/badges/1d1902d2-5a61-4795-b01a-6ee418bbfae1" target="_blank" rel="noopener noreferrer">Credly ISC2 CC Badge</a></li>
+          <li><a href="https://github.com/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:sheikhsobanfayaz@gmail.com">sheikhsobanfayaz@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom-bar">
+      <div class="footer-legal">
+        <span>&copy; 2026 Sheikh <strong class="soban-bold">Soban</strong> Fayaz</span>
+      </div>
+      <button type="button" class="back-to-top-btn" id="backToTopBtn" aria-label="Scroll back to top">
+        <span>Top</span>
+        <span class="top-arrow">&uarr;</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site.js?v=20261125f"></script>
+<script>
+let ALL_NEWS_ITEMS = [];
+let currentCategory = 'all';
+let searchTerm = '';
+
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function safeExternalUrl(url) {
+  const clean = String(url || '').trim();
+  return (clean.startsWith('https://') || clean.startsWith('http://')) ? clean : '#';
+}
+
+function formatUpdatedTimestamp(iso) {
+  if (!iso) return 'Unavailable';
+  const dt = new Date(iso);
+  if (Number.isNaN(dt.getTime())) return escapeHtml(iso);
+  return dt.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  });
+}
+
+function renderNewsCards() {
+  const grid = document.getElementById('newsGrid');
+  const emptyNotice = document.getElementById('newsEmptyNotice');
+  const countLabel = document.getElementById('newsCountLabel');
+  const q = searchTerm.trim().toLowerCase();
+
+  const filtered = ALL_NEWS_ITEMS.filter(item => {
+    const matchCat = currentCategory === 'all' || item.category_slug === currentCategory;
+    const haystack = [item.title, item.summary, item.source, item.category].join(' ').toLowerCase();
+    const matchQuery = !q || haystack.includes(q);
+    return matchCat && matchQuery;
+  }).slice(0, 15);
+
+  countLabel.textContent = filtered.length === 1
+    ? 'Showing 1 story'
+    : 'Showing ' + filtered.length + ' stories';
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    emptyNotice.style.display = 'block';
+    return;
+  }
+
+  emptyNotice.style.display = 'none';
+  grid.innerHTML = filtered.map(item => {
+    const safeUrl = safeExternalUrl(item.link);
+    return `
+      <article class="card spotlight project-card">
+        <div>
+          <div class="news-card-head">
+            <span class="project-cat">${escapeHtml(item.source)}</span>
+            <span class="news-date-tag">${escapeHtml(item.published_display || item.published)}</span>
+          </div>
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.summary)}</p>
+        </div>
+        <div class="news-card-footer">
+          <span class="tag">${escapeHtml(item.category)}</span>
+          <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Read Article &rarr;</a>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  if (typeof initSpotlights === 'function') initSpotlights();
+  if (typeof initScrollReveals === 'function') initScrollReveals();
+}
+
+async function loadDailyNews() {
+  const updatedEl = document.getElementById('newsUpdatedAt');
+  const countLabel = document.getElementById('newsCountLabel');
+  const emptyNotice = document.getElementById('newsEmptyNotice');
+
+  try {
+    const res = await fetch('./news.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    ALL_NEWS_ITEMS = Array.isArray(data.items) ? data.items.slice(0, 15) : [];
+    updatedEl.textContent = formatUpdatedTimestamp(data.generated_at);
+    renderNewsCards();
+  } catch (err) {
+    updatedEl.textContent = 'Unavailable';
+    countLabel.textContent = 'Could not load feed';
+    emptyNotice.textContent = 'Unable to load daily news right now. Please try refreshing shortly.';
+    emptyNotice.style.display = 'block';
+  }
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCategory = btn.getAttribute('data-filter') || 'all';
+    renderNewsCards();
+  });
+});
+
+document.getElementById('newsSearchInput').addEventListener('input', (e) => {
+  searchTerm = e.target.value;
+  renderNewsCards();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const initialCat = params.get('cat');
+  if (initialCat) {
+    const matchBtn = document.querySelector(`.filter-btn[data-filter="${initialCat}"]`);
+    if (matchBtn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      matchBtn.classList.add('active');
+      currentCategory = initialCat;
+    }
+  }
+  loadDailyNews();
+});
+</script>
+</body>
+</html>
