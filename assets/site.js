@@ -5,10 +5,10 @@
 (function applyInitialTheme() {
   try {
     const saved = localStorage.getItem('soban_theme');
-    const theme = (saved === 'light' || saved === 'dark') ? saved : 'dark';
+    const theme = (saved === 'light' || saved === 'dark') ? saved : 'light';
     document.documentElement.setAttribute('data-theme', theme);
   } catch (e) {
-    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.setAttribute('data-theme', 'light');
   }
 })();
 
@@ -16,22 +16,23 @@ function initThemeManager() {
   const buttons = document.querySelectorAll('[data-theme-toggle]');
   if (!buttons.length) return;
 
-  const sunSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
-  const moonSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+  const sunSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+  const moonSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
 
   const syncButtons = (theme) => {
     const isLight = theme === 'light';
     buttons.forEach(btn => {
       const iconWrap = btn.querySelector('.theme-icon-wrap');
       const labelEl = btn.querySelector('.theme-toggle-label');
+      const fullMode = btn.getAttribute('data-label-mode') === 'full';
       if (iconWrap) iconWrap.innerHTML = isLight ? moonSvg : sunSvg;
-      if (labelEl) labelEl.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+      if (labelEl) labelEl.textContent = isLight ? (fullMode ? 'Dark Mode' : 'Dark') : (fullMode ? 'Light Mode' : 'Light');
       btn.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
       btn.setAttribute('title', isLight ? 'Switch to dark mode' : 'Switch to light mode');
     });
   };
 
-  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
   syncButtons(current);
 
   buttons.forEach(btn => {
@@ -306,23 +307,6 @@ function fallbackCopy(text) {
   document.body.removeChild(el);
 }
 
-function initVideoBackground() {
-  const vid = document.querySelector('.cyber-video-bg');
-  if (!vid) return;
-  const promise = vid.play();
-  if (promise !== undefined) {
-    promise.catch(() => {
-      const playOnTouch = () => {
-        vid.play();
-        document.removeEventListener('click', playOnTouch);
-        document.removeEventListener('touchstart', playOnTouch);
-      };
-      document.addEventListener('click', playOnTouch);
-      document.addEventListener('touchstart', playOnTouch);
-    });
-  }
-}
-
 function initBackToTop() {
   const btn = document.getElementById('backToTopBtn');
   if (!btn) return;
@@ -340,6 +324,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveals();
   initPlaybookTabs();
   initReadingProgress();
-  initVideoBackground();
   initBackToTop();
 });
