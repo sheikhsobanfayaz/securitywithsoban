@@ -1,5 +1,5 @@
 /* ==============================================================================
-   SECURITYWITHSOBAN - CORE UI, MOTION GRAPHICS & INTERACTIVITY
+   SECURITYWITHSOBAN - CORE UI, MOTION GRAPHICS & ZERO-SHIFT DECODE
    ============================================================================== */
 
 function initThemeManager() {
@@ -62,7 +62,7 @@ function initSpotlights() {
       if (!isTouch && card.classList.contains('tilt-card')) {
         const px = (x / rect.width - 0.5) * 2;
         const py = (y / rect.height - 0.5) * 2;
-        card.style.transform = `perspective(900px) rotateX(${(-py * 2.4).toFixed(2)}deg) rotateY(${(px * 2.4).toFixed(2)}deg) translateY(-4px)`;
+        card.style.transform = `perspective(900px) rotateX(${(-py * 2.2).toFixed(2)}deg) rotateY(${(px * 2.2).toFixed(2)}deg) translateY(-4px)`;
       }
     });
 
@@ -74,26 +74,93 @@ function initSpotlights() {
   });
 }
 
-/* Zero-layout-shift word-by-word blur-to-crisp focus reveal (fixes mobile layout jumping) */
-function initHeroFocusTitle() {
-  document.querySelectorAll('[data-scramble]').forEach(el => {
-    if (el.dataset.focusDone === '1') return;
-    el.dataset.focusDone = '1';
-    el.classList.add('hero-focus-title');
+/* Zero-layout-shift cyber text decode: locks exact word widths & line breaks so mobile never jumps */
+function initDecryptedText() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const els = document.querySelectorAll('[data-scramble]');
+  if (!els.length) return;
 
-    const rawHtml = el.innerHTML;
-    const lines = rawHtml.split(/<br\s*\/?>/i);
-    let wordIndex = 0;
+  const glyphs = '01|/:+-_~';
+  const fontsReady = document.fonts && document.fonts.ready
+    ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 350))])
+    : Promise.resolve();
 
-    el.innerHTML = lines.map(line => {
-      const text = line.replace(/\s+/g, ' ').trim();
-      if (!text) return '';
-      const words = text.split(' ').map(w => {
-        const idx = wordIndex++;
-        return `<span class="focus-word" style="--wi:${idx}">${w}</span>`;
-      }).join(' ');
-      return `<span class="focus-line">${words}</span>`;
-    }).join('');
+  fontsReady.then(() => {
+    els.forEach(el => {
+      if (el.dataset.scrambleDone === '1') return;
+      el.dataset.scrambleDone = '1';
+
+      // Extract plain text per <br> line safely (never exposes HTML tag attributes)
+      const rawLines = el.innerHTML.split(/<br\s*\/?>/i).map(chunk => {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = chunk;
+        return (tmp.textContent || '').replace(/\s+/g, ' ').trim();
+      }).filter(Boolean);
+
+      if (!rawLines.length) return;
+
+      // Render word spans first to measure exact final pixel width per word
+      el.innerHTML = '';
+      const wordEntries = [];
+      rawLines.forEach((line, lineIdx) => {
+        if (lineIdx > 0) el.appendChild(document.createElement('br'));
+        const words = line.split(' ');
+        words.forEach((word, wIdx) => {
+          if (wIdx > 0) el.appendChild(document.createTextNode(' '));
+          const span = document.createElement('span');
+          span.textContent = word;
+          el.appendChild(span);
+          wordEntries.push({ span, text: word });
+        });
+      });
+
+      const finalHeight = el.getBoundingClientRect().height;
+      el.style.minHeight = finalHeight + 'px';
+
+      // Lock each word's exact pixel width so scrambling never alters line wrapping
+      const widths = wordEntries.map(entry => entry.span.getBoundingClientRect().width);
+      wordEntries.forEach((entry, idx) => {
+        entry.span.style.display = 'inline-block';
+        entry.span.style.width = widths[idx] + 'px';
+        entry.span.style.whiteSpace = 'nowrap';
+        entry.span.style.overflow = 'hidden';
+        entry.span.style.verticalAlign = 'bottom';
+      });
+
+      const totalChars = wordEntries.reduce((acc, e) => acc + e.text.length, 0);
+      let revealed = 0;
+
+      const timer = setInterval(() => {
+        let cursor = 0;
+        wordEntries.forEach(entry => {
+          const target = entry.text;
+          let out = '';
+          for (let i = 0; i < target.length; i++) {
+            if (cursor + i < revealed) {
+              out += target[i];
+            } else {
+              out += glyphs[Math.floor(Math.random() * glyphs.length)];
+            }
+          }
+          entry.span.textContent = out;
+          cursor += target.length;
+        });
+
+        revealed += 2;
+        if (revealed > totalChars + 2) {
+          clearInterval(timer);
+          wordEntries.forEach(entry => {
+            entry.span.textContent = entry.text;
+            entry.span.style.display = '';
+            entry.span.style.width = '';
+            entry.span.style.whiteSpace = '';
+            entry.span.style.overflow = '';
+            entry.span.style.verticalAlign = '';
+          });
+          el.style.minHeight = '';
+        }
+      }, 26);
+    });
   });
 }
 
@@ -108,7 +175,6 @@ function initScrollReveals() {
     }
   });
 
-  // Stagger siblings inside grids
   document.querySelectorAll('.exp-grid, .methodology-grid, .cap-grid, .projects-grid, .mitre-grid, .bento-grid, .telemetry-grid, .stats-strip, .tools-grid').forEach(grid => {
     Array.from(grid.children).forEach((child, idx) => {
       if (child.hasAttribute('data-reveal')) {
@@ -171,7 +237,7 @@ function initStatCounters() {
   els.forEach(el => io.observe(el));
 }
 
-/* Dynamic Cyber Constellation Motion Background */
+/* Dynamic Cyber Constellation Motion Background (Orange / Ember Tone) */
 function initCyberMotionCanvas() {
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (document.getElementById('cyberMotionCanvas')) return;
@@ -187,7 +253,7 @@ function initCyberMotionCanvas() {
 
   let w = 0, h = 0, dpr = 1;
   const isMobile = window.innerWidth < 768;
-  const count = isMobile ? 20 : 38;
+  const count = isMobile ? 20 : 36;
   const maxDist = isMobile ? 110 : 145;
   const mouse = { x: -9999, y: -9999 };
   const nodes = [];
@@ -242,7 +308,7 @@ function initCyberMotionCanvas() {
 
       ctx.beginPath();
       ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.55)';
+      ctx.fillStyle = 'rgba(251, 146, 60, 0.52)';
       ctx.fill();
 
       for (let j = i + 1; j < nodes.length; j++) {
@@ -253,18 +319,18 @@ function initCyberMotionCanvas() {
           ctx.beginPath();
           ctx.moveTo(n.x, n.y);
           ctx.lineTo(m.x, m.y);
-          ctx.strokeStyle = `rgba(56, 189, 248, ${alpha.toFixed(3)})`;
+          ctx.strokeStyle = `rgba(249, 115, 22, ${alpha.toFixed(3)})`;
           ctx.lineWidth = 0.85;
           ctx.stroke();
         }
       }
 
       if (distM < 170) {
-        const alpha = (1 - distM / 170) * 0.35;
+        const alpha = (1 - distM / 170) * 0.36;
         ctx.beginPath();
         ctx.moveTo(n.x, n.y);
         ctx.lineTo(mouse.x, mouse.y);
-        ctx.strokeStyle = `rgba(129, 140, 248, ${alpha.toFixed(3)})`;
+        ctx.strokeStyle = `rgba(251, 146, 60, ${alpha.toFixed(3)})`;
         ctx.lineWidth = 1;
         ctx.stroke();
       }
@@ -378,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initThemeManager();
   initHeaderScrollState();
   initMobileMenu();
-  initHeroFocusTitle();
+  initDecryptedText();
   initSpotlights();
   initScrollReveals();
   initStatCounters();

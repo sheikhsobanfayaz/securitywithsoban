@@ -41,9 +41,9 @@
   flex-wrap: wrap;
 }
 .client-input-card {
-  background: rgba(12, 18, 33, 0.9);
+  background: var(--surface);
   border: 1px solid var(--hair);
-  border-left: 4px solid var(--accent-text);
+  border-left: 4px solid var(--accent);
   border-radius: 14px;
   padding: 18px 20px;
   display: flex;
@@ -94,7 +94,7 @@
   height: 44px;
   padding: 0 16px;
   background: var(--surface-elevated);
-  border: 1px solid rgba(56, 189, 248, 0.45);
+  border: 1px solid rgba(249, 115, 22, 0.45);
   border-radius: 10px;
   color: var(--ink);
   font-size: 14.5px;
@@ -103,7 +103,7 @@
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 .target-client-input:focus {
-  border-color: var(--accent-text);
+  border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 .target-client-input::placeholder {
@@ -137,16 +137,16 @@
   transition: all 0.15s ease;
 }
 .client-pill-btn:hover {
-  border-color: var(--accent-text);
+  border-color: var(--accent);
   color: var(--accent-text);
 }
 .client-pill-btn.active {
-  background: linear-gradient(135deg, #0284C7 0%, #4F46E5 100%);
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
   border-color: transparent;
   color: #FFFFFF;
 }
 .toolbar-rules-card {
-  background: rgba(12, 18, 33, 0.9);
+  background: var(--surface);
   border: 1px solid var(--hair);
   border-radius: 14px;
   padding: 14px 18px;
@@ -180,7 +180,7 @@
 }
 .toggle-pill.active {
   background: var(--accent-soft);
-  border-color: rgba(56, 189, 248, 0.45);
+  border-color: rgba(249, 115, 22, 0.45);
   color: var(--accent-text);
 }
 .toggle-pill input { display: none; }
@@ -191,8 +191,8 @@
   background: var(--mute);
 }
 .toggle-pill.active .toggle-dot {
-  background: var(--accent-text);
-  box-shadow: 0 0 6px var(--accent-text);
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
 }
 .mode-pill-wrap {
   display: flex;
@@ -214,7 +214,7 @@
   transition: all 0.15s ease;
 }
 .mode-opt-btn.active {
-  background: linear-gradient(135deg, #0284C7 0%, #4F46E5 100%);
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
   color: #FFFFFF;
 }
 .dual-pane-grid {
@@ -226,7 +226,7 @@
 .editor-pane-box {
   display: flex;
   flex-direction: column;
-  background: rgba(12, 18, 33, 0.92);
+  background: var(--surface);
   border: 1px solid var(--hair);
   border-radius: 14px;
   overflow: hidden;
@@ -289,9 +289,9 @@ textarea.raw-textarea::placeholder {
   color: var(--ink);
 }
 .token-pill {
-  background: rgba(56, 189, 248, 0.16);
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  color: #7DD3FC;
+  background: rgba(249, 115, 22, 0.16);
+  border: 1px solid rgba(249, 115, 22, 0.45);
+  color: #FDBA74;
   padding: 1px 6px;
   border-radius: 5px;
   font-weight: 600;
@@ -324,7 +324,7 @@ textarea.raw-textarea::placeholder {
 }
 .metric-badge strong { color: var(--accent-text); }
 .lookup-card {
-  background: rgba(12, 18, 33, 0.9);
+  background: var(--surface);
   border: 1px solid var(--hair);
   border-radius: 14px;
   padding: 14px 18px;
