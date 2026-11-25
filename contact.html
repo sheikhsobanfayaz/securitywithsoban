@@ -194,26 +194,28 @@
 
     <div class="card spotlight" id="message-form">
       <h2 style="font-family: 'Outfit', 'Inter', sans-serif; font-size: 21px; margin: 0 0 8px;">Send a Direct Message</h2>
-      <p style="font-size: 14.5px; color: var(--ink2); margin: 0 0 20px;">Reach out regarding open SOC Analyst positions, technical security projects, or incident response discussions.</p>
+      <p style="font-size: 14.5px; color: var(--ink2); margin: 0 0 20px;">Messages submitted here are delivered directly to my inbox. Reach out about SOC Analyst roles, perimeter defense consulting, or project feedback.</p>
       
       <form id="contactForm" class="contact-form">
+        <input type="checkbox" id="botcheck" name="botcheck" tabindex="-1" autocomplete="off" style="display: none;">
         <div class="field">
           <label for="senderName">Your Name</label>
-          <input id="senderName" type="text" placeholder="e.g. Alex Morgan" required>
+          <input id="senderName" name="name" type="text" placeholder="e.g. Alex Morgan" required>
         </div>
         <div class="field">
           <label for="senderEmail">Your Email Address</label>
-          <input id="senderEmail" type="email" placeholder="alex@company.com" required>
+          <input id="senderEmail" name="email" type="email" placeholder="alex@company.com" required>
         </div>
         <div class="field">
           <label for="senderTopic">Topic / Purpose</label>
-          <input id="senderTopic" type="text" placeholder="Role opportunity, project consultation, or inquiry">
+          <input id="senderTopic" name="subject" type="text" placeholder="Role opportunity, project inquiry, or technical question">
         </div>
         <div class="field">
           <label for="senderMsg">Message</label>
-          <textarea id="senderMsg" rows="5" placeholder="Details regarding your team, position, or security topic..." required></textarea>
+          <textarea id="senderMsg" name="message" rows="5" placeholder="Details regarding your team, role, or security topic..." required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" style="margin-top: 4px;">Preview &amp; Send Message</button>
+        <button type="submit" id="submitContactBtn" class="btn btn-primary" style="margin-top: 4px;">Send Message &rarr;</button>
+        <div id="contactStatus" aria-live="polite" style="display: none; font-size: 13.5px; padding: 11px 14px; border-radius: 8px; border: 1px solid var(--hair);"></div>
       </form>
     </div>
   </div>
@@ -281,19 +283,63 @@
 
 
 <script>
-document.getElementById('contactForm').addEventListener('submit', (e) => {
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  const form = e.currentTarget;
+  const btn = document.getElementById('submitContactBtn');
+  const statusEl = document.getElementById('contactStatus');
   const name = document.getElementById('senderName').value.trim();
   const email = document.getElementById('senderEmail').value.trim();
   const topic = document.getElementById('senderTopic').value.trim();
   const msg = document.getElementById('senderMsg').value.trim();
-  
-  const mailtoLink = `mailto:sheikhsobanfayaz@gmail.com?subject=${encodeURIComponent(topic || 'Contact from Portfolio')}&body=${encodeURIComponent('From: ' + name + ' (' + email + ')\n\n' + msg)}`;
-  
-  showToast('Opening email client for ' + name + '...');
-  setTimeout(() => {
-    window.location.href = mailtoLink;
-  }, 600);
+  const botcheck = document.getElementById('botcheck').checked;
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  statusEl.style.display = 'none';
+
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        access_key: 'bb11ccaa-8374-47cb-99f2-45f0dd87c217',
+        from_name: 'Portfolio Contact Form',
+        name: name,
+        email: email,
+        replyto: email,
+        subject: topic ? ('[Portfolio] ' + topic) : ('[Portfolio] Message from ' + name),
+        message: msg,
+        botcheck: botcheck
+      })
+    });
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      form.reset();
+      statusEl.style.display = 'block';
+      statusEl.style.background = 'var(--emerald-soft)';
+      statusEl.style.borderColor = 'rgba(16, 185, 129, 0.38)';
+      statusEl.style.color = '#34D399';
+      statusEl.textContent = 'Message sent directly to my inbox. Thank you for reaching out!';
+      showToast('Message delivered directly!');
+    } else {
+      throw new Error(data.message || 'Submission failed');
+    }
+  } catch (err) {
+    statusEl.style.display = 'block';
+    statusEl.style.background = 'var(--danger-soft)';
+    statusEl.style.borderColor = 'rgba(239, 68, 68, 0.38)';
+    statusEl.style.color = '#F87171';
+    statusEl.textContent = 'Could not deliver automatically right now. Please email sheikhsobanfayaz@gmail.com directly.';
+    showToast('Delivery issue. Please email directly.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Send Message &rarr;';
+  }
 });
 </script>
 </body>
