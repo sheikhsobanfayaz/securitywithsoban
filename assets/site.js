@@ -1,5 +1,5 @@
 /* ==============================================================================
-   SECURITYWITHSOBAN - CORE UI, SMOOTH SCROLL REVEALS & ZERO-SHIFT DECODE
+   SECURITYWITHSOBAN - CORE UI, INTERACTIVE PLAYBOOK & ZERO-SHIFT DECODE
    ============================================================================== */
 
 function initThemeManager() {
@@ -148,7 +148,7 @@ function initDecryptedText() {
 
 function initScrollReveals() {
   const autoTargets = document.querySelectorAll(
-    '.sec, .card, .bento-card, .metric-bento-card, .connect-item, .stat-box, .section-block, .soc-terminal-wrap, .tool-card'
+    '.sec, .card, .bento-card, .metric-bento-card, .connect-item, .section-block, .soc-terminal-wrap, .tool-card, .ledger-row, .spec-group, .connect-band'
   );
   autoTargets.forEach((el) => {
     if (!el.hasAttribute('data-reveal')) {
@@ -156,10 +156,10 @@ function initScrollReveals() {
     }
   });
 
-  document.querySelectorAll('.exp-grid, .methodology-grid, .cap-grid, .projects-grid, .mitre-grid, .bento-grid, .telemetry-grid, .stats-strip, .tools-grid').forEach(grid => {
+  document.querySelectorAll('.projects-grid, .mitre-grid, .bento-grid, .telemetry-grid, .tools-grid, .ledger-list, .spec-grid').forEach(grid => {
     Array.from(grid.children).forEach((child, idx) => {
       if (child.hasAttribute('data-reveal')) {
-        child.style.setProperty('--reveal-delay', Math.min(idx * 65, 350) + 'ms');
+        child.style.setProperty('--reveal-delay', Math.min(idx * 65, 320) + 'ms');
       }
     });
   });
@@ -215,6 +215,28 @@ function initStatCounters() {
     });
   }, { threshold: 0.3 });
   els.forEach(el => io.observe(el));
+}
+
+/* Interactive Playbook Switcher on Home */
+function initPlaybookTabs() {
+  const buttons = document.querySelectorAll('.playbook-step-btn');
+  if (!buttons.length) return;
+
+  const titleEl = document.getElementById('playbookTitle');
+  const stepEl = document.getElementById('playbookStepTag');
+  const descEl = document.getElementById('playbookDesc');
+  const exEl = document.getElementById('playbookExample');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (stepEl) stepEl.textContent = btn.getAttribute('data-step-tag') || '';
+      if (titleEl) titleEl.textContent = btn.getAttribute('data-title') || '';
+      if (descEl) descEl.textContent = btn.getAttribute('data-desc') || '';
+      if (exEl) exEl.textContent = btn.getAttribute('data-example') || '';
+    });
+  });
 }
 
 function initReadingProgress() {
@@ -315,6 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSpotlights();
   initScrollReveals();
   initStatCounters();
+  initPlaybookTabs();
   initReadingProgress();
   initVideoBackground();
   initBackToTop();
