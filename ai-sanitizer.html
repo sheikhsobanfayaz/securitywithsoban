@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SanitizeAI | Zero-Leakage Log &amp; PII Stripper | Sheikh Soban Fayaz</title>
+<meta name="description" content="100% local browser-memory client log and PII sanitizer for AI triage prompts. Strips client names, IPs, emails, SIDs, credentials, and PII before AI usage.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.san-shell {
+  padding: 36px 0 80px;
+}
+.san-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.san-hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 4vw, 38px);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+.san-hero p {
+  margin: 0;
+  color: var(--ink2);
+  font-size: 15px;
+  max-width: 680px;
+}
+.san-actions-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.client-input-card {
+  background: rgba(12, 18, 33, 0.9);
+  border: 1px solid var(--hair);
+  border-left: 4px solid var(--accent-text);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.client-input-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.client-input-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.security-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #34D399;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.32);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.client-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.target-client-input {
+  flex: 1;
+  min-width: 220px;
+  height: 44px;
+  padding: 0 16px;
+  background: var(--surface-elevated);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 600;
+  outline: none;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.target-client-input:focus {
+  border-color: var(--accent-text);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.target-client-input::placeholder {
+  color: var(--mute);
+  font-weight: 400;
+}
+.quick-client-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.pill-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--mute);
+  text-transform: uppercase;
+}
+.client-pill-btn {
+  background: var(--surface-elevated);
+  border: 1px solid var(--hair);
+  color: var(--ink2);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.client-pill-btn:hover {
+  border-color: var(--accent-text);
+  color: var(--accent-text);
+}
+.client-pill-btn.active {
+  background: linear-gradient(135deg, #0284C7 0%, #4F46E5 100%);
+  border-color: transparent;
+  color: #FFFFFF;
+}
+.toolbar-rules-card {
+  background: rgba(12, 18, 33, 0.9);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.rules-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--hair);
+  background: var(--surface-elevated);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+.toggle-pill.active {
+  background: var(--accent-soft);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: var(--accent-text);
+}
+.toggle-pill input { display: none; }
+.toggle-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--mute);
+}
+.toggle-pill.active .toggle-dot {
+  background: var(--accent-text);
+  box-shadow: 0 0 6px var(--accent-text);
+}
+.mode-pill-wrap {
+  display: flex;
+  background: var(--surface-elevated);
+  border: 1px solid var(--hair);
+  border-radius: 9999px;
+  padding: 3px;
+}
+.mode-opt-btn {
+  background: transparent;
+  border: none;
+  color: var(--ink2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.mode-opt-btn.active {
+  background: linear-gradient(135deg, #0284C7 0%, #4F46E5 100%);
+  color: #FFFFFF;
+}
+.dual-pane-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.editor-pane-box {
+  display: flex;
+  flex-direction: column;
+  background: rgba(12, 18, 33, 0.92);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  overflow: hidden;
+  min-height: 440px;
+}
+.pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--terminal-bar);
+}
+.pane-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stats-counter {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  color: var(--ink2);
+}
+textarea.raw-textarea {
+  width: 100%;
+  flex: 1;
+  min-height: 360px;
+  padding: 16px 18px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+textarea.raw-textarea::placeholder {
+  color: var(--mute);
+}
+.sanitized-preview-area {
+  flex: 1;
+  min-height: 360px;
+  padding: 16px 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-y: auto;
+  color: var(--ink);
+}
+.token-pill {
+  background: rgba(56, 189, 248, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #7DD3FC;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-block;
+  line-height: 1.25;
+}
+.token-client {
+  background: rgba(244, 63, 94, 0.16) !important;
+  border-color: rgba(244, 63, 94, 0.45) !important;
+  color: #FDA4AF !important;
+}
+.output-footer-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--hair);
+  background: var(--terminal-bar);
+  align-items: center;
+}
+.metric-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  color: var(--ink2);
+}
+.metric-badge strong { color: var(--accent-text); }
+.lookup-card {
+  background: rgba(12, 18, 33, 0.9);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+.lookup-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.lookup-content {
+  margin-top: 12px;
+  display: none;
+  border-top: 1px solid var(--hair);
+  padding-top: 12px;
+}
+.lookup-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.lookup-table th {
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--hair);
+  color: var(--mute);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.lookup-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(148, 179, 219, 0.08);
+}
+
+@media (max-width: 900px) {
+  .dual-pane-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<div class="scroll-progress-bar"></div>
+<div class="cyber-video-bg-container" aria-hidden="true">
+  <video class="cyber-video-bg" autoplay loop muted playsinline preload="auto" poster="assets/cyber-hacker-poster.jpg">
+    <source src="assets/cyber-hacker-bg.mp4" type="video/mp4">
+  </video>
+  <div class="cyber-video-overlay"></div>
+</div>
+
+<header class="site-header-wrap">
+  <div class="nav-container">
+    <nav class="nav-island" aria-label="Primary Navigation">
+      <a href="index.html" class="nav-brand" aria-label="Sheikh Soban Fayaz Home">
+        <div class="brand-avatar-box">
+          <span class="avatar-monogram">SF</span>
+          <span class="pulse-radar" title="SOC Security Analyst Active"></span>
+        </div>
+        <div class="brand-info">
+          <span class="brand-name">Sheikh <strong>Soban</strong> Fayaz</span>
+          <span class="brand-tag">SOC &bull; Network Security</span>
+        </div>
+      </a>
+
+      <div class="desktop-nav" role="menubar">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">Home <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Home Sections</div>
+            <a href="index.html#terminal"><span class="dd-icon">&gt;_</span><span class="dd-text"><span class="dd-title">SOC Triage Terminal</span><span class="dd-sub">Interactive KQL &amp; PCAP simulator</span></span></a>
+            <a href="index.html#experience"><span class="dd-icon">01</span><span class="dd-text"><span class="dd-title">Background &amp; Trajectory</span><span class="dd-sub">MSSP SOC &amp; network roots</span></span></a>
+            <a href="index.html#projects"><span class="dd-icon">02</span><span class="dd-text"><span class="dd-title">Featured Write-Ups</span><span class="dd-sub">Highlighted incident playbooks</span></span></a>
+            <a href="index.html#mitre"><span class="dd-icon">03</span><span class="dd-text"><span class="dd-title">MITRE ATT&amp;CK Matrix</span><span class="dd-sub">Technique coverage navigator</span></span></a>
+            <a href="index.html#methodology"><span class="dd-icon">04</span><span class="dd-text"><span class="dd-title">Methodology &amp; Capabilities</span><span class="dd-sub">SecOps workflow &amp; toolstack</span></span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="investigations.html" class="nav-link">Investigations <span class="nav-badge">17</span> <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Incident Write-Ups</div>
+            <a href="investigations.html"><span class="dd-icon">17</span><span class="dd-text"><span class="dd-title">All Investigations</span><span class="dd-sub">Browse &amp; filter full case hub</span></span></a>
+            <a href="investigations.html?cat=network"><span class="dd-icon">NW</span><span class="dd-text"><span class="dd-title">Network &amp; Perimeter</span><span class="dd-sub">Firewalls, VPN, Layer 2 &amp; WAF</span></span></a>
+            <a href="investigations.html?cat=siem"><span class="dd-icon">KQL</span><span class="dd-text"><span class="dd-title">SIEM &amp; Detection</span><span class="dd-sub">Sentinel, Sysmon &amp; Cloud DLP</span></span></a>
+            <a href="investigations.html?cat=ai"><span class="dd-icon">AI</span><span class="dd-text"><span class="dd-title">AI &amp; Automation</span><span class="dd-sub">Unsloth LoRA &amp; triage harnesses</span></span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="tools.html" class="nav-link active">Tools <span class="nav-badge">2</span> <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Developed by Soban</div>
+            <a href="cc-simulator.html"><span class="dd-icon">CC</span><span class="dd-text"><span class="dd-title">ISC2 CC Exam Simulator</span><span class="dd-sub">Practice quiz with instant explanations</span></span></a>
+            <a href="ai-sanitizer.html"><span class="dd-icon">AI</span><span class="dd-text"><span class="dd-title">SanitizeAI Log Stripper</span><span class="dd-sub">100% local PII &amp; client redactor</span></span></a>
+            <a href="tools.html"><span class="dd-icon">ALL</span><span class="dd-text"><span class="dd-title">All Security Tools</span><span class="dd-sub">Utility hub &amp; upcoming builds</span></span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="architecture.html" class="nav-link">Architecture <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Site Engineering</div>
+            <a href="architecture.html#philosophy"><span class="dd-icon">01</span><span class="dd-text"><span class="dd-title">Zero-Surface Threat Model</span><span class="dd-sub">Static edge &amp; zero telemetry</span></span></a>
+            <a href="architecture.html#bento"><span class="dd-icon">02</span><span class="dd-text"><span class="dd-title">Four Architectural Planes</span><span class="dd-sub">Data, sandbox &amp; GPU pipeline</span></span></a>
+            <a href="architecture.html#pipeline"><span class="dd-icon">03</span><span class="dd-text"><span class="dd-title">CI/CD Quality Gates</span><span class="dd-sub">Automated verification &amp; deploy</span></span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">Contact <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Direct Channels</div>
+            <a href="contact.html#message-form"><span class="dd-icon">MSG</span><span class="dd-text"><span class="dd-title">Send a Message</span><span class="dd-sub">Open direct contact form</span></span></a>
+            <a href="contact.html#channels"><span class="dd-icon">ID</span><span class="dd-text"><span class="dd-title">LinkedIn &amp; Email</span><span class="dd-sub">Verified links &amp; location</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="icon-btn linkedin-nav-btn" aria-label="LinkedIn Profile" title="LinkedIn Profile">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
+        </a>
+        <a href="contact.html" class="nav-cta-btn">Connect <span class="cta-arrow">&rarr;</span></a>
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle mobile navigation menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-brand-row">
+        <div class="mobile-status-indicator">
+          <span class="pulse-radar-sm"></span>
+          <span>Security Operations Ready</span>
+        </div>
+      </div>
+      <div class="mobile-nav-links">
+        <div class="mobile-nav-group">
+          <a href="index.html"><span>Home</span><span>&rarr;</span></a>
+          <a href="index.html#terminal" class="mobile-sublink"><span>&gt;_ Interactive SOC Terminal</span><span>&rarr;</span></a>
+          <a href="index.html#mitre" class="mobile-sublink"><span>MITRE ATT&amp;CK Coverage</span><span>&rarr;</span></a>
+        </div>
+        <a href="investigations.html"><span>Investigations &amp; Case Studies</span><span class="nav-badge">17</span></a>
+        <div class="mobile-nav-group">
+          <a href="tools.html" class="active"><span>Security Tools</span><span class="nav-badge">2</span></a>
+          <a href="cc-simulator.html" class="mobile-sublink"><span>1. ISC2 CC Exam Simulator</span><span>&rarr;</span></a>
+          <a href="ai-sanitizer.html" class="mobile-sublink"><span>2. SanitizeAI Log Stripper</span><span>&rarr;</span></a>
+        </div>
+        <a href="architecture.html"><span>Site Architecture &amp; Engineering</span><span>&rarr;</span></a>
+        <a href="contact.html"><span>Contact &amp; Connect</span><span>&rarr;</span></a>
+      </div>
+      <div class="mobile-menu-footer">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">
+          Connect on LinkedIn &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container san-shell">
+  <div class="san-hero">
+    <div>
+      <div class="eyebrow-badge" style="margin-bottom: 12px;">
+        <div class="status-dot-wrap">
+          <span class="status-dot-ping"></span>
+          <span class="status-dot"></span>
+        </div>
+        <span>SanitizeAI &bull; Zero-Knowledge Log Sanitizer</span>
+      </div>
+      <h1>SanitizeAI</h1>
+      <p>Strip client names, internal IPs, emails, SIDs, secrets, and PII strictly inside local browser memory before using AI for log triage.</p>
+    </div>
+    <div class="san-actions-top">
+      <a href="tools.html" class="btn btn-sm">&larr; All Tools</a>
+      <button type="button" class="btn btn-sm" id="btn-load-sample">Load Sample Alert</button>
+      <button type="button" class="btn btn-primary btn-sm" id="btn-copy-top">Copy Cleaned for AI</button>
+    </div>
+  </div>
+
+  <!-- Target Client Input -->
+  <section class="client-input-card">
+    <div class="client-input-top-row">
+      <div class="client-input-label">
+        <span>Target Client Name to Strip from Log</span>
+      </div>
+      <div class="security-badge">
+        <span>100% Local &bull; Never leaves browser memory</span>
+      </div>
+    </div>
+
+    <div class="client-search-bar">
+      <input type="text" class="target-client-input" id="input-target-client" placeholder="Type client name (e.g. ABC_Client, Acme Corp, Starlight Health)...">
+      <button type="button" class="btn btn-primary btn-sm" id="btn-save-client-pill">+ Save Quick Pick</button>
+    </div>
+
+    <div class="quick-client-pills" id="quick-pills-bar">
+      <span class="pill-label">Saved Clients:</span>
+    </div>
+  </section>
+
+  <!-- Redactor Toggles -->
+  <section class="toolbar-rules-card">
+    <div class="rules-group">
+      <span class="pill-label">Redactors:</span>
+      <label class="toggle-pill active"><input type="checkbox" id="toggle-clients" checked><span class="toggle-dot"></span><span>Client Name &amp; Variations</span></label>
+      <label class="toggle-pill active"><input type="checkbox" id="toggle-ip" checked><span class="toggle-dot"></span><span>IPv4 &amp; IPv6</span></label>
+      <label class="toggle-pill active"><input type="checkbox" id="toggle-email" checked><span class="toggle-dot"></span><span>Emails</span></label>
+      <label class="toggle-pill active"><input type="checkbox" id="toggle-users" checked><span class="toggle-dot"></span><span>DOMAIN\Users &amp; SIDs</span></label>
+      <label class="toggle-pill active"><input type="checkbox" id="toggle-domains" checked><span class="toggle-dot"></span><span>Internal Hosts &amp; URLs</span></label>
+      <label class="toggle-pill active"><input type="checkbox" id="toggle-creds" checked><span class="toggle-dot"></span><span>Keys &amp; Passwords</span></label>
+      <label class="toggle-pill active"><input type="checkbox" id="toggle-mac" checked><span class="toggle-dot"></span><span>MAC Addresses</span></label>
+      <label class="toggle-pill active"><input type="checkbox" id="toggle-pii" checked><span class="toggle-dot"></span><span>PII &amp; Financials</span></label>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="pill-label">Mode:</span>
+      <div class="mode-pill-wrap">
+        <button type="button" class="mode-opt-btn active" id="btn-mode-token">Tokens [CLIENT_1]</button>
+        <button type="button" class="mode-opt-btn" id="btn-mode-generic">Generic [REDACTED]</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dual Pane -->
+  <div class="dual-pane-grid">
+    <div class="editor-pane-box">
+      <div class="pane-header">
+        <div class="pane-title">Raw Input (Paste Alert / Log / Ticket)</div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="stats-counter" id="stats-input">0 chars &bull; 0 lines</span>
+          <button type="button" class="btn btn-sm" id="btn-paste-clipboard">Paste</button>
+          <button type="button" class="btn btn-sm" id="btn-clear-input">Clear</button>
+        </div>
+      </div>
+      <textarea class="raw-textarea" id="input-raw" placeholder="Paste raw SIEM alerts, firewall logs, or ticket notes here. Sanitization runs instantly in local memory."></textarea>
+    </div>
+
+    <div class="editor-pane-box">
+      <div class="pane-header">
+        <div class="pane-title" style="color: var(--accent-text);">Sanitized Output (Safe for AI)</div>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-copy-output">Copy Sanitized Text</button>
+      </div>
+      <div class="sanitized-preview-area" id="output-sanitized"></div>
+      <div class="output-footer-metrics">
+        <span class="pill-label">Stripped:</span>
+        <span class="metric-badge" id="m-clients">Clients: <strong>0</strong></span>
+        <span class="metric-badge" id="m-ip">IPs: <strong>0</strong></span>
+        <span class="metric-badge" id="m-email">Emails: <strong>0</strong></span>
+        <span class="metric-badge" id="m-users">Users/SIDs: <strong>0</strong></span>
+        <span class="metric-badge" id="m-domains">Domains: <strong>0</strong></span>
+        <span class="metric-badge" id="m-creds">Keys: <strong>0</strong></span>
+        <span class="metric-badge" id="m-mac">MACs: <strong>0</strong></span>
+        <span class="metric-badge" id="m-pii">PII: <strong>0</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reverse Lookup Table -->
+  <section class="lookup-card">
+    <button type="button" class="lookup-trigger" id="btn-toggle-lookup">
+      <span>Token Lookup Map (<span id="total-mapped-count">0</span> entities anonymized in this session)</span>
+      <span id="arrow-icon" style="transition: transform 0.2s ease;">&#9662;</span>
+    </button>
+    <div class="lookup-content" id="lookup-content">
+      <p style="font-size: 12.5px; color: var(--ink2); margin: 0 0 12px;">
+        Stored strictly in local browser memory. Map tokens like <code>[CLIENT_1]</code> or <code>[IP_1]</code> back to original values after AI analysis.
+      </p>
+      <div style="max-height: 240px; overflow-y: auto;">
+        <table class="lookup-table">
+          <thead>
+            <tr>
+              <th style="width: 190px;">Token</th>
+              <th style="width: 140px;">Category</th>
+              <th>Original Private Value</th>
+            </tr>
+          </thead>
+          <tbody id="lookup-tbody">
+            <tr><td colspan="3" style="text-align: center; color: var(--mute); padding: 16px;">Paste text to generate live mappings.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bento">
+      <div class="footer-col footer-col-brand">
+        <div class="footer-brand-header">
+          <span class="brand-avatar">SF</span>
+          <div class="footer-brand-title">
+            <span class="footer-name">Sheikh <strong>Soban</strong> Fayaz</span>
+            <span class="footer-role">Enterprise SOC &amp; Network Defense</span>
+          </div>
+        </div>
+        <p class="footer-bio">
+          Multi-tenant MSSP SOC Analyst and ISC2 CC certified practitioner specializing in firewall forensics, cross-telemetry correlation, and offline LLM SecOps triage.
+        </p>
+        <div class="footer-status-pill">
+          <span class="pulse-radar-sm"></span>
+          <span>SOC State: Active Defense &bull; Zero Incidents</span>
+        </div>
+        <div class="footer-geo">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span>Jammu and Kashmir, India (IST) &bull; Global &amp; Remote Ready</span>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Navigation</h4>
+        <ul class="footer-links-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="investigations.html">Investigations <span class="nav-badge">17</span></a></li>
+          <li><a href="tools.html">Security Tools <span class="nav-badge">2</span></a></li>
+          <li><a href="cc-simulator.html">CC Exam Simulator</a></li>
+          <li><a href="ai-sanitizer.html">SanitizeAI</a></li>
+          <li><a href="architecture.html">Site Architecture &amp; Design</a></li>
+          <li><a href="contact.html">Contact &amp; Connect</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Secure Channels</h4>
+        <ul class="footer-links-list">
+          <li>
+            <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
+              <span>LinkedIn Profile</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.credly.com/badges/1d1902d2-5a61-4795-b01a-6ee418bbfae1" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm4.2 13.3-3.2-1.9-3.2 1.9.8-3.7-2.8-2.5 3.8-.3 1.4-3.5 1.4 3.5 3.8.3-2.8 2.5.8 3.7Z"/></svg>
+              <span>Credly Official Badge</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+              <span>GitHub Projects</span>
+            </a>
+          </li>
+          <li>
+            <a href="mailto:sheikhsobanfayaz@gmail.com">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span>sheikhsobanfayaz@gmail.com</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom-bar">
+      <div class="footer-legal">
+        <span>&copy; 2026 Sheikh <strong>Soban</strong> Fayaz. Built with static-first architecture, zero telemetry, and vendor-neutral SecOps defense.</span>
+      </div>
+      <div class="footer-telemetry">
+        <span class="telemetry-chip">TLS 1.3</span>
+        <span class="telemetry-chip">SHA-256 Validated</span>
+        <button type="button" class="back-to-top-btn" id="backToTopBtn" aria-label="Scroll back to top">
+          <span>Top</span>
+          <span class="top-arrow">&uarr;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site.js"></script>
+<script>
+(function() {
+  const inputTargetClient = document.getElementById('input-target-client');
+  const quickPillsBar = document.getElementById('quick-pills-bar');
+  const btnSaveClientPill = document.getElementById('btn-save-client-pill');
+  const inputRaw = document.getElementById('input-raw');
+  const outputSanitized = document.getElementById('output-sanitized');
+  const statsInput = document.getElementById('stats-input');
+  const lookupTbody = document.getElementById('lookup-tbody');
+  const totalMappedCount = document.getElementById('total-mapped-count');
+  const btnToggleLookup = document.getElementById('btn-toggle-lookup');
+  const lookupContent = document.getElementById('lookup-content');
+  const arrowIcon = document.getElementById('arrow-icon');
+
+  let isConsistentMode = true;
+  let lastPlainSanitized = '';
+
+  const DEFAULT_SAVED_CLIENTS = ['ABC_Client', 'Acme Corp', 'Starlight Health'];
+  let savedClientList = JSON.parse(localStorage.getItem('user_saved_client_pills') || JSON.stringify(DEFAULT_SAVED_CLIENTS));
+
+  const tokenMap = new Map();
+  const reverseMap = new Map();
+  let tokenCounters = { CLIENT: 1, IP: 1, EMAIL: 1, USER: 1, DOMAIN: 1, KEY: 1, MAC: 1, PII: 1 };
+  let metrics = { clients: 0, ip: 0, email: 0, users: 0, domains: 0, creds: 0, mac: 0, pii: 0 };
+
+  const REGEX_IPV4 = /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\/\d{1,2})?\b/g;
+  const REGEX_IPV6 = /\b(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}\b|\b(?:[A-Fa-f0-9]{1,4}:){1,7}:|:(?::[A-Fa-f0-9]{1,4}){1,7}\b/g;
+  const WHITELIST_IPS = new Set(['0.0.0.0', '127.0.0.1', '255.255.255.255']);
+  const REGEX_EMAIL = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;
+  const REGEX_WIN_USER_FULL = /\b[A-Za-z0-9_-]{2,15}\\[A-Za-z0-9._-]{2,25}\b/g;
+  const REGEX_WIN_SID = /\bS-1-[0-59]-\d{2}-\d{8,10}-\d{8,10}-\d{8,10}-\d{3,5}\b/g;
+  const REGEX_BEARER = /\b(?:bearer|token|apikey|api_key|client_secret|password|passwd|pwd)\s*[:=]\s*([A-Za-z0-9._~+/-]{8,}=*)/gi;
+  const REGEX_AWS_KEY = /\bAKIA[0-9A-Z]{16}\b/g;
+  const REGEX_JWT = /\beyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*\b/g;
+  const REGEX_PRIVATE_KEY = /-----BEGIN[ A-Z0-9_-]+PRIVATE KEY-----[\s\S]*?-----END[ A-Z0-9_-]+PRIVATE KEY-----/g;
+  const REGEX_MAC = /\b(?:[0-9A-Fa-f]{2}[:-]){5}(?:[0-9A-Fa-f]{2})\b|\b[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\b/g;
+  const REGEX_INTERNAL_HOSTS = /\b[a-zA-Z0-9-]+\.(?:corp|local|internal|lan|intranet|domain|priv)\b/gi;
+  const REGEX_URLS = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
+  const WHITELIST_DOMAINS = new Set(['microsoft.com', 'google.com', 'virustotal.com', 'github.com', 'linkedin.com']);
+  const REGEX_CREDIT_CARD = /\b(?:\d{4}[-\s]?){3}\d{4}\b/g;
+  const REGEX_SSN = /\b\d{3}-\d{2}-\d{4}\b/g;
+  const REGEX_PHONE = /\b(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+  }
+
+  function getToken(originalValue, type) {
+    if (isConsistentMode) {
+      if (tokenMap.has(originalValue)) return tokenMap.get(originalValue);
+      const token = `[${type}_${tokenCounters[type]++}]`;
+      tokenMap.set(originalValue, token);
+      reverseMap.set(token, { original: originalValue, type });
+      return token;
+    }
+    return `[REDACTED_${type}]`;
+  }
+
+  function generateClientVariations(clientName) {
+    if (!clientName || clientName.trim().length < 2) return [];
+    const base = clientName.trim();
+    const variations = new Set([
+      base,
+      base.replace(/[_\-]+/g, ' '),
+      base.replace(/[\s\-]+/g, '_'),
+      base.replace(/[\s_]+/g, '-'),
+      base.replace(/[\s_\-]+/g, '')
+    ]);
+    const strippedSuffix = base.replace(/\b(inc|corp|corporation|llc|ltd|limited|group|bank|technologies|tech|solutions|systems|health)\b/gi, '').trim();
+    if (strippedSuffix.length >= 2 && strippedSuffix !== base) {
+      variations.add(strippedSuffix);
+      variations.add(strippedSuffix.replace(/[_\-]+/g, ' '));
+      variations.add(strippedSuffix.replace(/[\s_\-]+/g, ''));
+      variations.add(strippedSuffix.replace(/[\s\-]+/g, '_'));
+      variations.add(strippedSuffix.replace(/[\s_]+/g, '-'));
+    }
+    return Array.from(variations).filter(v => v.length >= 2).sort((a, b) => b.length - a.length);
+  }
+
+  function sanitizeText(raw) {
+    tokenMap.clear();
+    reverseMap.clear();
+    tokenCounters = { CLIENT: 1, IP: 1, EMAIL: 1, USER: 1, DOMAIN: 1, KEY: 1, MAC: 1, PII: 1 };
+    metrics = { clients: 0, ip: 0, email: 0, users: 0, domains: 0, creds: 0, mac: 0, pii: 0 };
+
+    if (!raw) return '';
+    let clean = raw;
+
+    if (document.getElementById('toggle-clients').checked) {
+      const targetClient = inputTargetClient.value.trim();
+      if (targetClient.length >= 2) {
+        generateClientVariations(targetClient).forEach(variation => {
+          const esc = variation.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+          clean = clean.replace(new RegExp(esc, 'gi'), (matched) => {
+            metrics.clients++;
+            return getToken(matched, 'CLIENT');
+          });
+        });
+      }
+    }
+
+    if (document.getElementById('toggle-creds').checked) {
+      clean = clean.replace(REGEX_PRIVATE_KEY, () => { metrics.creds++; return getToken('[CERTIFICATE_PRIVATE_KEY_BLOCK]', 'KEY'); });
+      clean = clean.replace(REGEX_JWT, (m) => { metrics.creds++; return getToken(m, 'KEY'); });
+      clean = clean.replace(REGEX_AWS_KEY, (m) => { metrics.creds++; return getToken(m, 'KEY'); });
+      clean = clean.replace(REGEX_BEARER, (match, secretVal) => {
+        metrics.creds++;
+        return match.replace(secretVal, getToken(secretVal, 'KEY'));
+      });
+    }
+
+    if (document.getElementById('toggle-users').checked) {
+      clean = clean.replace(REGEX_WIN_SID, (m) => { metrics.users++; return getToken(m, 'USER'); });
+      clean = clean.replace(REGEX_WIN_USER_FULL, (m) => { metrics.users++; return getToken(m, 'USER'); });
+    }
+
+    if (document.getElementById('toggle-email').checked) {
+      clean = clean.replace(REGEX_EMAIL, (m) => { metrics.email++; return getToken(m, 'EMAIL'); });
+    }
+
+    if (document.getElementById('toggle-ip').checked) {
+      clean = clean.replace(REGEX_IPV4, (m) => {
+        if (WHITELIST_IPS.has(m)) return m;
+        metrics.ip++;
+        return getToken(m, 'IP');
+      });
+      clean = clean.replace(REGEX_IPV6, (m) => {
+        if (m === '::1') return m;
+        metrics.ip++;
+        return getToken(m, 'IP');
+      });
+    }
+
+    if (document.getElementById('toggle-mac').checked) {
+      clean = clean.replace(REGEX_MAC, (m) => { metrics.mac++; return getToken(m, 'MAC'); });
+    }
+
+    if (document.getElementById('toggle-domains').checked) {
+      clean = clean.replace(REGEX_INTERNAL_HOSTS, (m) => { metrics.domains++; return getToken(m, 'DOMAIN'); });
+      clean = clean.replace(REGEX_URLS, (m) => {
+        for (const w of WHITELIST_DOMAINS) { if (m.includes(w)) return m; }
+        metrics.domains++;
+        return getToken(m, 'DOMAIN');
+      });
+    }
+
+    if (document.getElementById('toggle-pii').checked) {
+      clean = clean.replace(REGEX_CREDIT_CARD, (m) => { metrics.pii++; return getToken(m, 'PII'); });
+      clean = clean.replace(REGEX_SSN, (m) => { metrics.pii++; return getToken(m, 'PII'); });
+      clean = clean.replace(REGEX_PHONE, (m) => { metrics.pii++; return getToken(m, 'PII'); });
+    }
+
+    return clean;
+  }
+
+  function renderHighlighted(text) {
+    const escaped = escapeHtml(text);
+    return escaped.replace(/\[(CLIENT|IP|EMAIL|USER|DOMAIN|KEY|MAC|PII)_\d+\]|\[REDACTED_(CLIENT|IP|EMAIL|USER|DOMAIN|KEY|MAC|PII)\]/g, (tok) => {
+      const isClient = tok.includes('CLIENT');
+      return `<span class="token-pill ${isClient ? 'token-client' : ''}">${tok}</span>`;
+    });
+  }
+
+  function runLiveSanitization() {
+    const raw = inputRaw.value;
+    const lineCount = raw ? raw.split('\n').length : 0;
+    statsInput.textContent = `${raw.length} chars \u2022 ${lineCount} lines`;
+
+    lastPlainSanitized = sanitizeText(raw);
+    outputSanitized.innerHTML = lastPlainSanitized
+      ? renderHighlighted(lastPlainSanitized)
+      : '<span style="color: var(--mute);">Sanitized output will appear here...</span>';
+
+    document.getElementById('m-clients').innerHTML = `Clients: <strong>${metrics.clients}</strong>`;
+    document.getElementById('m-ip').innerHTML = `IPs: <strong>${metrics.ip}</strong>`;
+    document.getElementById('m-email').innerHTML = `Emails: <strong>${metrics.email}</strong>`;
+    document.getElementById('m-users').innerHTML = `Users/SIDs: <strong>${metrics.users}</strong>`;
+    document.getElementById('m-domains').innerHTML = `Domains: <strong>${metrics.domains}</strong>`;
+    document.getElementById('m-creds').innerHTML = `Keys: <strong>${metrics.creds}</strong>`;
+    document.getElementById('m-mac').innerHTML = `MACs: <strong>${metrics.mac}</strong>`;
+    document.getElementById('m-pii').innerHTML = `PII: <strong>${metrics.pii}</strong>`;
+
+    renderLookupTable();
+    highlightActivePill();
+  }
+
+  function renderQuickPills() {
+    quickPillsBar.querySelectorAll('.client-pill-btn').forEach(p => p.remove());
+    savedClientList.forEach((cName, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'client-pill-btn';
+      btn.innerHTML = `<span>${escapeHtml(cName)}</span><span style="font-size:10px; opacity:0.7;" data-del="${idx}">&#10005;</span>`;
+      btn.addEventListener('click', (e) => {
+        if (e.target && e.target.hasAttribute('data-del')) {
+          e.stopPropagation();
+          savedClientList.splice(idx, 1);
+          localStorage.setItem('user_saved_client_pills', JSON.stringify(savedClientList));
+          renderQuickPills();
+          return;
+        }
+        inputTargetClient.value = cName;
+        runLiveSanitization();
+      });
+      quickPillsBar.appendChild(btn);
+    });
+    highlightActivePill();
+  }
+
+  function highlightActivePill() {
+    const curVal = inputTargetClient.value.trim().toLowerCase();
+    quickPillsBar.querySelectorAll('.client-pill-btn').forEach(p => {
+      const text = p.querySelector('span').textContent.trim().toLowerCase();
+      p.classList.toggle('active', text === curVal);
+    });
+  }
+
+  function renderLookupTable() {
+    totalMappedCount.textContent = reverseMap.size;
+    lookupTbody.innerHTML = '';
+    if (reverseMap.size === 0) {
+      lookupTbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--mute); padding:16px;">No sensitive entities detected yet.</td></tr>';
+      return;
+    }
+    reverseMap.forEach((meta, token) => {
+      const isClient = meta.type === 'CLIENT';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="token-pill ${isClient ? 'token-client' : ''}">${escapeHtml(token)}</span></td>
+        <td style="color:${isClient ? '#FDA4AF' : 'var(--ink2)'}; font-weight:700;">${escapeHtml(meta.type)}</td>
+        <td style="color:var(--ink);">${escapeHtml(meta.original)}</td>`;
+      lookupTbody.appendChild(tr);
+    });
+  }
+
+  function copyCleanedOutput() {
+    if (!lastPlainSanitized.trim()) {
+      showToast('Paste raw text on the left first.');
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lastPlainSanitized).then(() => showToast('Sanitized text copied! Safe for AI.')).catch(() => fallbackCopy(lastPlainSanitized));
+    } else {
+      fallbackCopy(lastPlainSanitized);
+    }
+  }
+
+  function loadSampleAlert() {
+    inputTargetClient.value = 'ABC_Client';
+    inputRaw.value = `[CRITICAL SECURITY ALERT]
+Log Source: Microsoft Sentinel / EDR Sensor
+Incident: Privilege Escalation detected for customer ABC_Client.
+Affected Machine: WS-ABC_Client-091.corp.internal (MAC: 00:1A:2B:3C:4D:5E, IP: 192.168.10.45)
+Public C2 Destination IP: 198.51.100.22:443
+Target Database Server: DB-PROD-01.abc_client.internal (IP: 10.200.4.15)
+
+Identity Context:
+User Account: ABC_CLIENT\\administrator
+Subject Email: admin@abcclient.com
+Contact Auditor: security-lead@abc_client.com
+
+Extracted Credentials from Memory Dump:
+AWS Access Key: AKIAIOSFODNN7EXAMPLE
+JWT Bearer Token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNvYmFuIn0.sflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+Database Root Password: Pwd_Summer2026!BankClean
+
+Analyst Triage Note:
+Investigated lateral movement on ABC Client network. Host 192.168.10.45 beaconed to 198.51.100.22 after user ABC_CLIENT\\administrator executed an unvetted script.`;
+    runLiveSanitization();
+  }
+
+  inputTargetClient.addEventListener('input', runLiveSanitization);
+  inputRaw.addEventListener('input', runLiveSanitization);
+  btnSaveClientPill.addEventListener('click', () => {
+    const val = inputTargetClient.value.trim();
+    if (val && !savedClientList.map(s => s.toLowerCase()).includes(val.toLowerCase())) {
+      savedClientList.push(val);
+      localStorage.setItem('user_saved_client_pills', JSON.stringify(savedClientList));
+      renderQuickPills();
+      showToast('Saved client quick pick: ' + val);
+    }
+  });
+
+  document.getElementById('btn-copy-top').addEventListener('click', copyCleanedOutput);
+  document.getElementById('btn-copy-output').addEventListener('click', copyCleanedOutput);
+  document.getElementById('btn-load-sample').addEventListener('click', loadSampleAlert);
+  document.getElementById('btn-clear-input').addEventListener('click', () => {
+    inputRaw.value = '';
+    runLiveSanitization();
+  });
+  document.getElementById('btn-paste-clipboard').addEventListener('click', async () => {
+    try {
+      inputRaw.value = await navigator.clipboard.readText();
+      runLiveSanitization();
+    } catch (e) {
+      inputRaw.focus();
+      showToast('Press Ctrl+V inside the raw input box.');
+    }
+  });
+
+  document.querySelectorAll('.toggle-pill input').forEach(input => {
+    input.addEventListener('change', (e) => {
+      e.target.parentElement.classList.toggle('active', e.target.checked);
+      runLiveSanitization();
+    });
+  });
+
+  document.getElementById('btn-mode-token').addEventListener('click', () => {
+    isConsistentMode = true;
+    document.getElementById('btn-mode-token').classList.add('active');
+    document.getElementById('btn-mode-generic').classList.remove('active');
+    runLiveSanitization();
+  });
+
+  document.getElementById('btn-mode-generic').addEventListener('click', () => {
+    isConsistentMode = false;
+    document.getElementById('btn-mode-generic').classList.add('active');
+    document.getElementById('btn-mode-token').classList.remove('active');
+    runLiveSanitization();
+  });
+
+  btnToggleLookup.addEventListener('click', () => {
+    const isHidden = lookupContent.style.display === 'none' || !lookupContent.style.display;
+    lookupContent.style.display = isHidden ? 'block' : 'none';
+    arrowIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+  });
+
+  renderQuickPills();
+  loadSampleAlert();
+})();
+</script>
+</body>
+</html>

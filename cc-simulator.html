@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISC2 CC Exam Simulator | Sheikh Soban Fayaz</title>
+<meta name="description" content="Static ISC2 Certified in Cybersecurity (CC) practice exam simulator with instant right/wrong explanations across all 5 domains.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.sim-shell {
+  padding: 42px 0 80px;
+}
+.sim-card {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px;
+}
+.sim-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.sim-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(24px, 3.8vw, 34px);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+.sim-subtitle {
+  font-size: 15.5px;
+  color: var(--ink2);
+  margin: 0 0 26px;
+  line-height: 1.6;
+}
+.sim-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-text);
+  margin-bottom: 10px;
+  display: block;
+}
+.count-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.count-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 14px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--hair);
+  background: var(--surface-elevated);
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Space Grotesk', sans-serif;
+}
+.count-btn strong {
+  font-size: 20px;
+  line-height: 1.1;
+}
+.count-btn span {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--mute);
+}
+.count-btn:hover {
+  border-color: var(--accent-text);
+  transform: translateY(-2px);
+}
+.count-btn.active {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.22), rgba(99, 102, 241, 0.22));
+  border-color: var(--accent-text);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35), 0 10px 24px -10px rgba(14, 165, 233, 0.45);
+}
+.count-btn.active span {
+  color: var(--accent-text);
+}
+.custom-count-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+.custom-count-input {
+  width: 110px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--hair);
+  background: var(--surface-elevated);
+  color: var(--ink);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  outline: none;
+}
+.custom-count-input:focus {
+  border-color: var(--accent-text);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.domain-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.domain-pill {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 7px 13px;
+  border-radius: 9999px;
+  border: 1px solid var(--hair);
+  background: var(--surface-elevated);
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.domain-pill:hover {
+  border-color: var(--accent-text);
+  color: var(--accent-text);
+}
+.domain-pill.active {
+  background: linear-gradient(135deg, #0284C7 0%, #4F46E5 100%);
+  color: #FFFFFF;
+  border-color: transparent;
+}
+.sim-start-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  border-top: 1px solid var(--hair);
+}
+.toggle-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--ink2);
+  cursor: pointer;
+  user-select: none;
+}
+.toggle-row input {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* Runner */
+.quiz-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.quiz-progress-track {
+  width: 100%;
+  height: 7px;
+  background: var(--surface-elevated);
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid var(--hair);
+  margin-bottom: 24px;
+}
+.quiz-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-text), var(--accent-2), var(--emerald));
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.quiz-question {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(18px, 2.5vw, 22px);
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0 0 22px;
+}
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.option-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 15px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--hair);
+  background: var(--surface-elevated);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.option-btn:hover:not(:disabled) {
+  border-color: var(--accent-text);
+  background: rgba(14, 165, 233, 0.1);
+  transform: translateX(4px);
+}
+.option-btn:disabled {
+  cursor: default;
+}
+.opt-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(148, 179, 219, 0.1);
+  border: 1px solid var(--hair);
+  color: var(--accent-text);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.option-btn.correct {
+  border-color: var(--emerald);
+  background: rgba(16, 185, 129, 0.14);
+}
+.option-btn.correct .opt-letter {
+  background: var(--emerald);
+  border-color: var(--emerald);
+  color: #04130D;
+}
+.option-btn.wrong {
+  border-color: var(--danger);
+  background: rgba(244, 63, 94, 0.14);
+}
+.option-btn.wrong .opt-letter {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #FFFFFF;
+}
+.option-btn.dimmed {
+  opacity: 0.6;
+}
+
+/* Explanation Panel */
+.feedback-panel {
+  margin-top: 22px;
+  padding: 20px 22px;
+  border-radius: 14px;
+  border: 1px solid var(--hair);
+  background: rgba(8, 13, 26, 0.92);
+  animation: floatDown 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.feedback-panel.is-correct {
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 10px 30px -14px rgba(16, 185, 129, 0.35);
+}
+.feedback-panel.is-wrong {
+  border-color: rgba(244, 63, 94, 0.45);
+  box-shadow: 0 10px 30px -14px rgba(244, 63, 94, 0.35);
+}
+.feedback-verdict {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.feedback-verdict.ok { color: #34D399; }
+.feedback-verdict.bad { color: #FB7185; }
+.feedback-block {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(18, 27, 48, 0.72);
+  border: 1px solid var(--hair);
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.6;
+}
+.feedback-block strong {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.feedback-block.why-ok strong { color: #34D399; }
+.feedback-block.why-bad strong { color: #FB7185; }
+.feedback-block.tip strong { color: var(--accent-text); }
+
+.quiz-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+}
+
+/* Summary */
+.score-hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 24px;
+  border-radius: 14px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--hair);
+  margin-bottom: 24px;
+}
+.score-circle {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(99, 102, 241, 0.18));
+  border: 3px solid var(--accent-text);
+  flex-shrink: 0;
+}
+.score-circle strong {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  color: var(--ink);
+  line-height: 1;
+}
+.score-circle span {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink2);
+  margin-top: 4px;
+}
+.domain-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.domain-bar-row {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--hair);
+}
+.domain-bar-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.domain-bar-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(148, 179, 219, 0.12);
+  overflow: hidden;
+}
+.domain-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-text), var(--emerald));
+}
+.review-item {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--hair);
+  background: var(--surface-elevated);
+  margin-bottom: 12px;
+}
+.review-item.missed {
+  border-left: 4px solid var(--danger);
+}
+.review-item.passed {
+  border-left: 4px solid var(--emerald);
+}
+
+@media (max-width: 640px) {
+  .sim-card {
+    padding: 20px;
+  }
+  .count-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+</style>
+</head>
+<body>
+<div class="scroll-progress-bar"></div>
+<div class="cyber-video-bg-container" aria-hidden="true">
+  <video class="cyber-video-bg" autoplay loop muted playsinline preload="auto" poster="assets/cyber-hacker-poster.jpg">
+    <source src="assets/cyber-hacker-bg.mp4" type="video/mp4">
+  </video>
+  <div class="cyber-video-overlay"></div>
+</div>
+
+<header class="site-header-wrap">
+  <div class="nav-container">
+    <nav class="nav-island" aria-label="Primary Navigation">
+      <a href="index.html" class="nav-brand" aria-label="Sheikh Soban Fayaz Home">
+        <div class="brand-avatar-box">
+          <span class="avatar-monogram">SF</span>
+          <span class="pulse-radar" title="SOC Security Analyst Active"></span>
+        </div>
+        <div class="brand-info">
+          <span class="brand-name">Sheikh <strong>Soban</strong> Fayaz</span>
+          <span class="brand-tag">SOC &bull; Network Security</span>
+        </div>
+      </a>
+
+      <div class="desktop-nav" role="menubar">
+        <div class="nav-item">
+          <a href="index.html" class="nav-link">Home <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Home Sections</div>
+            <a href="index.html#terminal"><span class="dd-icon">&gt;_</span><span class="dd-text"><span class="dd-title">SOC Triage Terminal</span><span class="dd-sub">Interactive KQL &amp; PCAP simulator</span></span></a>
+            <a href="index.html#experience"><span class="dd-icon">01</span><span class="dd-text"><span class="dd-title">Background &amp; Trajectory</span><span class="dd-sub">MSSP SOC &amp; network roots</span></span></a>
+            <a href="index.html#projects"><span class="dd-icon">02</span><span class="dd-text"><span class="dd-title">Featured Write-Ups</span><span class="dd-sub">Highlighted incident playbooks</span></span></a>
+            <a href="index.html#mitre"><span class="dd-icon">03</span><span class="dd-text"><span class="dd-title">MITRE ATT&amp;CK Matrix</span><span class="dd-sub">Technique coverage navigator</span></span></a>
+            <a href="index.html#methodology"><span class="dd-icon">04</span><span class="dd-text"><span class="dd-title">Methodology &amp; Capabilities</span><span class="dd-sub">SecOps workflow &amp; toolstack</span></span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="investigations.html" class="nav-link">Investigations <span class="nav-badge">17</span> <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Incident Write-Ups</div>
+            <a href="investigations.html"><span class="dd-icon">17</span><span class="dd-text"><span class="dd-title">All Investigations</span><span class="dd-sub">Browse &amp; filter full case hub</span></span></a>
+            <a href="investigations.html?cat=network"><span class="dd-icon">NW</span><span class="dd-text"><span class="dd-title">Network &amp; Perimeter</span><span class="dd-sub">Firewalls, VPN, Layer 2 &amp; WAF</span></span></a>
+            <a href="investigations.html?cat=siem"><span class="dd-icon">KQL</span><span class="dd-text"><span class="dd-title">SIEM &amp; Detection</span><span class="dd-sub">Sentinel, Sysmon &amp; Cloud DLP</span></span></a>
+            <a href="investigations.html?cat=ai"><span class="dd-icon">AI</span><span class="dd-text"><span class="dd-title">AI &amp; Automation</span><span class="dd-sub">Unsloth LoRA &amp; triage harnesses</span></span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="tools.html" class="nav-link active">Tools <span class="nav-badge">2</span> <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Developed by Soban</div>
+            <a href="cc-simulator.html"><span class="dd-icon">CC</span><span class="dd-text"><span class="dd-title">ISC2 CC Exam Simulator</span><span class="dd-sub">Practice quiz with instant explanations</span></span></a>
+            <a href="ai-sanitizer.html"><span class="dd-icon">AI</span><span class="dd-text"><span class="dd-title">SanitizeAI Log Stripper</span><span class="dd-sub">100% local PII &amp; client redactor</span></span></a>
+            <a href="tools.html"><span class="dd-icon">ALL</span><span class="dd-text"><span class="dd-title">All Security Tools</span><span class="dd-sub">Utility hub &amp; upcoming builds</span></span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="architecture.html" class="nav-link">Architecture <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Site Engineering</div>
+            <a href="architecture.html#philosophy"><span class="dd-icon">01</span><span class="dd-text"><span class="dd-title">Zero-Surface Threat Model</span><span class="dd-sub">Static edge &amp; zero telemetry</span></span></a>
+            <a href="architecture.html#bento"><span class="dd-icon">02</span><span class="dd-text"><span class="dd-title">Four Architectural Planes</span><span class="dd-sub">Data, sandbox &amp; GPU pipeline</span></span></a>
+            <a href="architecture.html#pipeline"><span class="dd-icon">03</span><span class="dd-text"><span class="dd-title">CI/CD Quality Gates</span><span class="dd-sub">Automated verification &amp; deploy</span></span></a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="contact.html" class="nav-link">Contact <span class="nav-caret">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu">
+            <div class="nav-dropdown-label">Direct Channels</div>
+            <a href="contact.html#message-form"><span class="dd-icon">MSG</span><span class="dd-text"><span class="dd-title">Send a Message</span><span class="dd-sub">Open direct contact form</span></span></a>
+            <a href="contact.html#channels"><span class="dd-icon">ID</span><span class="dd-text"><span class="dd-title">LinkedIn &amp; Email</span><span class="dd-sub">Verified links &amp; location</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="icon-btn linkedin-nav-btn" aria-label="LinkedIn Profile" title="LinkedIn Profile">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
+        </a>
+        <a href="contact.html" class="nav-cta-btn">Connect <span class="cta-arrow">&rarr;</span></a>
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle mobile navigation menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-brand-row">
+        <div class="mobile-status-indicator">
+          <span class="pulse-radar-sm"></span>
+          <span>Security Operations Ready</span>
+        </div>
+      </div>
+      <div class="mobile-nav-links">
+        <div class="mobile-nav-group">
+          <a href="index.html"><span>Home</span><span>&rarr;</span></a>
+          <a href="index.html#terminal" class="mobile-sublink"><span>&gt;_ Interactive SOC Terminal</span><span>&rarr;</span></a>
+          <a href="index.html#mitre" class="mobile-sublink"><span>MITRE ATT&amp;CK Coverage</span><span>&rarr;</span></a>
+        </div>
+        <a href="investigations.html"><span>Investigations &amp; Case Studies</span><span class="nav-badge">17</span></a>
+        <div class="mobile-nav-group">
+          <a href="tools.html" class="active"><span>Security Tools</span><span class="nav-badge">2</span></a>
+          <a href="cc-simulator.html" class="mobile-sublink"><span>1. ISC2 CC Exam Simulator</span><span>&rarr;</span></a>
+          <a href="ai-sanitizer.html" class="mobile-sublink"><span>2. SanitizeAI Log Stripper</span><span>&rarr;</span></a>
+        </div>
+        <a href="architecture.html"><span>Site Architecture &amp; Engineering</span><span>&rarr;</span></a>
+        <a href="contact.html"><span>Contact &amp; Connect</span><span>&rarr;</span></a>
+      </div>
+      <div class="mobile-menu-footer">
+        <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">
+          Connect on LinkedIn &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container sim-shell">
+  <!-- Setup Menu -->
+  <section id="setupView" class="card sim-card">
+    <div class="sim-header-row">
+      <div class="eyebrow-badge" style="margin-bottom: 0;">
+        <div class="status-dot-wrap">
+          <span class="status-dot-ping"></span>
+          <span class="status-dot"></span>
+        </div>
+        <span>ISC2 CC Exam Simulator &bull; Static &amp; Offline</span>
+      </div>
+      <a href="tools.html" class="btn btn-sm">&larr; All Tools</a>
+    </div>
+
+    <h1 class="sim-title">ISC2 Certified in Cybersecurity Practice</h1>
+    <p class="sim-subtitle">
+      Pick how many questions you want to practice and jump straight in. After every answer, you will see immediately why your choice is correct or wrong, along with an exam tip.
+    </p>
+
+    <span class="sim-section-label">1. How many questions do you want?</span>
+    <div class="count-grid" id="countPresets">
+      <button type="button" class="count-btn" data-count-val="10"><strong>10</strong><span>Quick Drill</span></button>
+      <button type="button" class="count-btn active" data-count-val="25"><strong>25</strong><span>Focused</span></button>
+      <button type="button" class="count-btn" data-count-val="50"><strong>50</strong><span>Half Exam</span></button>
+      <button type="button" class="count-btn" data-count-val="100"><strong>100</strong><span>Full Mock</span></button>
+      <button type="button" class="count-btn" data-count-val="999"><strong>All</strong><span id="allCountLabel">143 Bank</span></button>
+    </div>
+
+    <div class="custom-count-row">
+      <label for="customCountInput" style="font-size: 13.5px; color: var(--ink2);">Or enter a custom count:</label>
+      <input type="number" id="customCountInput" class="custom-count-input" min="1" max="143" value="25">
+      <span id="availableInfo" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mute);">143 questions available</span>
+    </div>
+
+    <span class="sim-section-label">2. Filter by ISC2 CC Domain (Optional)</span>
+    <div class="domain-pills" id="domainPills">
+      <button type="button" class="domain-pill active" data-domain="all">All 5 Domains (143)</button>
+      <button type="button" class="domain-pill" data-domain="1">D1: Security Principles</button>
+      <button type="button" class="domain-pill" data-domain="2">D2: Security Governance</button>
+      <button type="button" class="domain-pill" data-domain="3">D3: IAM Concepts</button>
+      <button type="button" class="domain-pill" data-domain="4">D4: Networking &amp; Cloud</button>
+      <button type="button" class="domain-pill" data-domain="5">D5: SecOps &amp; IR</button>
+    </div>
+
+    <div class="sim-start-footer">
+      <label class="toggle-row">
+        <input type="checkbox" id="shuffleToggle" checked>
+        <span>Shuffle questions &amp; answer order</span>
+      </label>
+      <button type="button" id="startExamBtn" class="btn btn-primary">Start Practice Session &rarr;</button>
+    </div>
+  </section>
+
+  <!-- Active Quiz Runner -->
+  <section id="quizView" class="card sim-card" style="display: none;">
+    <div class="quiz-topbar">
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <span id="qCounterBadge" class="project-cat" style="margin: 0;">Question 1 of 25</span>
+        <span id="qDomainBadge" class="tag" style="margin: 0;">Domain 1</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span id="liveScoreBadge" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--accent-text);">Score: 0 / 0</span>
+        <button type="button" id="quitExamBtn" class="btn btn-sm">Menu</button>
+      </div>
+    </div>
+
+    <div class="quiz-progress-track">
+      <div class="quiz-progress-fill" id="quizProgressFill"></div>
+    </div>
+
+    <h2 class="quiz-question" id="quizQuestionText"></h2>
+    <div class="options-list" id="optionsList"></div>
+
+    <div id="feedbackPanel" class="feedback-panel" style="display: none;">
+      <div class="feedback-verdict" id="feedbackVerdict"></div>
+      <div class="feedback-block why-bad" id="whyWrongBox" style="display: none;">
+        <strong>Why Your Selection Was Wrong</strong>
+        <div id="whyWrongText"></div>
+      </div>
+      <div class="feedback-block why-ok">
+        <strong>Why The Correct Answer Works</strong>
+        <div id="whyCorrectText"></div>
+      </div>
+      <div class="feedback-block tip" id="examTipBox">
+        <strong>Exam Tip</strong>
+        <div id="examTipText"></div>
+      </div>
+      <div style="margin-top: 12px;">
+        <button type="button" id="toggleAllWhyBtn" class="btn btn-sm">Show why all other options are wrong</button>
+        <div id="allWhyBox" style="display: none; margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <div class="quiz-nav-row">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--mute);">Tip: Press keys 1-4 to answer, Enter for next</span>
+      <button type="button" id="nextQuestionBtn" class="btn btn-primary" style="display: none;">Next Question &rarr;</button>
+    </div>
+  </section>
+
+  <!-- Results View -->
+  <section id="resultsView" class="card sim-card" style="display: none;">
+    <div class="sim-header-row">
+      <span class="project-cat" style="margin: 0;">Session Complete</span>
+      <button type="button" id="backToMenuBtn" class="btn btn-sm">&larr; New Question Count</button>
+    </div>
+
+    <div class="score-hero">
+      <div class="score-circle">
+        <strong id="finalPercent">0%</strong>
+        <span id="finalFraction">0 / 0</span>
+      </div>
+      <div style="flex: 1; min-width: 220px;">
+        <h2 id="resultHeadline" style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin: 0 0 6px; color: var(--ink);"></h2>
+        <p id="resultSubtext" style="font-size: 14.5px; color: var(--ink2); margin: 0;"></p>
+      </div>
+    </div>
+
+    <span class="sim-section-label">Accuracy by Domain</span>
+    <div class="domain-breakdown" id="domainBreakdown"></div>
+
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
+      <button type="button" id="retryMissedBtn" class="btn btn-primary" style="display: none;">Practice Missed Questions</button>
+      <button type="button" id="restartSameBtn" class="btn">Start Fresh Set</button>
+      <button type="button" id="toggleMissedOnlyBtn" class="btn">Show Missed Only</button>
+    </div>
+
+    <span class="sim-section-label">Question-by-Question Review</span>
+    <div id="reviewList"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bento">
+      <div class="footer-col footer-col-brand">
+        <div class="footer-brand-header">
+          <span class="brand-avatar">SF</span>
+          <div class="footer-brand-title">
+            <span class="footer-name">Sheikh <strong>Soban</strong> Fayaz</span>
+            <span class="footer-role">Enterprise SOC &amp; Network Defense</span>
+          </div>
+        </div>
+        <p class="footer-bio">
+          Multi-tenant MSSP SOC Analyst and ISC2 CC certified practitioner specializing in firewall forensics, cross-telemetry correlation, and offline LLM SecOps triage.
+        </p>
+        <div class="footer-status-pill">
+          <span class="pulse-radar-sm"></span>
+          <span>SOC State: Active Defense &bull; Zero Incidents</span>
+        </div>
+        <div class="footer-geo">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span>Jammu and Kashmir, India (IST) &bull; Global &amp; Remote Ready</span>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Navigation</h4>
+        <ul class="footer-links-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="investigations.html">Investigations <span class="nav-badge">17</span></a></li>
+          <li><a href="tools.html">Security Tools <span class="nav-badge">2</span></a></li>
+          <li><a href="cc-simulator.html">CC Exam Simulator</a></li>
+          <li><a href="ai-sanitizer.html">SanitizeAI</a></li>
+          <li><a href="architecture.html">Site Architecture &amp; Design</a></li>
+          <li><a href="contact.html">Contact &amp; Connect</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Secure Channels</h4>
+        <ul class="footer-links-list">
+          <li>
+            <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
+              <span>LinkedIn Profile</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.credly.com/badges/1d1902d2-5a61-4795-b01a-6ee418bbfae1" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm4.2 13.3-3.2-1.9-3.2 1.9.8-3.7-2.8-2.5 3.8-.3 1.4-3.5 1.4 3.5 3.8.3-2.8 2.5.8 3.7Z"/></svg>
+              <span>Credly Official Badge</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+              <span>GitHub Projects</span>
+            </a>
+          </li>
+          <li>
+            <a href="mailto:sheikhsobanfayaz@gmail.com">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span>sheikhsobanfayaz@gmail.com</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom-bar">
+      <div class="footer-legal">
+        <span>&copy; 2026 Sheikh <strong>Soban</strong> Fayaz. Built with static-first architecture, zero telemetry, and vendor-neutral SecOps defense.</span>
+      </div>
+      <div class="footer-telemetry">
+        <span class="telemetry-chip">TLS 1.3</span>
+        <span class="telemetry-chip">SHA-256 Validated</span>
+        <button type="button" class="back-to-top-btn" id="backToTopBtn" aria-label="Scroll back to top">
+          <span>Top</span>
+          <span class="top-arrow">&uarr;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/cc-questions.js"></script>
+<script src="assets/site.js"></script>
+<script>
+(function() {
+  const bank = Array.isArray(window.CC_QUESTIONS) ? window.CC_QUESTIONS : [];
+  const LETTERS = ['A', 'B', 'C', 'D'];
+
+  const setupView = document.getElementById('setupView');
+  const quizView = document.getElementById('quizView');
+  const resultsView = document.getElementById('resultsView');
+  const customCountInput = document.getElementById('customCountInput');
+  const availableInfo = document.getElementById('availableInfo');
+  const allCountLabel = document.getElementById('allCountLabel');
+  const shuffleToggle = document.getElementById('shuffleToggle');
+
+  let selectedDomain = 'all';
+  let sessionQuestions = [];
+  let currentIdx = 0;
+  let score = 0;
+  let answered = false;
+  let history = [];
+  let showMissedOnly = false;
+
+  function shuffleArray(arr) {
+    const copy = arr.slice();
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = copy[i];
+      copy[i] = copy[j];
+      copy[j] = tmp;
+    }
+    return copy;
+  }
+
+  function getPool() {
+    if (selectedDomain === 'all') return bank;
+    const dId = parseInt(selectedDomain, 10);
+    return bank.filter(q => q.domain_id === dId);
+  }
+
+  function updatePoolInfo() {
+    const pool = getPool();
+    const maxN = pool.length;
+    availableInfo.textContent = maxN + ' questions available';
+    allCountLabel.textContent = maxN + ' Bank';
+    customCountInput.max = maxN;
+    if (parseInt(customCountInput.value, 10) > maxN) {
+      customCountInput.value = maxN;
+    }
+  }
+
+  document.querySelectorAll('#countPresets .count-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#countPresets .count-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const val = parseInt(btn.getAttribute('data-count-val'), 10);
+      const maxN = getPool().length;
+      customCountInput.value = val >= maxN ? maxN : val;
+    });
+  });
+
+  customCountInput.addEventListener('input', () => {
+    const v = parseInt(customCountInput.value, 10);
+    document.querySelectorAll('#countPresets .count-btn').forEach(b => {
+      const preset = parseInt(b.getAttribute('data-count-val'), 10);
+      b.classList.toggle('active', preset === v || (preset === 999 && v === getPool().length));
+    });
+  });
+
+  document.querySelectorAll('#domainPills .domain-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('#domainPills .domain-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      selectedDomain = pill.getAttribute('data-domain');
+      updatePoolInfo();
+    });
+  });
+
+  function prepareQuestion(rawQ, doShuffle) {
+    const indexed = rawQ.options.map((text, origIdx) => ({
+      text,
+      origIdx,
+      isCorrect: origIdx === rawQ.correct_index,
+      whyWrong: (rawQ.why_incorrect && rawQ.why_incorrect[String(origIdx)]) || ''
+    }));
+    const opts = doShuffle ? shuffleArray(indexed) : indexed;
+    return {
+      ...rawQ,
+      renderedOptions: opts,
+      renderedCorrectIndex: opts.findIndex(o => o.isCorrect)
+    };
+  }
+
+  function startSession(customList) {
+    const doShuffle = shuffleToggle.checked;
+    let source = customList || getPool();
+    if (doShuffle) source = shuffleArray(source);
+    const requested = customList ? source.length : Math.max(1, Math.min(source.length, parseInt(customCountInput.value, 10) || 25));
+
+    sessionQuestions = source.slice(0, requested).map(q => prepareQuestion(q, doShuffle));
+    currentIdx = 0;
+    score = 0;
+    history = [];
+    answered = false;
+
+    setupView.style.display = 'none';
+    resultsView.style.display = 'none';
+    quizView.style.display = 'block';
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderQuestion() {
+    const q = sessionQuestions[currentIdx];
+    answered = false;
+
+    document.getElementById('qCounterBadge').textContent = `Question ${currentIdx + 1} of ${sessionQuestions.length}`;
+    document.getElementById('qDomainBadge').textContent = q.domain_name;
+    document.getElementById('liveScoreBadge').textContent = `Score: ${score} / ${history.length}`;
+    document.getElementById('quizProgressFill').style.width = `${(currentIdx / sessionQuestions.length) * 100}%`;
+    document.getElementById('quizQuestionText').textContent = q.question;
+
+    const optionsList = document.getElementById('optionsList');
+    optionsList.innerHTML = '';
+    q.renderedOptions.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="opt-letter">${LETTERS[i]}</span><span>${escapeHtml(opt.text)}</span>`;
+      btn.addEventListener('click', () => handleAnswer(i));
+      optionsList.appendChild(btn);
+    });
+
+    document.getElementById('feedbackPanel').style.display = 'none';
+    document.getElementById('allWhyBox').style.display = 'none';
+    document.getElementById('toggleAllWhyBtn').textContent = 'Show why all other options are wrong';
+    document.getElementById('nextQuestionBtn').style.display = 'none';
+  }
+
+  function handleAnswer(chosenIdx) {
+    if (answered) return;
+    answered = true;
+
+    const q = sessionQuestions[currentIdx];
+    const isCorrect = chosenIdx === q.renderedCorrectIndex;
+    if (isCorrect) score++;
+
+    history.push({
+      question: q,
+      chosenIdx,
+      isCorrect
+    });
+
+    const buttons = document.querySelectorAll('#optionsList .option-btn');
+    buttons.forEach((btn, idx) => {
+      btn.disabled = true;
+      if (idx === q.renderedCorrectIndex) {
+        btn.classList.add('correct');
+      } else if (idx === chosenIdx && !isCorrect) {
+        btn.classList.add('wrong');
+      } else {
+        btn.classList.add('dimmed');
+      }
+    });
+
+    document.getElementById('liveScoreBadge').textContent = `Score: ${score} / ${history.length}`;
+    document.getElementById('quizProgressFill').style.width = `${((currentIdx + 1) / sessionQuestions.length) * 100}%`;
+
+    const panel = document.getElementById('feedbackPanel');
+    const verdict = document.getElementById('feedbackVerdict');
+    const whyWrongBox = document.getElementById('whyWrongBox');
+    const whyWrongText = document.getElementById('whyWrongText');
+
+    panel.className = 'feedback-panel ' + (isCorrect ? 'is-correct' : 'is-wrong');
+    verdict.className = 'feedback-verdict ' + (isCorrect ? 'ok' : 'bad');
+    verdict.innerHTML = isCorrect
+      ? `<span>&#10004; Correct! (${LETTERS[q.renderedCorrectIndex]})</span>`
+      : `<span>&#10006; Incorrect &bull; Correct answer is ${LETTERS[q.renderedCorrectIndex]}</span>`;
+
+    if (!isCorrect && q.renderedOptions[chosenIdx].whyWrong) {
+      whyWrongBox.style.display = 'block';
+      whyWrongText.textContent = q.renderedOptions[chosenIdx].whyWrong;
+    } else {
+      whyWrongBox.style.display = 'none';
+    }
+
+    document.getElementById('whyCorrectText').textContent = q.why_correct;
+    const tipBox = document.getElementById('examTipBox');
+    if (q.exam_tip) {
+      tipBox.style.display = 'block';
+      document.getElementById('examTipText').textContent = q.exam_tip;
+    } else {
+      tipBox.style.display = 'none';
+    }
+
+    // Build all wrong option explanations
+    const allWhyHtml = q.renderedOptions.map((opt, idx) => {
+      if (opt.isCorrect) return '';
+      return `<div class="feedback-block why-bad" style="margin-top:8px;"><strong>${LETTERS[idx]}. ${escapeHtml(opt.text)}</strong><div>${escapeHtml(opt.whyWrong || 'Incorrect option for this scenario.')}</div></div>`;
+    }).join('');
+    document.getElementById('allWhyBox').innerHTML = allWhyHtml;
+
+    panel.style.display = 'block';
+
+    const nextBtn = document.getElementById('nextQuestionBtn');
+    nextBtn.textContent = (currentIdx + 1 >= sessionQuestions.length) ? 'Finish & View Score ->' : 'Next Question ->';
+    nextBtn.style.display = 'inline-flex';
+  }
+
+  document.getElementById('toggleAllWhyBtn').addEventListener('click', () => {
+    const box = document.getElementById('allWhyBox');
+    const hidden = box.style.display === 'none';
+    box.style.display = hidden ? 'block' : 'none';
+    document.getElementById('toggleAllWhyBtn').textContent = hidden
+      ? 'Hide other option explanations'
+      : 'Show why all other options are wrong';
+  });
+
+  function goNext() {
+    if (currentIdx + 1 < sessionQuestions.length) {
+      currentIdx++;
+      renderQuestion();
+      quizView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    quizView.style.display = 'none';
+    resultsView.style.display = 'block';
+
+    const total = history.length;
+    const pct = total ? Math.round((score / total) * 100) : 0;
+    document.getElementById('finalPercent').textContent = pct + '%';
+    document.getElementById('finalFraction').textContent = `${score} / ${total}`;
+
+    const headline = document.getElementById('resultHeadline');
+    const subtext = document.getElementById('resultSubtext');
+    if (pct >= 70) {
+      headline.textContent = 'Exam-Ready Pace!';
+      subtext.textContent = `You scored ${pct}%, clearing the 70% ISC2 CC passing benchmark across ${total} questions.`;
+    } else {
+      headline.textContent = 'Solid Practice Run';
+      subtext.textContent = `You scored ${pct}% (${score} of ${total}). Review the missed concepts below and retry them to lock in 70%+.`;
+    }
+
+    const byDomain = {};
+    history.forEach(item => {
+      const name = item.question.domain_name;
+      if (!byDomain[name]) byDomain[name] = { total: 0, correct: 0 };
+      byDomain[name].total++;
+      if (item.isCorrect) byDomain[name].correct++;
+    });
+
+    document.getElementById('domainBreakdown').innerHTML = Object.keys(byDomain).sort().map(name => {
+      const d = byDomain[name];
+      const dpct = Math.round((d.correct / d.total) * 100);
+      return `
+        <div class="domain-bar-row">
+          <div class="domain-bar-head"><span>${escapeHtml(name)}</span><strong>${d.correct}/${d.total} (${dpct}%)</strong></div>
+          <div class="domain-bar-track"><div class="domain-bar-fill" style="width:${dpct}%"></div></div>
+        </div>`;
+    }).join('');
+
+    const missed = history.filter(h => !h.isCorrect);
+    const retryBtn = document.getElementById('retryMissedBtn');
+    if (missed.length > 0) {
+      retryBtn.style.display = 'inline-flex';
+      retryBtn.textContent = `Practice Missed Questions (${missed.length})`;
+    } else {
+      retryBtn.style.display = 'none';
+    }
+
+    showMissedOnly = false;
+    document.getElementById('toggleMissedOnlyBtn').textContent = 'Show Missed Only';
+    renderReviewList();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderReviewList() {
+    const items = showMissedOnly ? history.filter(h => !h.isCorrect) : history;
+    const list = document.getElementById('reviewList');
+    if (!items.length) {
+      list.innerHTML = '<div class="review-item passed">Zero missed questions in this session!</div>';
+      return;
+    }
+    list.innerHTML = items.map((h, idx) => {
+      const q = h.question;
+      const chosenText = q.renderedOptions[h.chosenIdx].text;
+      const correctText = q.renderedOptions[q.renderedCorrectIndex].text;
+      return `
+        <div class="review-item ${h.isCorrect ? 'passed' : 'missed'}">
+          <div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
+            <span class="tag">${escapeHtml(q.domain_name)}</span>
+            <span style="font-family:'IBM Plex Mono', monospace; font-size:12px; color:${h.isCorrect ? '#34D399' : '#FB7185'}; font-weight:700;">
+              ${h.isCorrect ? 'CORRECT' : 'MISSED'}
+            </span>
+          </div>
+          <div style="font-weight:600; color:var(--ink); margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</div>
+          <div style="font-size:13.5px; color:var(--ink2); margin-bottom:4px;"><strong>Your Answer:</strong> ${escapeHtml(chosenText)}</div>
+          ${!h.isCorrect ? `<div style="font-size:13.5px; color:#34D399; margin-bottom:6px;"><strong>Correct Answer:</strong> ${escapeHtml(correctText)}</div>` : ''}
+          <div style="font-size:13px; color:var(--ink2); line-height:1.55;">${escapeHtml(q.why_correct)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  }
+
+  document.getElementById('startExamBtn').addEventListener('click', () => startSession());
+  document.getElementById('nextQuestionBtn').addEventListener('click', goNext);
+  document.getElementById('quitExamBtn').addEventListener('click', () => {
+    quizView.style.display = 'none';
+    resultsView.style.display = 'none';
+    setupView.style.display = 'block';
+  });
+  document.getElementById('backToMenuBtn').addEventListener('click', () => {
+    resultsView.style.display = 'none';
+    setupView.style.display = 'block';
+  });
+  document.getElementById('restartSameBtn').addEventListener('click', () => startSession());
+  document.getElementById('retryMissedBtn').addEventListener('click', () => {
+    const missedQs = history.filter(h => !h.isCorrect).map(h => bank.find(b => b.id === h.question.id)).filter(Boolean);
+    if (missedQs.length) startSession(missedQs);
+  });
+  document.getElementById('toggleMissedOnlyBtn').addEventListener('click', () => {
+    showMissedOnly = !showMissedOnly;
+    document.getElementById('toggleMissedOnlyBtn').textContent = showMissedOnly ? 'Show All Questions' : 'Show Missed Only';
+    renderReviewList();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (quizView.style.display === 'none') return;
+    if (!answered && ['1', '2', '3', '4'].includes(e.key)) {
+      const idx = parseInt(e.key, 10) - 1;
+      const q = sessionQuestions[currentIdx];
+      if (q && idx < q.renderedOptions.length) handleAnswer(idx);
+    } else if (answered && e.key === 'Enter') {
+      e.preventDefault();
+      goNext();
+    }
+  });
+
+  updatePoolInfo();
+})();
+</script>
+</body>
+</html>
