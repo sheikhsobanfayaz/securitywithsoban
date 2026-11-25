@@ -1,5 +1,5 @@
 /* ==============================================================================
-   SECURITYWITHSOBAN - CORE UI, MOTION GRAPHICS & ZERO-SHIFT DECODE
+   SECURITYWITHSOBAN - CORE UI, SMOOTH SCROLL REVEALS & ZERO-SHIFT DECODE
    ============================================================================== */
 
 function initThemeManager() {
@@ -47,34 +47,19 @@ function initMobileMenu() {
 }
 
 function initSpotlights() {
-  const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
   document.querySelectorAll('.card.spotlight, .bento-card').forEach(card => {
     if (card.dataset.spotlightBound === '1') return;
     card.dataset.spotlightBound = '1';
 
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', x + 'px');
-      card.style.setProperty('--mouse-y', y + 'px');
-
-      if (!isTouch && card.classList.contains('tilt-card')) {
-        const px = (x / rect.width - 0.5) * 2;
-        const py = (y / rect.height - 0.5) * 2;
-        card.style.transform = `perspective(900px) rotateX(${(-py * 2.2).toFixed(2)}deg) rotateY(${(px * 2.2).toFixed(2)}deg) translateY(-4px)`;
-      }
-    });
-
-    card.addEventListener('mouseleave', () => {
-      if (card.classList.contains('tilt-card')) {
-        card.style.transform = '';
-      }
+      card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+      card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
     });
   });
 }
 
-/* Zero-layout-shift cyber text decode: locks exact word widths & line breaks so mobile never jumps */
+/* Zero-layout-shift text decode: locks each word's exact pixel width so mobile never jumps */
 function initDecryptedText() {
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const els = document.querySelectorAll('[data-scramble]');
@@ -90,7 +75,6 @@ function initDecryptedText() {
       if (el.dataset.scrambleDone === '1') return;
       el.dataset.scrambleDone = '1';
 
-      // Extract plain text per <br> line safely (never exposes HTML tag attributes)
       const rawLines = el.innerHTML.split(/<br\s*\/?>/i).map(chunk => {
         const tmp = document.createElement('div');
         tmp.innerHTML = chunk;
@@ -99,7 +83,6 @@ function initDecryptedText() {
 
       if (!rawLines.length) return;
 
-      // Render word spans first to measure exact final pixel width per word
       el.innerHTML = '';
       const wordEntries = [];
       rawLines.forEach((line, lineIdx) => {
@@ -117,7 +100,6 @@ function initDecryptedText() {
       const finalHeight = el.getBoundingClientRect().height;
       el.style.minHeight = finalHeight + 'px';
 
-      // Lock each word's exact pixel width so scrambling never alters line wrapping
       const widths = wordEntries.map(entry => entry.span.getBoundingClientRect().width);
       wordEntries.forEach((entry, idx) => {
         entry.span.style.display = 'inline-block';
@@ -164,7 +146,6 @@ function initDecryptedText() {
   });
 }
 
-/* Scroll-triggered Reveal Motion Graphics */
 function initScrollReveals() {
   const autoTargets = document.querySelectorAll(
     '.sec, .card, .bento-card, .metric-bento-card, .connect-item, .stat-box, .section-block, .soc-terminal-wrap, .tool-card'
@@ -178,7 +159,7 @@ function initScrollReveals() {
   document.querySelectorAll('.exp-grid, .methodology-grid, .cap-grid, .projects-grid, .mitre-grid, .bento-grid, .telemetry-grid, .stats-strip, .tools-grid').forEach(grid => {
     Array.from(grid.children).forEach((child, idx) => {
       if (child.hasAttribute('data-reveal')) {
-        child.style.setProperty('--reveal-delay', Math.min(idx * 75, 420) + 'ms');
+        child.style.setProperty('--reveal-delay', Math.min(idx * 65, 350) + 'ms');
       }
     });
   });
@@ -196,12 +177,11 @@ function initScrollReveals() {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
 
   nodes.forEach(n => observer.observe(n));
 }
 
-/* Animated Stat Counters */
 function initStatCounters() {
   const els = document.querySelectorAll('[data-count]');
   if (!els.length) return;
@@ -211,7 +191,7 @@ function initStatCounters() {
     const target = parseInt(el.getAttribute('data-count'), 10);
     const suffix = el.getAttribute('data-suffix') || '';
     const prefix = el.getAttribute('data-prefix') || '';
-    const duration = 900;
+    const duration = 800;
     const start = performance.now();
     const step = (now) => {
       const p = Math.min(1, (now - start) / duration);
@@ -235,119 +215,6 @@ function initStatCounters() {
     });
   }, { threshold: 0.3 });
   els.forEach(el => io.observe(el));
-}
-
-/* Dynamic Cyber Constellation Motion Background (Orange / Ember Tone) */
-function initCyberMotionCanvas() {
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (document.getElementById('cyberMotionCanvas')) return;
-
-  const canvas = document.createElement('canvas');
-  canvas.id = 'cyberMotionCanvas';
-  canvas.className = 'cyber-motion-canvas';
-  canvas.setAttribute('aria-hidden', 'true');
-  document.body.insertBefore(canvas, document.body.firstChild.nextSibling);
-
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  let w = 0, h = 0, dpr = 1;
-  const isMobile = window.innerWidth < 768;
-  const count = isMobile ? 20 : 36;
-  const maxDist = isMobile ? 110 : 145;
-  const mouse = { x: -9999, y: -9999 };
-  const nodes = [];
-
-  function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    w = window.innerWidth;
-    h = window.innerHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  resize();
-  window.addEventListener('resize', resize, { passive: true });
-
-  for (let i = 0; i < count; i++) {
-    nodes.push({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.42,
-      vy: (Math.random() - 0.5) * 0.42,
-      r: 1.3 + Math.random() * 1.4
-    });
-  }
-
-  if (!isMobile) {
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    }, { passive: true });
-  }
-
-  let rafId = null;
-  function tick() {
-    ctx.clearRect(0, 0, w, h);
-
-    for (let i = 0; i < nodes.length; i++) {
-      const n = nodes[i];
-      n.x += n.vx;
-      n.y += n.vy;
-
-      if (n.x < 0 || n.x > w) n.vx *= -1;
-      if (n.y < 0 || n.y > h) n.vy *= -1;
-
-      const dxM = mouse.x - n.x;
-      const dyM = mouse.y - n.y;
-      const distM = Math.hypot(dxM, dyM);
-      if (distM < 160 && distM > 1) {
-        n.x -= (dxM / distM) * 0.35;
-        n.y -= (dyM / distM) * 0.35;
-      }
-
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(251, 146, 60, 0.52)';
-      ctx.fill();
-
-      for (let j = i + 1; j < nodes.length; j++) {
-        const m = nodes[j];
-        const dist = Math.hypot(n.x - m.x, n.y - m.y);
-        if (dist < maxDist) {
-          const alpha = (1 - dist / maxDist) * 0.22;
-          ctx.beginPath();
-          ctx.moveTo(n.x, n.y);
-          ctx.lineTo(m.x, m.y);
-          ctx.strokeStyle = `rgba(249, 115, 22, ${alpha.toFixed(3)})`;
-          ctx.lineWidth = 0.85;
-          ctx.stroke();
-        }
-      }
-
-      if (distM < 170) {
-        const alpha = (1 - distM / 170) * 0.36;
-        ctx.beginPath();
-        ctx.moveTo(n.x, n.y);
-        ctx.lineTo(mouse.x, mouse.y);
-        ctx.strokeStyle = `rgba(251, 146, 60, ${alpha.toFixed(3)})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-    }
-    rafId = requestAnimationFrame(tick);
-  }
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && rafId) {
-      cancelAnimationFrame(rafId);
-      rafId = null;
-    } else if (!document.hidden && !rafId) {
-      rafId = requestAnimationFrame(tick);
-    }
-  });
-
-  rafId = requestAnimationFrame(tick);
 }
 
 function initReadingProgress() {
@@ -448,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initSpotlights();
   initScrollReveals();
   initStatCounters();
-  initCyberMotionCanvas();
   initReadingProgress();
   initVideoBackground();
   initBackToTop();
