@@ -7,7 +7,7 @@
 <meta name="description" content="Technical breakdown of the static-first, zero-telemetry architecture, client-side SOC sandboxes, and automated CI/CD pipelines behind this security portfolio.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
@@ -36,51 +36,56 @@
           <a href="index.html" class="nav-link">Home <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
             <a href="index.html#terminal"><span class="dd-title">Practice Terminal</span><span class="dd-sub">Try sample investigations</span></a>
-            <a href="index.html#experience"><span class="dd-title">My Background</span><span class="dd-sub">Work history and certs</span></a>
+            <a href="index.html#experience"><span class="dd-title">Experience &amp; Background</span><span class="dd-sub">Roles and certifications</span></a>
             <a href="index.html#projects"><span class="dd-title">Featured Cases</span><span class="dd-sub">Highlighted write-ups</span></a>
-            <a href="index.html#mitre"><span class="dd-title">Attack Stages</span><span class="dd-sub">What threats I watch for</span></a>
-            <a href="index.html#methodology"><span class="dd-title">How I Work</span><span class="dd-sub">Step-by-step alert checks</span></a>
+            <a href="index.html#mitre"><span class="dd-title">Attack Stages</span><span class="dd-sub">MITRE threat coverage</span></a>
+            <a href="index.html#methodology"><span class="dd-title">Investigation Workflow</span><span class="dd-sub">Step-by-step alert triage</span></a>
           </div>
         </div>
 
         <div class="nav-item">
-          <a href="investigations.html" class="nav-link">Investigations <span class="nav-badge">17</span> <span class="nav-caret">&#9662;</span></a>
+          <a href="investigations.html" class="nav-link">Investigations <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
-            <a href="investigations.html"><span class="dd-title">All 17 Write-Ups</span><span class="dd-sub">Browse every case study</span></a>
+            <a href="investigations.html"><span class="dd-title">All Case Studies</span><span class="dd-sub">Browse every write-up</span></a>
             <a href="investigations.html?cat=network"><span class="dd-title">Networks &amp; Firewalls</span><span class="dd-sub">VPN, routing, and hardware</span></a>
-            <a href="investigations.html?cat=siem"><span class="dd-title">Alerts &amp; Logs</span><span class="dd-sub">Checking suspicious activity</span></a>
-            <a href="investigations.html?cat=ai"><span class="dd-title">AI &amp; Scripts</span><span class="dd-sub">Privacy and offline helpers</span></a>
+            <a href="investigations.html?cat=siem"><span class="dd-title">Alerts &amp; Logs</span><span class="dd-sub">SIEM correlation &amp; triage</span></a>
+            <a href="investigations.html?cat=ai"><span class="dd-title">AI &amp; Scripts</span><span class="dd-sub">Offline privacy tooling</span></a>
           </div>
         </div>
 
         <div class="nav-item">
-          <a href="tools.html" class="nav-link">Tools <span class="nav-badge">2</span> <span class="nav-caret">&#9662;</span></a>
+          <a href="tools.html" class="nav-link">Tools <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
             <a href="cc-simulator.html"><span class="dd-title">CC Practice Quiz</span><span class="dd-sub">Exam questions with explanations</span></a>
-            <a href="ai-sanitizer.html"><span class="dd-title">SanitizeAI Log Cleaner</span><span class="dd-sub">Hide private info before using AI</span></a>
-            <a href="tools.html"><span class="dd-title">All Tools</span><span class="dd-sub">See everything I built</span></a>
+            <a href="ai-sanitizer.html"><span class="dd-title">SanitizeAI Log Cleaner</span><span class="dd-sub">Mask sensitive data offline</span></a>
+            <a href="tools.html"><span class="dd-title">All Tools</span><span class="dd-sub">Explore browser utilities</span></a>
           </div>
         </div>
 
         <div class="nav-item">
           <a href="architecture.html" class="nav-link active">Architecture <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
-            <a href="architecture.html#philosophy"><span class="dd-title">Why Keep It Simple</span><span class="dd-sub">No servers, no tracking</span></a>
-            <a href="architecture.html#bento"><span class="dd-title">How Pages Work</span><span class="dd-sub">Data and browser tools</span></a>
-            <a href="architecture.html#pipeline"><span class="dd-title">Publishing Updates</span><span class="dd-sub">Checks before going live</span></a>
+            <a href="architecture.html#philosophy"><span class="dd-title">Design Principles</span><span class="dd-sub">Zero backend, zero tracking</span></a>
+            <a href="architecture.html#bento"><span class="dd-title">Site Structure</span><span class="dd-sub">Data and client-side tools</span></a>
+            <a href="architecture.html#pipeline"><span class="dd-title">Verification Checks</span><span class="dd-sub">Checks before publishing</span></a>
           </div>
         </div>
 
         <div class="nav-item">
           <a href="contact.html" class="nav-link">Contact <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
-            <a href="contact.html#message-form"><span class="dd-title">Send a Message</span><span class="dd-sub">Quick contact form</span></a>
-            <a href="contact.html#channels"><span class="dd-title">Email &amp; Profiles</span><span class="dd-sub">LinkedIn, Credly, and email</span></a>
+            <a href="contact.html#message-form"><span class="dd-title">Send a Message</span><span class="dd-sub">Direct inquiry form</span></a>
+            <a href="contact.html#channels"><span class="dd-title">Email &amp; Profiles</span><span class="dd-sub">LinkedIn, Credly, and GitHub</span></a>
           </div>
         </div>
       </div>
 
       <div class="nav-actions">
+        <div class="theme-dots-bar" role="group" aria-label="Accent color theme">
+          <button type="button" class="theme-dot-btn theme-dot-orange active" data-accent-choice="orange" title="Orange theme" aria-label="Orange theme" aria-pressed="true"></button>
+          <button type="button" class="theme-dot-btn theme-dot-blue" data-accent-choice="blue" title="Blue theme" aria-label="Blue theme" aria-pressed="false"></button>
+          <button type="button" class="theme-dot-btn theme-dot-brown" data-accent-choice="brown" title="Warm brown theme" aria-label="Warm brown theme" aria-pressed="false"></button>
+        </div>
         <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="icon-btn linkedin-nav-btn" aria-label="LinkedIn Profile" title="LinkedIn Profile">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
         </a>
@@ -93,17 +98,25 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-theme-row">
+        <span>Theme</span>
+        <div class="theme-dots-bar" role="group" aria-label="Accent color theme">
+          <button type="button" class="theme-dot-btn theme-dot-orange active" data-accent-choice="orange" title="Orange theme" aria-label="Orange theme" aria-pressed="true"></button>
+          <button type="button" class="theme-dot-btn theme-dot-blue" data-accent-choice="blue" title="Blue theme" aria-label="Blue theme" aria-pressed="false"></button>
+          <button type="button" class="theme-dot-btn theme-dot-brown" data-accent-choice="brown" title="Warm brown theme" aria-label="Warm brown theme" aria-pressed="false"></button>
+        </div>
+      </div>
       <div class="mobile-nav-links">
         <div class="mobile-nav-group">
           <a href="index.html" class=""><span>Home</span><span>&rarr;</span></a>
           <a href="index.html#terminal" class="mobile-sublink"><span>Practice Terminal</span><span>&rarr;</span></a>
           <a href="index.html#mitre" class="mobile-sublink"><span>Attack Stages</span><span>&rarr;</span></a>
         </div>
-        <a href="investigations.html" class=""><span>Investigations</span><span class="nav-badge">17</span></a>
+        <a href="investigations.html" class=""><span>Investigations</span><span>&rarr;</span></a>
         <div class="mobile-nav-group">
-          <a href="tools.html" class=""><span>Tools</span><span class="nav-badge">2</span></a>
-          <a href="cc-simulator.html" class="mobile-sublink"><span>1. CC Practice Quiz</span><span>&rarr;</span></a>
-          <a href="ai-sanitizer.html" class="mobile-sublink"><span>2. SanitizeAI Log Cleaner</span><span>&rarr;</span></a>
+          <a href="tools.html" class=""><span>Tools</span><span>&rarr;</span></a>
+          <a href="cc-simulator.html" class="mobile-sublink"><span>CC Practice Quiz</span><span>&rarr;</span></a>
+          <a href="ai-sanitizer.html" class="mobile-sublink"><span>SanitizeAI Log Cleaner</span><span>&rarr;</span></a>
         </div>
         <a href="architecture.html" class="active"><span>Architecture</span><span>&rarr;</span></a>
         <a href="contact.html" class=""><span>Contact</span><span>&rarr;</span></a>
@@ -126,7 +139,7 @@
     </h1>
 
     <p class="hero-sub">
-      Most websites use heavy frameworks, databases, and background trackers. I kept this site plain HTML, CSS, and JavaScript so it loads quickly, has nothing to hack on a server, and respects your privacy.
+      Most websites rely on heavy frameworks, databases, and background trackers. This portfolio uses lightweight static files so it loads fast, has nothing to hack on a server, and respects your privacy.
     </p>
 
     <div style="display: flex; gap: 12px; flex-wrap: wrap;">
@@ -149,8 +162,8 @@
         <span class="metric-label">Runs in Browser</span>
       </div>
       <div class="metric-bento-card">
-        <span class="metric-val" data-count="17">17</span>
-        <span class="metric-label">Case Studies</span>
+        <span class="metric-val">Static</span>
+        <span class="metric-label">Case Library</span>
       </div>
     </div>
   </section>
@@ -204,7 +217,7 @@
       <div class="bento-card spotlight col-8">
         <h3 class="bento-title">One Clean List of Case Studies</h3>
         <p class="bento-desc">
-          All 17 case studies follow the same clear layout (problem, steps, takeaways, and result) stored in <code>projects.json</code> so the Home page, Investigations hub, and individual pages stay in sync.
+          Every case study follows the same clear layout (problem, steps, takeaways, and result) stored in <code>projects.json</code> so the Home page, Investigations hub, and individual pages stay in sync.
         </p>
         <div class="terminal-code-box">
           <span class="code-comment">// Example entry inside projects.json</span><br>
@@ -224,7 +237,7 @@
       <div class="bento-card spotlight col-4">
         <h3 class="bento-title">Browser-Only Tools</h3>
         <p class="bento-desc">
-          The practice terminal, the 143-question ISC2 CC quiz, and the SanitizeAI log cleaner all run directly in JavaScript inside your browser tab.
+          The practice terminal, the interactive ISC2 CC quiz, and the SanitizeAI log cleaner all run directly in JavaScript inside your browser tab.
         </p>
         <p class="bento-desc">
           Nothing is uploaded anywhere, so you can even test private logs safely.
@@ -288,7 +301,7 @@
       <span class="code-comment"># Check JSON, links, and JavaScript syntax</span><br>
       $ python verify_site.py<br>
       &nbsp;&nbsp;[OK] projects.json is valid.<br>
-      &nbsp;&nbsp;[OK] All 24 HTML files checked with zero broken links.<br>
+      &nbsp;&nbsp;[OK] All HTML pages checked with zero broken links.<br>
       &nbsp;&nbsp;[OK] All JavaScript files passed syntax check.<br><br>
       <span class="code-comment"># Deploy static site</span><br>
       $ git add . &amp;&amp; git commit -m "Update site" &amp;&amp; git push origin main<br>
@@ -296,27 +309,27 @@
     </div>
   </section>
 
-    <section class="connect-band">
+        <section class="connect-band">
     <div class="connect-split">
       <div>
         <h2>Explore the rest of the site.</h2>
         <p>
-          Try the sample console on the home page, read all 17 case studies, or open the practice quiz and log cleaner.
+          Try the sample console on the home page, browse case studies, or open the practice quiz and log cleaner.
         </p>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <a href="index.html#terminal" class="btn btn-primary">Try Practice Console &rarr;</a>
-          <a href="tools.html" class="btn">Open Tools</a>
+          <a href="tools.html" class="btn">Open Tools &rarr;</a>
         </div>
       </div>
 
       <div class="connect-link-stack">
         <a href="investigations.html" class="connect-row-link">
-          <span>All 17 Case Studies</span>
+          <span>Case Studies</span>
           <small>Browse Write-Ups &rarr;</small>
         </a>
         <a href="cc-simulator.html" class="connect-row-link">
           <span>ISC2 CC Practice Quiz</span>
-          <small>143 Questions &rarr;</small>
+          <small>Practice Simulator &rarr;</small>
         </a>
         <a href="ai-sanitizer.html" class="connect-row-link">
           <span>SanitizeAI Log Cleaner</span>
@@ -339,11 +352,11 @@
           <span class="brand-avatar">SF</span>
           <div class="footer-brand-title">
             <span class="footer-name">Sheikh <strong class="soban-bold">Soban</strong> Fayaz</span>
-            <span class="footer-role">Security Analyst &amp; Network Troubleshooter</span>
+            <span class="footer-role">Security Operations &amp; Network Defense</span>
           </div>
         </div>
         <p class="footer-bio">
-          I investigate security alerts, troubleshoot business firewalls and VPNs, and build simple browser tools for security analysts.
+          Security Operations Center (SOC) Analyst specializing in perimeter firewall diagnostics, SIEM telemetry correlation, and privacy-first analyst tooling.
         </p>
         <div class="footer-geo">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
@@ -355,8 +368,8 @@
         <h4 class="footer-col-title">Pages</h4>
         <ul class="footer-links-list">
           <li><a href="index.html">Home</a></li>
-          <li><a href="investigations.html">Investigations <span class="nav-badge">17</span></a></li>
-          <li><a href="tools.html">Tools <span class="nav-badge">2</span></a></li>
+          <li><a href="investigations.html">Investigations</a></li>
+          <li><a href="tools.html">Tools</a></li>
           <li><a href="cc-simulator.html">CC Practice Quiz</a></li>
           <li><a href="ai-sanitizer.html">SanitizeAI</a></li>
           <li><a href="architecture.html">Architecture</a></li>

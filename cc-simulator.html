@@ -7,31 +7,31 @@
 <meta name="description" content="Simple ISC2 Certified in Cybersecurity practice quiz with instant explanations for right and wrong answers.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <style>
 .sim-shell { padding: 42px 0 80px; }
 .sim-card { max-width: 860px; margin: 0 auto; padding: 32px; }
 .sim-header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
-.sim-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(24px, 3.8vw, 34px); letter-spacing: -0.02em; margin: 0 0 8px; color: var(--ink); }
+.sim-title { font-family: 'Outfit', 'Inter', sans-serif; font-size: clamp(24px, 3.8vw, 34px); letter-spacing: -0.02em; margin: 0 0 8px; color: var(--ink); }
 .sim-subtitle { font-size: 15.5px; color: var(--ink2); margin: 0 0 26px; line-height: 1.6; }
-.sim-section-label { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-text); margin-bottom: 10px; display: block; }
+.sim-section-label { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-text); margin-bottom: 10px; display: block; }
 .count-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
 .count-btn {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   padding: 14px 10px; border-radius: 10px; border: 1px solid var(--hair); background: var(--surface-elevated);
-  color: var(--ink); cursor: pointer; transition: all 0.2s ease; font-family: 'Space Grotesk', sans-serif;
+  color: var(--ink); cursor: pointer; transition: all 0.2s ease; font-family: 'Outfit', 'Inter', sans-serif;
 }
 .count-btn strong { font-size: 20px; line-height: 1.1; }
-.count-btn span { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--mute); }
+.count-btn span { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--mute); }
 .count-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
-.count-btn.active { background: var(--accent-soft); border-color: var(--accent); box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.35); }
+.count-btn.active { background: var(--accent-soft); border-color: var(--accent); box-shadow: 0 0 0 1px var(--hair-hover); }
 .count-btn.active span { color: var(--accent-text); }
 .custom-count-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 26px; }
-.custom-count-input { width: 110px; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--hair); background: var(--surface-elevated); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 14px; outline: none; }
+.custom-count-input { width: 110px; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--hair); background: var(--surface-elevated); color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 14px; outline: none; }
 .custom-count-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .domain-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
-.domain-pill { font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 7px 13px; border-radius: 9999px; border: 1px solid var(--hair); background: var(--surface-elevated); color: var(--ink2); cursor: pointer; transition: all 0.18s ease; }
+.domain-pill { font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 7px 13px; border-radius: 9999px; border: 1px solid var(--hair); background: var(--surface-elevated); color: var(--ink2); cursor: pointer; transition: all 0.18s ease; }
 .domain-pill:hover { border-color: var(--accent); color: var(--accent-text); }
 .domain-pill.active { background: var(--accent); color: #FFFFFF; border-color: var(--accent); }
 .sim-start-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--hair); }
@@ -40,12 +40,12 @@
 .quiz-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
 .quiz-progress-track { width: 100%; height: 7px; background: var(--surface-elevated); border-radius: 9999px; overflow: hidden; border: 1px solid var(--hair); margin-bottom: 24px; }
 .quiz-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #F97316, #10B981); transition: width 0.3s ease; }
-.quiz-question { font-family: 'Space Grotesk', sans-serif; font-size: clamp(18px, 2.5vw, 22px); line-height: 1.45; color: var(--ink); margin: 0 0 22px; }
+.quiz-question { font-family: 'Outfit', 'Inter', sans-serif; font-size: clamp(18px, 2.5vw, 22px); line-height: 1.45; color: var(--ink); margin: 0 0 22px; }
 .options-list { display: flex; flex-direction: column; gap: 11px; }
-.option-btn { display: flex; align-items: flex-start; gap: 14px; width: 100%; text-align: left; padding: 15px 18px; border-radius: 10px; border: 1px solid var(--hair); background: var(--surface-elevated); color: var(--ink); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; line-height: 1.5; cursor: pointer; transition: all 0.18s ease; }
+.option-btn { display: flex; align-items: flex-start; gap: 14px; width: 100%; text-align: left; padding: 15px 18px; border-radius: 10px; border: 1px solid var(--hair); background: var(--surface-elevated); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; cursor: pointer; transition: all 0.18s ease; }
 .option-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); transform: translateX(4px); }
 .option-btn:disabled { cursor: default; }
-.opt-letter { width: 28px; height: 28px; border-radius: 7px; background: var(--surface); border: 1px solid var(--hair); color: var(--accent-text); font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.opt-letter { width: 28px; height: 28px; border-radius: 7px; background: var(--surface); border: 1px solid var(--hair); color: var(--accent-text); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
 .option-btn.correct { border-color: var(--emerald); background: rgba(16, 185, 129, 0.14); }
 .option-btn.correct .opt-letter { background: var(--emerald); border-color: var(--emerald); color: #04130D; }
 .option-btn.wrong { border-color: var(--danger); background: rgba(239, 68, 68, 0.14); }
@@ -54,19 +54,19 @@
 .feedback-panel { margin-top: 22px; padding: 20px 22px; border-radius: 12px; border: 1px solid var(--hair); background: var(--terminal-bg); }
 .feedback-panel.is-correct { border-color: rgba(16, 185, 129, 0.45); }
 .feedback-panel.is-wrong { border-color: rgba(239, 68, 68, 0.45); }
-.feedback-verdict { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 12px; }
+.feedback-verdict { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-family: 'Outfit', 'Inter', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 12px; }
 .feedback-verdict.ok { color: #34D399; }
 .feedback-verdict.bad { color: #F87171; }
 .feedback-block { margin-top: 10px; padding: 12px 14px; border-radius: 8px; background: var(--surface-elevated); border: 1px solid var(--hair); font-size: 14px; color: var(--ink2); line-height: 1.6; }
-.feedback-block strong { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.feedback-block strong { display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
 .feedback-block.why-ok strong { color: #34D399; }
 .feedback-block.why-bad strong { color: #F87171; }
 .feedback-block.tip strong { color: var(--accent-text); }
 .quiz-nav-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--hair); }
 .score-hero { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 24px; border-radius: 12px; background: var(--surface-elevated); border: 1px solid var(--hair); margin-bottom: 24px; }
 .score-circle { width: 108px; height: 108px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--accent-soft); border: 3px solid var(--accent); flex-shrink: 0; }
-.score-circle strong { font-family: 'Space Grotesk', sans-serif; font-size: 28px; color: var(--ink); line-height: 1; }
-.score-circle span { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink2); margin-top: 4px; }
+.score-circle strong { font-family: 'Outfit', 'Inter', sans-serif; font-size: 28px; color: var(--ink); line-height: 1; }
+.score-circle span { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink2); margin-top: 4px; }
 .domain-breakdown { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
 .domain-bar-row { padding: 12px 14px; border-radius: 10px; background: var(--surface-elevated); border: 1px solid var(--hair); }
 .domain-bar-head { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
@@ -106,51 +106,56 @@
           <a href="index.html" class="nav-link">Home <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
             <a href="index.html#terminal"><span class="dd-title">Practice Terminal</span><span class="dd-sub">Try sample investigations</span></a>
-            <a href="index.html#experience"><span class="dd-title">My Background</span><span class="dd-sub">Work history and certs</span></a>
+            <a href="index.html#experience"><span class="dd-title">Experience &amp; Background</span><span class="dd-sub">Roles and certifications</span></a>
             <a href="index.html#projects"><span class="dd-title">Featured Cases</span><span class="dd-sub">Highlighted write-ups</span></a>
-            <a href="index.html#mitre"><span class="dd-title">Attack Stages</span><span class="dd-sub">What threats I watch for</span></a>
-            <a href="index.html#methodology"><span class="dd-title">How I Work</span><span class="dd-sub">Step-by-step alert checks</span></a>
+            <a href="index.html#mitre"><span class="dd-title">Attack Stages</span><span class="dd-sub">MITRE threat coverage</span></a>
+            <a href="index.html#methodology"><span class="dd-title">Investigation Workflow</span><span class="dd-sub">Step-by-step alert triage</span></a>
           </div>
         </div>
 
         <div class="nav-item">
-          <a href="investigations.html" class="nav-link">Investigations <span class="nav-badge">17</span> <span class="nav-caret">&#9662;</span></a>
+          <a href="investigations.html" class="nav-link">Investigations <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
-            <a href="investigations.html"><span class="dd-title">All 17 Write-Ups</span><span class="dd-sub">Browse every case study</span></a>
+            <a href="investigations.html"><span class="dd-title">All Case Studies</span><span class="dd-sub">Browse every write-up</span></a>
             <a href="investigations.html?cat=network"><span class="dd-title">Networks &amp; Firewalls</span><span class="dd-sub">VPN, routing, and hardware</span></a>
-            <a href="investigations.html?cat=siem"><span class="dd-title">Alerts &amp; Logs</span><span class="dd-sub">Checking suspicious activity</span></a>
-            <a href="investigations.html?cat=ai"><span class="dd-title">AI &amp; Scripts</span><span class="dd-sub">Privacy and offline helpers</span></a>
+            <a href="investigations.html?cat=siem"><span class="dd-title">Alerts &amp; Logs</span><span class="dd-sub">SIEM correlation &amp; triage</span></a>
+            <a href="investigations.html?cat=ai"><span class="dd-title">AI &amp; Scripts</span><span class="dd-sub">Offline privacy tooling</span></a>
           </div>
         </div>
 
         <div class="nav-item">
-          <a href="tools.html" class="nav-link active">Tools <span class="nav-badge">2</span> <span class="nav-caret">&#9662;</span></a>
+          <a href="tools.html" class="nav-link active">Tools <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
             <a href="cc-simulator.html"><span class="dd-title">CC Practice Quiz</span><span class="dd-sub">Exam questions with explanations</span></a>
-            <a href="ai-sanitizer.html"><span class="dd-title">SanitizeAI Log Cleaner</span><span class="dd-sub">Hide private info before using AI</span></a>
-            <a href="tools.html"><span class="dd-title">All Tools</span><span class="dd-sub">See everything I built</span></a>
+            <a href="ai-sanitizer.html"><span class="dd-title">SanitizeAI Log Cleaner</span><span class="dd-sub">Mask sensitive data offline</span></a>
+            <a href="tools.html"><span class="dd-title">All Tools</span><span class="dd-sub">Explore browser utilities</span></a>
           </div>
         </div>
 
         <div class="nav-item">
           <a href="architecture.html" class="nav-link">Architecture <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
-            <a href="architecture.html#philosophy"><span class="dd-title">Why Keep It Simple</span><span class="dd-sub">No servers, no tracking</span></a>
-            <a href="architecture.html#bento"><span class="dd-title">How Pages Work</span><span class="dd-sub">Data and browser tools</span></a>
-            <a href="architecture.html#pipeline"><span class="dd-title">Publishing Updates</span><span class="dd-sub">Checks before going live</span></a>
+            <a href="architecture.html#philosophy"><span class="dd-title">Design Principles</span><span class="dd-sub">Zero backend, zero tracking</span></a>
+            <a href="architecture.html#bento"><span class="dd-title">Site Structure</span><span class="dd-sub">Data and client-side tools</span></a>
+            <a href="architecture.html#pipeline"><span class="dd-title">Verification Checks</span><span class="dd-sub">Checks before publishing</span></a>
           </div>
         </div>
 
         <div class="nav-item">
           <a href="contact.html" class="nav-link">Contact <span class="nav-caret">&#9662;</span></a>
           <div class="nav-dropdown" role="menu">
-            <a href="contact.html#message-form"><span class="dd-title">Send a Message</span><span class="dd-sub">Quick contact form</span></a>
-            <a href="contact.html#channels"><span class="dd-title">Email &amp; Profiles</span><span class="dd-sub">LinkedIn, Credly, and email</span></a>
+            <a href="contact.html#message-form"><span class="dd-title">Send a Message</span><span class="dd-sub">Direct inquiry form</span></a>
+            <a href="contact.html#channels"><span class="dd-title">Email &amp; Profiles</span><span class="dd-sub">LinkedIn, Credly, and GitHub</span></a>
           </div>
         </div>
       </div>
 
       <div class="nav-actions">
+        <div class="theme-dots-bar" role="group" aria-label="Accent color theme">
+          <button type="button" class="theme-dot-btn theme-dot-orange active" data-accent-choice="orange" title="Orange theme" aria-label="Orange theme" aria-pressed="true"></button>
+          <button type="button" class="theme-dot-btn theme-dot-blue" data-accent-choice="blue" title="Blue theme" aria-label="Blue theme" aria-pressed="false"></button>
+          <button type="button" class="theme-dot-btn theme-dot-brown" data-accent-choice="brown" title="Warm brown theme" aria-label="Warm brown theme" aria-pressed="false"></button>
+        </div>
         <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="icon-btn linkedin-nav-btn" aria-label="LinkedIn Profile" title="LinkedIn Profile">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.88 0-1.6.72-1.6 1.6 0 .88.72 1.6 1.6 1.6.89 0 1.61-.72 1.61-1.6 0-.88-.72-1.6-1.61-1.6Z"/></svg>
         </a>
@@ -163,20 +168,28 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-theme-row">
+        <span>Theme</span>
+        <div class="theme-dots-bar" role="group" aria-label="Accent color theme">
+          <button type="button" class="theme-dot-btn theme-dot-orange active" data-accent-choice="orange" title="Orange theme" aria-label="Orange theme" aria-pressed="true"></button>
+          <button type="button" class="theme-dot-btn theme-dot-blue" data-accent-choice="blue" title="Blue theme" aria-label="Blue theme" aria-pressed="false"></button>
+          <button type="button" class="theme-dot-btn theme-dot-brown" data-accent-choice="brown" title="Warm brown theme" aria-label="Warm brown theme" aria-pressed="false"></button>
+        </div>
+      </div>
       <div class="mobile-nav-links">
         <div class="mobile-nav-group">
-          <a href="index.html"><span>Home</span><span>&rarr;</span></a>
+          <a href="index.html" class=""><span>Home</span><span>&rarr;</span></a>
           <a href="index.html#terminal" class="mobile-sublink"><span>Practice Terminal</span><span>&rarr;</span></a>
           <a href="index.html#mitre" class="mobile-sublink"><span>Attack Stages</span><span>&rarr;</span></a>
         </div>
-        <a href="investigations.html"><span>Investigations</span><span class="nav-badge">17</span></a>
+        <a href="investigations.html" class=""><span>Investigations</span><span>&rarr;</span></a>
         <div class="mobile-nav-group">
-          <a href="tools.html" class="active"><span>Tools</span><span class="nav-badge">2</span></a>
-          <a href="cc-simulator.html" class="mobile-sublink"><span>1. CC Practice Quiz</span><span>&rarr;</span></a>
-          <a href="ai-sanitizer.html" class="mobile-sublink"><span>2. SanitizeAI Log Cleaner</span><span>&rarr;</span></a>
+          <a href="tools.html" class="active"><span>Tools</span><span>&rarr;</span></a>
+          <a href="cc-simulator.html" class="mobile-sublink"><span>CC Practice Quiz</span><span>&rarr;</span></a>
+          <a href="ai-sanitizer.html" class="mobile-sublink"><span>SanitizeAI Log Cleaner</span><span>&rarr;</span></a>
         </div>
-        <a href="architecture.html"><span>Architecture</span><span>&rarr;</span></a>
-        <a href="contact.html"><span>Contact</span><span>&rarr;</span></a>
+        <a href="architecture.html" class=""><span>Architecture</span><span>&rarr;</span></a>
+        <a href="contact.html" class=""><span>Contact</span><span>&rarr;</span></a>
       </div>
       <div class="mobile-menu-footer">
         <a href="https://www.linkedin.com/in/sheikhsobanfayaz" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">
@@ -211,7 +224,7 @@
     <div class="custom-count-row">
       <label for="customCountInput" style="font-size: 13.5px; color: var(--ink2);">Or type a number:</label>
       <input type="number" id="customCountInput" class="custom-count-input" min="1" max="143" value="25">
-      <span id="availableInfo" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--mute);">143 questions available</span>
+      <span id="availableInfo" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--mute);">143 questions available</span>
     </div>
 
     <span class="sim-section-label">2. Pick a topic (Optional)</span>
@@ -240,7 +253,7 @@
         <span id="qDomainBadge" class="tag" style="margin: 0;">Topic 1</span>
       </div>
       <div style="display: flex; align-items: center; gap: 10px;">
-        <span id="liveScoreBadge" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--accent-text);">Score: 0 / 0</span>
+        <span id="liveScoreBadge" style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent-text);">Score: 0 / 0</span>
         <button type="button" id="quitExamBtn" class="btn btn-sm">Menu</button>
       </div>
     </div>
@@ -273,7 +286,7 @@
     </div>
 
     <div class="quiz-nav-row">
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--mute);">Shortcut: keys 1-4 to answer, Enter for next</span>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--mute);">Shortcut: keys 1-4 to answer, Enter for next</span>
       <button type="button" id="nextQuestionBtn" class="btn btn-primary" style="display: none;">Next Question &rarr;</button>
     </div>
   </section>
@@ -290,7 +303,7 @@
         <span id="finalFraction">0 / 0</span>
       </div>
       <div style="flex: 1; min-width: 220px;">
-        <h2 id="resultHeadline" style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin: 0 0 6px; color: var(--ink);"></h2>
+        <h2 id="resultHeadline" style="font-family: 'Outfit', 'Inter', sans-serif; font-size: 24px; margin: 0 0 6px; color: var(--ink);"></h2>
         <p id="resultSubtext" style="font-size: 14.5px; color: var(--ink2); margin: 0;"></p>
       </div>
     </div>
@@ -317,11 +330,11 @@
           <span class="brand-avatar">SF</span>
           <div class="footer-brand-title">
             <span class="footer-name">Sheikh <strong class="soban-bold">Soban</strong> Fayaz</span>
-            <span class="footer-role">Security Analyst &amp; Network Troubleshooter</span>
+            <span class="footer-role">Security Operations &amp; Network Defense</span>
           </div>
         </div>
         <p class="footer-bio">
-          I investigate security alerts, troubleshoot business firewalls and VPNs, and build simple browser tools for security analysts.
+          Security Operations Center (SOC) Analyst specializing in perimeter firewall diagnostics, SIEM telemetry correlation, and privacy-first analyst tooling.
         </p>
         <div class="footer-geo">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
@@ -333,8 +346,8 @@
         <h4 class="footer-col-title">Pages</h4>
         <ul class="footer-links-list">
           <li><a href="index.html">Home</a></li>
-          <li><a href="investigations.html">Investigations <span class="nav-badge">17</span></a></li>
-          <li><a href="tools.html">Tools <span class="nav-badge">2</span></a></li>
+          <li><a href="investigations.html">Investigations</a></li>
+          <li><a href="tools.html">Tools</a></li>
           <li><a href="cc-simulator.html">CC Practice Quiz</a></li>
           <li><a href="ai-sanitizer.html">SanitizeAI</a></li>
           <li><a href="architecture.html">Architecture</a></li>
@@ -655,7 +668,7 @@
         <div class="review-item ${h.isCorrect ? 'passed' : 'missed'}">
           <div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
             <span class="tag">${escapeHtml(q.domain_name)}</span>
-            <span style="font-family:'IBM Plex Mono', monospace; font-size:12px; color:${h.isCorrect ? '#34D399' : '#F87171'}; font-weight:700;">
+            <span style="font-family:'JetBrains Mono', monospace; font-size:12px; color:${h.isCorrect ? '#34D399' : '#F87171'}; font-weight:700;">
               ${h.isCorrect ? 'RIGHT' : 'MISSED'}
             </span>
           </div>

@@ -1,10 +1,46 @@
 /* ==============================================================================
-   SECURITYWITHSOBAN - CORE UI, INTERACTIVE PLAYBOOK & ZERO-SHIFT DECODE
+   SECURITYWITHSOBAN - CORE UI, 3-THEME SWITCHER, PLAYBOOK & ZERO-SHIFT DECODE
    ============================================================================== */
+
+(function applyInitialAccent() {
+  try {
+    const saved = localStorage.getItem('soban_accent');
+    if (saved === 'orange' || saved === 'blue' || saved === 'brown') {
+      document.documentElement.setAttribute('data-accent', saved);
+    } else {
+      document.documentElement.setAttribute('data-accent', 'orange');
+    }
+  } catch (e) {
+    document.documentElement.setAttribute('data-accent', 'orange');
+  }
+})();
 
 function initThemeManager() {
   document.documentElement.setAttribute('data-theme', 'dark');
-  try { localStorage.setItem('soban_theme', 'dark'); } catch (e) {}
+  const current = document.documentElement.getAttribute('data-accent') || 'orange';
+  const buttons = document.querySelectorAll('[data-accent-choice]');
+
+  const syncButtons = (val) => {
+    buttons.forEach(btn => {
+      const active = btn.getAttribute('data-accent-choice') === val;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  };
+
+  syncButtons(current);
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const choice = btn.getAttribute('data-accent-choice');
+      if (!choice) return;
+      document.documentElement.setAttribute('data-accent', choice);
+      try { localStorage.setItem('soban_accent', choice); } catch (e) {}
+      syncButtons(choice);
+      const labels = { orange: 'Orange theme', blue: 'Blue theme', brown: 'Warm brown theme' };
+      showToast(labels[choice] || 'Theme updated');
+    });
+  });
 }
 
 function initHeaderScrollState() {
@@ -182,42 +218,6 @@ function initScrollReveals() {
   nodes.forEach(n => observer.observe(n));
 }
 
-function initStatCounters() {
-  const els = document.querySelectorAll('[data-count]');
-  if (!els.length) return;
-  const animate = (el) => {
-    if (el.dataset.counted === '1') return;
-    el.dataset.counted = '1';
-    const target = parseInt(el.getAttribute('data-count'), 10);
-    const suffix = el.getAttribute('data-suffix') || '';
-    const prefix = el.getAttribute('data-prefix') || '';
-    const duration = 800;
-    const start = performance.now();
-    const step = (now) => {
-      const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = prefix + Math.round(target * eased) + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-
-  if (!('IntersectionObserver' in window)) {
-    els.forEach(animate);
-    return;
-  }
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        animate(e.target);
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.3 });
-  els.forEach(el => io.observe(el));
-}
-
-/* Interactive Playbook Switcher on Home */
 function initPlaybookTabs() {
   const buttons = document.querySelectorAll('.playbook-step-btn');
   if (!buttons.length) return;
@@ -278,7 +278,7 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  window.__toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 function copyEmail(email) {
@@ -336,7 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initDecryptedText();
   initSpotlights();
   initScrollReveals();
-  initStatCounters();
   initPlaybookTabs();
   initReadingProgress();
   initVideoBackground();
