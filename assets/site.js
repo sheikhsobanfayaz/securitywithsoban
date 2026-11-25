@@ -5,7 +5,7 @@
 (function applyInitialAccent() {
   try {
     const saved = localStorage.getItem('soban_accent');
-    if (saved === 'orange' || saved === 'blue' || saved === 'brown') {
+    if (saved === 'orange' || saved === 'blue' || saved === 'red') {
       document.documentElement.setAttribute('data-accent', saved);
     } else {
       document.documentElement.setAttribute('data-accent', 'orange');
@@ -37,7 +37,7 @@ function initThemeManager() {
       document.documentElement.setAttribute('data-accent', choice);
       try { localStorage.setItem('soban_accent', choice); } catch (e) {}
       syncButtons(choice);
-      const labels = { orange: 'Orange theme', blue: 'Blue theme', brown: 'Warm brown theme' };
+      const labels = { orange: 'Orange theme', blue: 'Blue theme', red: 'Red theme' };
       showToast(labels[choice] || 'Theme updated');
     });
   });
