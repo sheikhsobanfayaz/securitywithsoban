@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --paper: #FFFFFF;
+  --surface: #F8FAFC;
+  --ink: #0F172A;
+  --ink2: #334155;
+  --mute: #475569;
+  --hair: #E2E8F0;
+  --accent: #2563EB;
+  --accent-text: #1E40AF;
+  --accent-soft: #EFF6FF;
+  --emerald: #0D9488;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0B0F17;
+  --surface: #111827;
+  --ink: #F8FAFC;
+  --ink2: #CBD5E1;
+  --mute: #94A3B8;
+  --hair: #1E293B;
+  --accent: #3B82F6;
+  --accent-text: #60A5FA;
+  --accent-soft: #172554;
+  --emerald: #2DD4BF;
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--paper);
+    color: var(--ink);
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+  }
+}
+
+.font-display {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.font-mono-code {
+  font-family: 'IBM Plex Mono', monospace;
+}

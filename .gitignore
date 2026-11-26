@@ -1,1 +1,4 @@
 NetworkSecurity.txt
+node_modules/
+dist/
+.vite/

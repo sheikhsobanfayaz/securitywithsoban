@@ -34,7 +34,7 @@ jobs:
 
           category_raw = extract("Category").lower()
           cat_map = {
-              "network": ("network", "Network & SonicWall"),
+              "network": ("network", "Network & Perimeter"),
               "siem": ("siem", "SIEM & Detection"),
               "ai": ("ai", "AI & Automation"),
           }
@@ -55,13 +55,13 @@ jobs:
               "snippet": extract("Snippet") or "// No query snippet provided"
           }
 
-          with open("projects.json", "r", encoding="utf-8") as f:
+          with open("public/projects.json", "r", encoding="utf-8") as f:
               data = json.load(f)
 
           data = [item for item in data if item.get("id") != slug]
           data.insert(0, entry)
 
-          with open("projects.json", "w", encoding="utf-8") as f:
+          with open("public/projects.json", "w", encoding="utf-8") as f:
               json.dump(data, f, indent=2)
               f.write("\n")
           PY
@@ -70,7 +70,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add projects.json
+          git add public/projects.json
           git diff --cached --quiet || git commit -m "Add write-up: ${{ github.event.issue.title }}"
           git push
 
