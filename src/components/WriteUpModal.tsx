@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Check, Copy, X } from 'lucide-react';
+import { ArrowRight, Check, Copy, X } from 'lucide-react';
 import type { ProjectItem } from '@/types/project';
 
 interface WriteUpModalProps {
   project: ProjectItem | null;
   onClose: () => void;
+  onOpenStandalone: (caseId: string) => void;
   onNotify: (msg: string) => void;
 }
 
-export function WriteUpModal({ project, onClose, onNotify }: WriteUpModalProps) {
+export function WriteUpModal({
+  project,
+  onClose,
+  onOpenStandalone,
+  onNotify,
+}: WriteUpModalProps) {
   const [copiedQuery, setCopiedQuery] = useState(false);
 
   useEffect(() => {
@@ -159,6 +165,21 @@ export function WriteUpModal({ project, onClose, onNotify }: WriteUpModalProps) 
               <strong>Disposition:</strong> {project.outcomeStatus}
             </div>
           )}
+
+          <div className="flex justify-end border-t border-[var(--hair)] pt-4">
+            <button
+              type="button"
+              onClick={() => {
+                const id = project.id;
+                onClose();
+                onOpenStandalone(id);
+              }}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-4 py-2 text-[13.5px] font-semibold text-white transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+            >
+              <span>Open Full Standalone Page</span>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

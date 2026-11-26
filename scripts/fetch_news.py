@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch latest cybersecurity stories from official RSS/Atom feeds into news.json."""
+"""Fetch latest cybersecurity stories from official RSS/Atom feeds into public/news.json."""
 
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
@@ -14,7 +14,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUTPUT_PATH = os.path.join(ROOT_DIR, "news.json")
+OUTPUT_PATH = os.path.join(ROOT_DIR, "public", "news.json")
 MAX_ITEMS = 15
 MAX_SUMMARY_LEN = 180
 REQUEST_TIMEOUT = 15

@@ -82,7 +82,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "Published to `projects.json`. GitHub Pages will redeploy shortly."
+              body: "Published to `public/projects.json`. GitHub Pages will redeploy shortly."
             });
             await github.rest.issues.update({
               owner: context.repo.owner,

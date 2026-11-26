@@ -10,6 +10,21 @@ export interface MethodologyItem {
   description: string;
 }
 
+export interface PlaybookStep {
+  stepTag: string;
+  num: string;
+  title: string;
+  description: string;
+  example: string;
+}
+
+export interface MitreStage {
+  name: string;
+  summary: string;
+  technique: string;
+  caseId: string;
+}
+
 export interface CapabilityGroup {
   title: string;
   items: { name: string; level: string }[];
@@ -33,6 +48,102 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
     title: 'ISC2 CC & Detection',
     description:
       'ISC2 Certified in Cybersecurity (CC) holder, actively advancing through CompTIA Security+ (V8), Sigma rule engineering, and Python log automation.',
+  },
+];
+
+export const PLAYBOOK_STEPS: PlaybookStep[] = [
+  {
+    stepTag: 'STEP 1',
+    num: '01',
+    title: 'Verify What Triggered',
+    description:
+      'Confirm the user identity, host IP, process lineage, and timestamp. An alert rule hit is a starting hypothesis, not proof of compromise.',
+    example:
+      'Example: Confirm username, device IP (10.16.56.241), and which program started the action.',
+  },
+  {
+    stepTag: 'STEP 2',
+    num: '02',
+    title: 'Query Historical Telemetry',
+    description:
+      'Look back across recent Microsoft Sentinel logs to see if the activity is isolated to one workstation or repeating across endpoints.',
+    example:
+      'Example: Query the last 24h-7d of logs for matching source IPs, hashes, or account logins.',
+  },
+  {
+    stepTag: 'STEP 3',
+    num: '03',
+    title: 'Correlate Endpoint & Firewall',
+    description:
+      'Even if an endpoint recorded a socket attempt, verify firewall DeviceAction logs to prove whether traffic actually escaped the perimeter.',
+    example:
+      'Example: Endpoint says ConnectionSuccess, while Firewall DeviceAction shows DROP -> blocked at the perimeter.',
+  },
+  {
+    stepTag: 'STEP 4',
+    num: '04',
+    title: 'Validate Business Justification',
+    description:
+      'When cloud DLP triggers on external file transfers, corroborate self-reported user explanations against ticket approvals and data policies.',
+    example:
+      'Example: Match Netskope DLP justification text against approved change or manager records.',
+  },
+  {
+    stepTag: 'STEP 5',
+    num: '05',
+    title: 'Inspect Edge & Web Logs',
+    description:
+      'Review web application firewall (WAF) status codes on reconnaissance bursts to confirm probing hit HTTP 403/404 blocks rather than valid responses.',
+    example:
+      'Example: Scanner requests /.env or /wp-config.php -> WAF rejects with HTTP 403.',
+  },
+  {
+    stepTag: 'STEP 6',
+    num: '06',
+    title: 'Deliver Evidence-Backed Disposition',
+    description:
+      'Separate verified telemetry from open visibility gaps and write concise handover notes explaining blast radius, containment, and next actions.',
+    example:
+      'Example: Document blocked egress, verified clean asset state, and clear remediation steps.',
+  },
+];
+
+export const MITRE_STAGES: MitreStage[] = [
+  {
+    name: 'Outside Connections',
+    summary: 'Checking if traffic left the network',
+    technique: 'MITRE T1071.001 · Firewall check',
+    caseId: 'sentinel-c2-indicator',
+  },
+  {
+    name: 'Hidden Scripts',
+    summary: 'Reading obfuscated commands offline',
+    technique: 'MITRE T1027 · Local AI helper',
+    caseId: 'unsloth-lora-secops',
+  },
+  {
+    name: 'Network Scanning',
+    summary: 'Separating backups from scanners',
+    technique: 'MITRE T1046 · Port activity',
+    caseId: 'internal-portscan-analysis',
+  },
+  {
+    name: 'File Uploads',
+    summary: 'Reviewing external data transfers',
+    technique: 'MITRE T1567 · Cloud DLP check',
+    caseId: 'netskope-dlp-justification',
+  },
+  {
+    name: 'Credential Abuse',
+    summary: 'Flagging impossible-travel logins',
+    technique: 'MITRE T1078 · VPN login check',
+    caseId: 'ssl-vpn-triage',
+  },
+  {
+    name: 'Process Chains',
+    summary: 'Tracing parent-child command execution',
+    technique: 'MITRE T1059.001 · Process logs',
+    caseId: 'sysmon-c2',
   },
 ];
 

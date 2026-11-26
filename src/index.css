@@ -4,6 +4,7 @@
   color-scheme: light;
   --paper: #FFFFFF;
   --surface: #F8FAFC;
+  --surface-elevated: #FFFFFF;
   --ink: #0F172A;
   --ink2: #334155;
   --mute: #475569;
@@ -18,6 +19,7 @@
   color-scheme: dark;
   --paper: #0B0F17;
   --surface: #111827;
+  --surface-elevated: #0F172A;
   --ink: #F8FAFC;
   --ink2: #CBD5E1;
   --mute: #94A3B8;
@@ -49,6 +51,7 @@
     line-height: 1.65;
     transition: background-color 0.2s ease, color 0.2s ease;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4 {

@@ -24,14 +24,14 @@ jobs:
       - name: Fetch latest cybersecurity news feeds
         run: python3 scripts/fetch_news.py
 
-      - name: Commit and push updated news.json
+      - name: Commit and push updated public/news.json
         run: |
-          if git diff --quiet news.json; then
-            echo "No changes to news.json."
+          if git diff --quiet public/news.json; then
+            echo "No changes to public/news.json."
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add news.json
+            git add public/news.json
             git commit -m "chore: update daily cybersecurity news feed"
             git push origin main
           fi
