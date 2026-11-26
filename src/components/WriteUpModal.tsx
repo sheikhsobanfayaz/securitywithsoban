@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, Check, Copy, X } from 'lucide-react';
+import { CATEGORY_MEDIA } from '@/data/portfolio';
 import type { ProjectItem } from '@/types/project';
 
 interface WriteUpModalProps {
@@ -62,11 +63,23 @@ export function WriteUpModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs"
     >
       <div className="max-h-[86vh] w-full max-w-[720px] overflow-y-auto rounded-2xl border border-[var(--hair)] bg-[var(--paper)] p-6 shadow-xl">
+        <div className="relative mb-5 h-40 w-full overflow-hidden rounded-xl border border-[var(--hair)] bg-[#0B1120]">
+          <img
+            src={CATEGORY_MEDIA[project.category].image}
+            alt={CATEGORY_MEDIA[project.category].alt}
+            className="h-full w-full object-cover"
+          />
+          <div
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1120]/80 via-transparent to-transparent"
+            aria-hidden="true"
+          />
+          <span className="font-mono-code absolute bottom-3 left-4 rounded-md border border-white/15 bg-[#0B1120]/80 px-2.5 py-0.5 text-[11.5px] font-medium text-sky-300 backdrop-blur-xs">
+            {project.categoryLabel}
+          </span>
+        </div>
+
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <span className="font-mono-code mb-1.5 block text-[12px] text-[var(--accent-text)]">
-              {project.categoryLabel}
-            </span>
             <h3 id="modal-title" className="font-display text-[22px] font-semibold leading-tight text-[var(--ink)] sm:text-[24px]">
               {project.title}
             </h3>

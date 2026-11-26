@@ -1,6 +1,7 @@
 import { useMemo, type CSSProperties } from 'react';
 import { ArrowRight, Check, Wrench } from 'lucide-react';
 import BlurText from '@/components/reactbits/BlurText/BlurText';
+import GlareHover from '@/components/reactbits/GlareHover/GlareHover';
 import SpotlightCard from '@/components/reactbits/SpotlightCard/SpotlightCard';
 import type { AppRoute } from '@/types/project';
 
@@ -47,14 +48,22 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => onNavigate('cc-simulator')}
-            className="inline-flex h-11 items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+          <GlareHover
+            background="transparent"
+            borderRadius="8px"
+            borderColor="transparent"
+            glareColor="#ffffff"
+            glareOpacity={0.3}
           >
-            <span>Open CC Practice Quiz</span>
-            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-          </button>
+            <button
+              type="button"
+              onClick={() => onNavigate('cc-simulator')}
+              className="inline-flex h-11 items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+            >
+              <span>Open CC Practice Quiz</span>
+              <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+            </button>
+          </GlareHover>
           <button
             type="button"
             onClick={() => onNavigate('ai-sanitizer')}
@@ -84,43 +93,55 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
             borderGlow={0.25}
             spotlightSize={280}
             style={spotlightStyle}
-            className="flex flex-col justify-between gap-5 rounded-xl! border! border-[var(--hair)]! p-6!"
+            className="flex flex-col justify-between gap-5 overflow-hidden! rounded-xl! border! border-[var(--hair)]! p-0!"
           >
             <div>
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="font-mono-code inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--accent-soft)] text-[14px] font-semibold text-[var(--accent-text)]">
-                  CC
-                </span>
-                <span className="font-mono-code tabular-nums rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11.5px] font-medium text-[var(--emerald)]">
-                  143 Questions
-                </span>
+              <div className="relative h-44 w-full overflow-hidden border-b border-[var(--hair)] bg-[#0B1120]">
+                <img
+                  src="./images/case-siem-detection.jpg"
+                  alt="Optical glass prism splitting telemetry signals"
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1120]/85 via-[#0B1120]/20 to-transparent"
+                  aria-hidden="true"
+                />
+                <div className="absolute right-4 bottom-3 left-4 flex items-center justify-between gap-2">
+                  <span className="font-mono-code rounded-md border border-white/15 bg-[#0B1120]/80 px-2.5 py-0.5 text-[11.5px] font-medium text-sky-300 backdrop-blur-xs">
+                    Exam Prep
+                  </span>
+                  <span className="font-mono-code tabular-nums rounded-md border border-emerald-400/30 bg-emerald-500/15 px-2.5 py-0.5 text-[11.5px] font-medium text-emerald-300 backdrop-blur-xs">
+                    143 Questions
+                  </span>
+                </div>
               </div>
-              <span className="font-mono-code text-[12px] text-[var(--accent-text)]">
-                Exam prep
-              </span>
-              <h3 className="font-display mt-1 mb-2 text-[22px] font-semibold text-[var(--ink)]">
-                ISC2 CC Practice Quiz
-              </h3>
-              <p className="mt-0 mb-4 text-[14.5px] leading-relaxed text-[var(--ink2)]">
-                Practice quiz for the ISC2 Certified in Cybersecurity exam. Pick how many questions you want, click an answer, and immediately see why it is right or wrong.
-              </p>
-              <ul className="m-0 list-none space-y-2 p-0 text-[13.5px] text-[var(--ink2)]">
-                <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
-                  <span>Pick 10, 25, 50, 100, or all 143 questions right from the menu</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
-                  <span>Instant explanation showing why the right answer works and why others fail</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
-                  <span>Shows your score by topic and lets you retry only missed questions</span>
-                </li>
-              </ul>
+
+              <div className="px-6 pt-5">
+                <h3 className="font-display mt-0 mb-2 text-[22px] font-semibold text-[var(--ink)]">
+                  ISC2 CC Practice Quiz
+                </h3>
+                <p className="mt-0 mb-4 text-[14.5px] leading-relaxed text-[var(--ink2)]">
+                  Practice quiz for the ISC2 Certified in Cybersecurity exam. Pick how many questions you want, click an answer, and immediately see why it is right or wrong.
+                </p>
+                <ul className="m-0 list-none space-y-2 p-0 text-[13.5px] text-[var(--ink2)]">
+                  <li className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                    <span>Pick 10, 25, 50, 100, or all 143 questions right from the menu</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                    <span>Instant explanation showing why the right answer works and why others fail</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                    <span>Shows your score by topic and lets you retry only missed questions</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--hair)] pt-4">
+            <div className="mx-6 mb-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--hair)] pt-4">
               <div className="flex flex-wrap gap-1.5">
                 {['ISC2 CC', '5 Topics', 'Static'].map((tag) => (
                   <span
@@ -134,7 +155,7 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
               <button
                 type="button"
                 onClick={() => onNavigate('cc-simulator')}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
               >
                 <span>Start Quiz</span>
                 <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
@@ -149,43 +170,55 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
             borderGlow={0.25}
             spotlightSize={280}
             style={spotlightStyle}
-            className="flex flex-col justify-between gap-5 rounded-xl! border! border-[var(--hair)]! p-6!"
+            className="flex flex-col justify-between gap-5 overflow-hidden! rounded-xl! border! border-[var(--hair)]! p-0!"
           >
             <div>
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="font-mono-code inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--accent-soft)] text-[14px] font-semibold text-[var(--accent-text)]">
-                  AI
-                </span>
-                <span className="font-mono-code rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11.5px] font-medium text-[var(--emerald)]">
-                  Runs Locally
-                </span>
+              <div className="relative h-44 w-full overflow-hidden border-b border-[var(--hair)] bg-[#0B1120]">
+                <img
+                  src="./images/case-ai-privacy.jpg"
+                  alt="Matte black local compute unit behind a frosted privacy glass block"
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1120]/85 via-[#0B1120]/20 to-transparent"
+                  aria-hidden="true"
+                />
+                <div className="absolute right-4 bottom-3 left-4 flex items-center justify-between gap-2">
+                  <span className="font-mono-code rounded-md border border-white/15 bg-[#0B1120]/80 px-2.5 py-0.5 text-[11.5px] font-medium text-sky-300 backdrop-blur-xs">
+                    Privacy Helper
+                  </span>
+                  <span className="font-mono-code rounded-md border border-emerald-400/30 bg-emerald-500/15 px-2.5 py-0.5 text-[11.5px] font-medium text-emerald-300 backdrop-blur-xs">
+                    Runs Locally
+                  </span>
+                </div>
               </div>
-              <span className="font-mono-code text-[12px] text-[var(--accent-text)]">
-                Privacy helper
-              </span>
-              <h3 className="font-display mt-1 mb-2 text-[22px] font-semibold text-[var(--ink)]">
-                SanitizeAI Log Cleaner
-              </h3>
-              <p className="mt-0 mb-4 text-[14.5px] leading-relaxed text-[var(--ink2)]">
-                Before pasting work logs into an AI assistant, clean them here first. It automatically hides client names, IP addresses, emails, usernames, and passwords inside your browser.
-              </p>
-              <ul className="m-0 list-none space-y-2 p-0 text-[13.5px] text-[var(--ink2)]">
-                <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
-                  <span>Finds client names even with spaces, hyphens, underscores, or inside domains</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
-                  <span>Replaces details with clean placeholders like [CLIENT_1] or [IP_1]</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
-                  <span>Includes a lookup table so you can match placeholders back to real values</span>
-                </li>
-              </ul>
+
+              <div className="px-6 pt-5">
+                <h3 className="font-display mt-0 mb-2 text-[22px] font-semibold text-[var(--ink)]">
+                  SanitizeAI Log Cleaner
+                </h3>
+                <p className="mt-0 mb-4 text-[14.5px] leading-relaxed text-[var(--ink2)]">
+                  Before pasting work logs into an AI assistant, clean them here first. It automatically hides client names, IP addresses, emails, usernames, and passwords inside your browser.
+                </p>
+                <ul className="m-0 list-none space-y-2 p-0 text-[13.5px] text-[var(--ink2)]">
+                  <li className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                    <span>Finds client names even with spaces, hyphens, underscores, or inside domains</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                    <span>Replaces details with clean placeholders like [CLIENT_1] or [IP_1]</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                    <span>Includes a lookup table so you can match placeholders back to real values</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--hair)] pt-4">
+            <div className="mx-6 mb-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--hair)] pt-4">
               <div className="flex flex-wrap gap-1.5">
                 {['Privacy', 'Log Cleaner', 'Browser Only'].map((tag) => (
                   <span
@@ -199,7 +232,7 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
               <button
                 type="button"
                 onClick={() => onNavigate('ai-sanitizer')}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
               >
                 <span>Open SanitizeAI</span>
                 <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />

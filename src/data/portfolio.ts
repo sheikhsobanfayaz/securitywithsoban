@@ -1,7 +1,10 @@
+import type { ProjectCategory } from '@/types/project';
+
 export interface ExperienceItem {
   meta: string;
   title: string;
   description: string;
+  highlights: string[];
 }
 
 export interface MethodologyItem {
@@ -36,20 +39,62 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
     title: 'SOC Analyst',
     description:
       'Monitoring multi-tenant SIEM and EDR queues, validating true-positive incidents against MITRE ATT&CK, and writing clear client-ready escalation reports under strict SLAs.',
+    highlights: ['Microsoft Sentinel & KQL', 'Multi-Tenant Triage', 'MITRE ATT&CK'],
   },
   {
     meta: 'Prior · Network security',
     title: 'Network Security Engineer',
     description:
       'Enterprise firewall troubleshooting, NAT translations, site-to-site IPsec and SSL VPN tunnels, Layer 2 bridge interfaces, and physical hardware diagnostics for perimeter defense.',
+    highlights: ['Firewall & NAT Policy', 'IPsec & SSL VPN', 'Packet Diagnostics'],
   },
   {
     meta: 'Credentials · Active study',
     title: 'ISC2 CC & Detection',
     description:
       'ISC2 Certified in Cybersecurity (CC) holder, actively advancing through CompTIA Security+ (V8), Sigma rule engineering, and Python log automation.',
+    highlights: ['ISC2 CC Certified', 'CompTIA Security+', 'Sigma & Python'],
   },
 ];
+
+export interface CategoryMediaInfo {
+  image: string;
+  alt: string;
+  label: string;
+  subtitle: string;
+}
+
+export const CATEGORY_MEDIA: Record<ProjectCategory, CategoryMediaInfo> = {
+  network: {
+    image: './images/case-network-perimeter.jpg',
+    alt: 'Braided fiber-optic patch cables connected to enterprise network switch ports',
+    label: 'Network & Perimeter',
+    subtitle: 'Firewalls, IPsec/SSL VPNs, routing isolation, and Layer 2 defense',
+  },
+  siem: {
+    image: './images/case-siem-detection.jpg',
+    alt: 'Precision glass prism splitting white telemetry beams into cobalt blue and teal detection signals',
+    label: 'SIEM & Detection',
+    subtitle: 'Microsoft Sentinel KQL hunting, DLP triage, and process lineage',
+  },
+  ai: {
+    image: './images/case-ai-privacy.jpg',
+    alt: 'Matte black local compute module behind a frosted architectural glass privacy shield',
+    label: 'AI & Automation',
+    subtitle: 'Offline LoRA script deobfuscation and browser-only PII redaction',
+  },
+};
+
+export const HERO_MEDIA = {
+  image: './images/hero-soc-prism.jpg',
+  alt: 'Minimalist dark-mode security operations desk with packet wave monitor and glass prism',
+};
+
+export const LAB_VIDEO = {
+  src: './media/soc-monitor-loop.mp4',
+  poster: './media/soc-monitor-poster.jpg',
+  title: 'Multi-screen telemetry & perimeter triage loop',
+};
 
 export const PLAYBOOK_STEPS: PlaybookStep[] = [
   {

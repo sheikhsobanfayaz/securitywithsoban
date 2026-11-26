@@ -1,28 +1,37 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { ArrowDown, ArrowRight, Check, Copy, Eye, Search, Terminal } from 'lucide-react';
 import Aurora from '@/components/reactbits/Aurora/Aurora';
 import BlurText from '@/components/reactbits/BlurText/BlurText';
 import ClickSpark from '@/components/reactbits/ClickSpark/ClickSpark';
+import CountUp from '@/components/reactbits/CountUp/CountUp';
 import DecryptedText from '@/components/reactbits/DecryptedText/DecryptedText';
+import GlareHover from '@/components/reactbits/GlareHover/GlareHover';
 import GradientText from '@/components/reactbits/GradientText/GradientText';
+import Magnet from '@/components/reactbits/Magnet/Magnet';
 import SpotlightCard from '@/components/reactbits/SpotlightCard/SpotlightCard';
+import TiltedCard from '@/components/reactbits/TiltedCard/TiltedCard';
 import { ArchitectureView } from '@/components/ArchitectureView';
 import { CaseDetailView } from '@/components/CaseDetailView';
 import { CCSimulatorView } from '@/components/CCSimulatorView';
+import { CommandPalette } from '@/components/CommandPalette';
 import { ContactSection } from '@/components/ContactSection';
 import { ContactView } from '@/components/ContactView';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { InvestigationsView } from '@/components/InvestigationsView';
 import { NewsView } from '@/components/NewsView';
+import { OperationsShowcase } from '@/components/OperationsShowcase';
 import { PracticeTerminal } from '@/components/PracticeTerminal';
 import { SanitizeAIView } from '@/components/SanitizeAIView';
 import { ToolsView } from '@/components/ToolsView';
 import { WriteUpModal } from '@/components/WriteUpModal';
 import {
   CAPABILITY_GROUPS,
+  CATEGORY_MEDIA,
   CONTACT_EMAIL,
   EXPERIENCE_ITEMS,
+  HERO_MEDIA,
   MITRE_STAGES,
   PLAYBOOK_STEPS,
 } from '@/data/portfolio';
@@ -46,6 +55,7 @@ const FILTER_OPTIONS: { value: FilterValue; label: string }[] = [
 
 const HOME_SECTION_IDS = new Set([
   'top',
+  'operations',
   'terminal',
   'experience',
   'projects',
@@ -126,9 +136,21 @@ export function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activePlaybookIdx, setActivePlaybookIdx] = useState(0);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
@@ -316,6 +338,7 @@ export function App() {
         activeRoute={locationState.route}
         scrollProgress={scrollProgress}
         onToggleTheme={toggleTheme}
+        onOpenSearch={() => setCommandPaletteOpen(true)}
         onNavigate={navigate}
       />
 
@@ -396,7 +419,7 @@ export function App() {
 
             <div
               id="top"
-              className="relative z-10 mx-auto grid max-w-[1120px] grid-cols-1 items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1.35fr_0.95fr] lg:px-12"
+              className="relative z-10 mx-auto grid max-w-[1160px] grid-cols-1 items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1.25fr_0.95fr] lg:px-10"
             >
               <div>
                 <div className="font-mono-code mb-4 inline-flex items-center gap-2 text-[12.5px] font-medium text-[var(--accent-text)]">
@@ -415,7 +438,7 @@ export function App() {
 
                 <div role="heading" aria-level={1} className="m-0 max-w-[19ch]">
                   <BlurText
-                    text="Network security roots. Modern SOC execution"
+                    text="Perimeter defense meets modern SOC execution"
                     trigger="load"
                     animateBy="words"
                     direction="top"
@@ -430,26 +453,37 @@ export function App() {
                   <GradientText
                     colors={
                       theme === 'dark'
-                        ? ['#93C5FD', '#60A5FA', '#93C5FD']
-                        : ['#1E40AF', '#2563EB', '#1E40AF']
+                        ? ['#93C5FD', '#2DD4BF', '#60A5FA']
+                        : ['#1E40AF', '#0D9488', '#2563EB']
                     }
-                    animationSpeed={10}
+                    animationSpeed={9}
                     className="font-display font-semibold"
                   >
                     Sheikh Soban Fayaz
                   </GradientText>
-                  , a Security Operations Center (SOC) analyst in an MSSP environment. Combining enterprise network security engineering roots with ISC2 Certified in Cybersecurity (CC) fundamentals, I focus on fast alert triage, endpoint-to-network correlation, and practical browser utilities.
+                  , a Security Operations Center (SOC) analyst in an MSSP environment. Combining enterprise network security engineering roots with ISC2 Certified in Cybersecurity (CC) fundamentals, I correlate firewall, endpoint, and SIEM telemetry to resolve incidents cleanly and build local utilities for analysts.
                 </p>
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => navigate('investigations')}
-                    className="inline-flex h-11 items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] active:scale-[0.98] cursor-pointer"
-                  >
-                    <span>Explore Case Studies</span>
-                    <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-                  </button>
+                  <Magnet padding={28} magnetStrength={0.16}>
+                    <GlareHover
+                      background="transparent"
+                      borderRadius="8px"
+                      borderColor="transparent"
+                      glareColor="#ffffff"
+                      glareOpacity={0.32}
+                      transitionDuration={550}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => navigate('investigations')}
+                        className="inline-flex h-11 items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] active:scale-[0.98] cursor-pointer"
+                      >
+                        <span>Explore Case Studies</span>
+                        <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                      </button>
+                    </GlareHover>
+                  </Magnet>
                   <button
                     type="button"
                     onClick={() => navigate('home', { sectionId: 'terminal' })}
@@ -470,13 +504,48 @@ export function App() {
                 </div>
               </div>
 
-              {/* Quick Jump Panel */}
+              {/* Hero Visual Showcase + Quick Jump Deck */}
               <div
-                className="rounded-2xl border border-[var(--hair)] bg-[var(--surface-elevated)] p-5 sm:p-6"
+                className="overflow-hidden rounded-2xl border border-[var(--hair)] bg-[var(--surface-elevated)] p-3.5 sm:p-4"
                 style={{ boxShadow: 'var(--card-shadow)' }}
               >
-                <div className="font-mono-code mb-2 border-b border-[var(--hair)] pb-3 text-[12px] font-medium text-[var(--accent-text)]">
-                  Quick jump
+                <div className="mb-3">
+                  <TiltedCard
+                    imageSrc={HERO_MEDIA.image}
+                    altText={HERO_MEDIA.alt}
+                    captionText="SOC Operations & Telemetry Desk"
+                    containerWidth="100%"
+                    containerHeight="172px"
+                    imageWidth="100%"
+                    imageHeight="172px"
+                    rotateAmplitude={6}
+                    scaleOnHover={1.02}
+                    radius={12}
+                    showTooltip={false}
+                    displayOverlayContent
+                    overlayContent={
+                      <div className="flex h-full w-full items-end bg-gradient-to-t from-[#0B0F17]/90 via-[#0B0F17]/20 to-transparent p-4">
+                        <div className="flex w-full items-end justify-between gap-2">
+                          <div>
+                            <span className="font-mono-code block text-[11px] text-sky-300">
+                              Operations workspace
+                            </span>
+                            <span className="font-display text-[15px] font-semibold text-white">
+                              Firewall, EDR &amp; SIEM Correlation
+                            </span>
+                          </div>
+                          <span className="font-mono-code rounded border border-emerald-400/35 bg-emerald-500/15 px-2 py-0.5 text-[10.5px] text-emerald-300">
+                            Active
+                          </span>
+                        </div>
+                      </div>
+                    }
+                  />
+                </div>
+
+                <div className="font-mono-code mb-1.5 flex items-center justify-between border-b border-[var(--hair)] px-1.5 pb-2 text-[11.5px] font-medium text-[var(--accent-text)]">
+                  <span>Quick jump</span>
+                  <span className="text-[var(--mute)]">Ctrl K to search</span>
                 </div>
                 <div className="flex flex-col divide-y divide-[var(--hair)]">
                   {[
@@ -515,20 +584,20 @@ export function App() {
                       key={item.title}
                       type="button"
                       onClick={item.action}
-                      className="group flex w-full items-center justify-between gap-3 py-3 text-left transition-colors duration-150 hover:text-[var(--accent-text)] cursor-pointer"
+                      className="group flex w-full items-center justify-between gap-3 rounded-lg px-1.5 py-2.5 text-left transition-colors duration-150 hover:bg-[var(--surface)] hover:text-[var(--accent-text)] cursor-pointer"
                     >
                       <div>
-                        <strong className="font-display block text-[14.5px] font-semibold text-[var(--ink)] group-hover:text-[var(--accent-text)]">
+                        <strong className="font-display block text-[14px] font-semibold text-[var(--ink)] group-hover:text-[var(--accent-text)]">
                           {item.title}
                         </strong>
-                        <small className="block text-[13px] text-[var(--mute)]">
+                        <small className="block text-[12.5px] text-[var(--mute)]">
                           {item.sub}
                         </small>
                       </div>
                       {item.arrow === 'down' ? (
-                        <ArrowDown className="h-4 w-4 shrink-0 text-[var(--mute)] group-hover:text-[var(--accent-text)]" strokeWidth={1.5} aria-hidden="true" />
+                        <ArrowDown className="h-4 w-4 shrink-0 text-[var(--mute)] transition-transform duration-150 group-hover:translate-y-0.5 group-hover:text-[var(--accent-text)]" strokeWidth={1.5} aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-4 w-4 shrink-0 text-[var(--mute)] group-hover:text-[var(--accent-text)]" strokeWidth={1.5} aria-hidden="true" />
+                        <ArrowRight className="h-4 w-4 shrink-0 text-[var(--mute)] transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-[var(--accent-text)]" strokeWidth={1.5} aria-hidden="true" />
                       )}
                     </button>
                   ))}
@@ -537,7 +606,40 @@ export function App() {
             </div>
           </section>
 
-          <main className="mx-auto max-w-[1120px] px-5 sm:px-8 lg:px-12">
+          <main className="mx-auto max-w-[1160px] px-5 sm:px-8 lg:px-10">
+            {/* Live Telemetry Metrics Strip */}
+            <section className="border-b border-[var(--hair)] py-8">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] px-5 py-4">
+                  <div className="font-display tabular-nums text-[28px] font-semibold leading-none text-[var(--ink)]">
+                    <CountUp to={projects.length || 17} duration={1.1} trigger="load" />
+                  </div>
+                  <div className="mt-2 text-[13px] text-[var(--mute)]">Documented Case Studies</div>
+                </div>
+                <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] px-5 py-4">
+                  <div className="font-display tabular-nums text-[28px] font-semibold leading-none text-[var(--ink)]">
+                    <CountUp to={143} duration={1.2} trigger="load" />
+                  </div>
+                  <div className="mt-2 text-[13px] text-[var(--mute)]">ISC2 CC Practice Questions</div>
+                </div>
+                <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] px-5 py-4">
+                  <div className="font-display tabular-nums text-[28px] font-semibold leading-none text-[var(--ink)]">
+                    <CountUp to={6} duration={0.9} trigger="load" />
+                  </div>
+                  <div className="mt-2 text-[13px] text-[var(--mute)]">MITRE ATT&amp;CK Stages</div>
+                </div>
+                <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] px-5 py-4">
+                  <div className="font-display tabular-nums text-[28px] font-semibold leading-none text-[var(--accent-text)]">
+                    <CountUp to={100} suffix="%" duration={1.1} trigger="load" />
+                  </div>
+                  <div className="mt-2 text-[13px] text-[var(--mute)]">Browser-Only Privacy Tools</div>
+                </div>
+              </div>
+            </section>
+
+            {/* Operations Desk Video & Domain Photo Showcase */}
+            <OperationsShowcase onNavigate={navigate} />
+
             {/* Interactive Practice Terminal */}
             <PracticeTerminal onOpenCase={openCaseDetail} onNavigate={navigate} />
 
@@ -554,16 +656,33 @@ export function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 {EXPERIENCE_ITEMS.map((item) => (
-                  <div key={item.title} className="border-t-2 border-[var(--ink)] pt-4">
-                    <span className="font-mono-code mb-2 block text-[12px] text-[var(--accent-text)]">
-                      {item.meta}
-                    </span>
-                    <h3 className="font-display mb-2 text-[19px] font-semibold text-[var(--ink)]">
-                      {item.title}
-                    </h3>
-                    <p className="m-0 text-[15px] text-[var(--ink2)]">{item.description}</p>
+                  <div
+                    key={item.title}
+                    className="flex flex-col justify-between rounded-xl border border-[var(--hair)] border-t-2 border-t-[var(--accent)] bg-[var(--surface)] p-6"
+                  >
+                    <div>
+                      <span className="font-mono-code mb-2 block text-[12px] text-[var(--accent-text)]">
+                        {item.meta}
+                      </span>
+                      <h3 className="font-display mb-2.5 text-[19px] font-semibold text-[var(--ink)]">
+                        {item.title}
+                      </h3>
+                      <p className="m-0 text-[14.5px] leading-relaxed text-[var(--ink2)]">
+                        {item.description}
+                      </p>
+                    </div>
+                    <div className="mt-5 flex flex-wrap gap-1.5 border-t border-[var(--hair)] pt-4">
+                      {item.highlights.map((hl) => (
+                        <span
+                          key={hl}
+                          className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11px] text-[var(--mute)]"
+                        >
+                          {hl}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -640,58 +759,77 @@ export function App() {
               ) : (
                 <>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {filteredProjects.map((project) => (
-                      <SpotlightCard
-                        key={project.id}
-                        theme={theme}
-                        spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-                        intensity={theme === 'dark' ? 0.1 : 0.06}
-                        borderGlow={0.25}
-                        spotlightSize={260}
-                        style={spotlightStyle}
-                        className="flex flex-col justify-between gap-4 rounded-xl! border! border-[var(--hair)]! p-6!"
-                      >
-                        <div>
-                          <span className="font-mono-code mb-2 block text-[12px] text-[var(--accent-text)]">
-                            {project.categoryLabel}
-                          </span>
-                          <h3 className="font-display mb-2 text-[20px] font-semibold leading-snug text-[var(--ink)]">
-                            {project.title}
-                          </h3>
-                          <p className="m-0 text-[14.5px] text-[var(--ink2)]">
-                            {project.summary}
-                          </p>
-                          <div className="mt-4 flex flex-wrap gap-1.5">
-                            {project.tags.slice(0, 4).map((tag) => (
-                              <span
-                                key={tag}
-                                className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
-                              >
-                                {tag}
+                    {filteredProjects.map((project) => {
+                      const media = CATEGORY_MEDIA[project.category];
+                      return (
+                        <SpotlightCard
+                          key={project.id}
+                          theme={theme}
+                          spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
+                          intensity={theme === 'dark' ? 0.1 : 0.06}
+                          borderGlow={0.25}
+                          spotlightSize={260}
+                          style={spotlightStyle}
+                          className="flex flex-col justify-between gap-4 overflow-hidden! rounded-xl! border! border-[var(--hair)]! p-0!"
+                        >
+                          <div>
+                            <div className="relative h-36 w-full overflow-hidden border-b border-[var(--hair)] bg-[#0B1120]">
+                              <img
+                                src={media.image}
+                                alt={media.alt}
+                                loading="lazy"
+                                className="h-full w-full object-cover"
+                              />
+                              <div
+                                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1120]/85 via-[#0B1120]/15 to-transparent"
+                                aria-hidden="true"
+                              />
+                              <span className="font-mono-code absolute bottom-3 left-4 rounded-md border border-white/15 bg-[#0B1120]/80 px-2.5 py-0.5 text-[11.5px] font-medium text-sky-300 backdrop-blur-xs">
+                                {project.categoryLabel}
                               </span>
-                            ))}
+                            </div>
+
+                            <div className="px-6 pt-5">
+                              <h3 className="font-display mt-0 mb-2 text-[20px] font-semibold leading-snug text-[var(--ink)]">
+                                {project.title}
+                              </h3>
+                              <p className="m-0 text-[14.5px] text-[var(--ink2)]">
+                                {project.summary}
+                              </p>
+                              <div className="mt-4 flex flex-wrap gap-1.5">
+                                {project.tags.slice(0, 4).map((tag) => (
+                                  <span
+                                    key={tag}
+                                    className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2 border-t border-[var(--hair)] pt-4">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedProject(project)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
-                          >
-                            <Eye className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
-                            <span>Quick Preview</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => openCaseDetail(project.id)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
-                          >
-                            <span>Read Deep-Dive</span>
-                            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-                          </button>
-                        </div>
-                      </SpotlightCard>
-                    ))}
+
+                          <div className="mx-6 mb-6 flex flex-wrap items-center gap-2 border-t border-[var(--hair)] pt-4">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedProject(project)}
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
+                            >
+                              <Eye className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                              <span>Quick Preview</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => openCaseDetail(project.id)}
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                            >
+                              <span>Read Deep-Dive</span>
+                              <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                            </button>
+                          </div>
+                        </SpotlightCard>
+                      );
+                    })}
                   </div>
 
                   <div className="mt-8 flex justify-end">
@@ -730,7 +868,7 @@ export function App() {
               </div>
 
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {MITRE_STAGES.map((stage) => (
+                {MITRE_STAGES.map((stage, idx) => (
                   <SpotlightCard
                     key={stage.caseId}
                     theme={theme}
@@ -750,6 +888,12 @@ export function App() {
                     }}
                     className="cursor-pointer rounded-xl! border! border-[var(--hair)]! p-6! transition-colors duration-150 hover:border-[var(--accent)]/50!"
                   >
+                    <div className="mb-3 flex items-center justify-between gap-2">
+                      <span className="font-mono-code tabular-nums text-[11.5px] font-medium text-[var(--mute)]">
+                        Stage {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--emerald)]" aria-hidden="true" />
+                    </div>
                     <h3 className="font-display mt-0 mb-2 text-[18px] font-semibold text-[var(--ink)]">
                       {stage.name}
                     </h3>
@@ -817,15 +961,33 @@ export function App() {
                   className="flex flex-col justify-between gap-5 rounded-2xl border border-[var(--hair)] bg-[var(--surface)] p-6"
                 >
                   <div>
-                    <span className="font-mono-code text-[12px] font-medium text-[var(--accent-text)]">
-                      {activePlaybook.stepTag}
-                    </span>
-                    <h3 className="font-display mt-2 mb-3 text-[22px] font-semibold text-[var(--ink)]">
-                      {activePlaybook.title}
-                    </h3>
-                    <p className="m-0 text-[15.5px] leading-relaxed text-[var(--ink2)]">
-                      {activePlaybook.description}
-                    </p>
+                    <div className="mb-4 h-1 w-full overflow-hidden rounded-full bg-[var(--hair)]">
+                      <div
+                        className="h-full bg-[var(--accent)] transition-[width] duration-300 ease-[var(--ease-unslop)]"
+                        style={{
+                          width: `${((activePlaybookIdx + 1) / PLAYBOOK_STEPS.length) * 100}%`,
+                        }}
+                      />
+                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activePlaybook.stepTag}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <span className="font-mono-code tabular-nums text-[12px] font-medium text-[var(--accent-text)]">
+                          {activePlaybook.stepTag} of {PLAYBOOK_STEPS.length}
+                        </span>
+                        <h3 className="font-display mt-2 mb-3 text-[22px] font-semibold text-[var(--ink)]">
+                          {activePlaybook.title}
+                        </h3>
+                        <p className="m-0 text-[15.5px] leading-relaxed text-[var(--ink2)]">
+                          {activePlaybook.description}
+                        </p>
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
 
                   <div className="font-mono-code rounded-lg border border-[var(--hair)] bg-[var(--paper)] p-4 text-[13px] leading-relaxed text-[var(--ink)]">
@@ -883,7 +1045,14 @@ export function App() {
         </>
       )}
 
-      <Footer onNavigate={navigate} />
+      <Footer onNavigate={navigate} onCopyEmail={copyEmail} />
+
+      <CommandPalette
+        open={commandPaletteOpen}
+        projects={projects}
+        onClose={() => setCommandPaletteOpen(false)}
+        onNavigate={navigate}
+      />
 
       <WriteUpModal
         project={selectedProject}

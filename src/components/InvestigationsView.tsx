@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { ArrowRight, BookOpen, Eye, Search } from 'lucide-react';
 import BlurText from '@/components/reactbits/BlurText/BlurText';
 import SpotlightCard from '@/components/reactbits/SpotlightCard/SpotlightCard';
+import { CATEGORY_MEDIA } from '@/data/portfolio';
 import type { ProjectCategory, ProjectItem } from '@/types/project';
 
 type FilterValue = 'all' | ProjectCategory;
@@ -231,59 +232,77 @@ export function InvestigationsView({
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {filteredProjects.map((project) => (
-              <SpotlightCard
-                key={project.id}
-                theme={theme}
-                spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-                intensity={theme === 'dark' ? 0.1 : 0.06}
-                borderGlow={0.25}
-                spotlightSize={260}
-                style={spotlightStyle}
-                className="flex flex-col justify-between gap-4 rounded-xl! border! border-[var(--hair)]! p-6!"
-              >
-                <div>
-                  <span className="font-mono-code mb-2 block text-[12px] text-[var(--accent-text)]">
-                    {project.categoryLabel}
-                  </span>
-                  <h2 className="font-display mt-0 mb-2 text-[20px] font-semibold leading-snug text-[var(--ink)]">
-                    {project.title}
-                  </h2>
-                  <p className="m-0 text-[14.5px] leading-relaxed text-[var(--ink2)]">
-                    {project.summary}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
-                      >
-                        {tag}
+            {filteredProjects.map((project) => {
+              const media = CATEGORY_MEDIA[project.category];
+              return (
+                <SpotlightCard
+                  key={project.id}
+                  theme={theme}
+                  spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
+                  intensity={theme === 'dark' ? 0.1 : 0.06}
+                  borderGlow={0.25}
+                  spotlightSize={260}
+                  style={spotlightStyle}
+                  className="flex flex-col justify-between gap-4 rounded-xl! border! border-[var(--hair)]! p-0! overflow-hidden!"
+                >
+                  <div>
+                    <div className="relative h-40 w-full overflow-hidden border-b border-[var(--hair)] bg-[#0B1120]">
+                      <img
+                        src={media.image}
+                        alt={media.alt}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                      <div
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1120]/85 via-[#0B1120]/15 to-transparent"
+                        aria-hidden="true"
+                      />
+                      <span className="font-mono-code absolute bottom-3 left-4 rounded-md border border-white/15 bg-[#0B1120]/80 px-2.5 py-0.5 text-[11.5px] font-medium text-sky-300 backdrop-blur-xs">
+                        {project.categoryLabel}
                       </span>
-                    ))}
-                  </div>
-                </div>
+                    </div>
 
-                <div className="flex flex-wrap items-center gap-2 border-t border-[var(--hair)] pt-4">
-                  <button
-                    type="button"
-                    onClick={() => onPreviewProject(project)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
-                  >
-                    <Eye className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
-                    <span>Quick Preview</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onOpenCase(project.id)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
-                  >
-                    <span>Read Deep-Dive</span>
-                    <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-                  </button>
-                </div>
-              </SpotlightCard>
-            ))}
+                    <div className="px-6 pt-5">
+                      <h2 className="font-display mt-0 mb-2 text-[20px] font-semibold leading-snug text-[var(--ink)]">
+                        {project.title}
+                      </h2>
+                      <p className="m-0 text-[14.5px] leading-relaxed text-[var(--ink2)]">
+                        {project.summary}
+                      </p>
+                      <div className="mt-4 flex flex-wrap gap-1.5">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mx-6 mb-6 flex flex-wrap items-center gap-2 border-t border-[var(--hair)] pt-4">
+                    <button
+                      type="button"
+                      onClick={() => onPreviewProject(project)}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
+                    >
+                      <Eye className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                      <span>Quick Preview</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onOpenCase(project.id)}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                    >
+                      <span>Read Deep-Dive</span>
+                      <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                    </button>
+                  </div>
+                </SpotlightCard>
+              );
+            })}
           </div>
         )}
       </section>

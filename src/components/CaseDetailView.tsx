@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, Copy, Share2 } from 'lucide-react';
 import BlurText from '@/components/reactbits/BlurText/BlurText';
+import { CATEGORY_MEDIA } from '@/data/portfolio';
 import type { AppRoute, ProjectItem } from '@/types/project';
 
 interface CaseDetailViewProps {
@@ -102,9 +103,20 @@ export function CaseDetailView({
         </div>
 
         <header className="border-b border-[var(--hair)] pb-8">
-          <span className="font-mono-code mb-2 block text-[12px] font-medium text-[var(--accent-text)]">
-            {project.categoryLabel}
-          </span>
+          <div className="relative mb-6 h-48 w-full overflow-hidden rounded-2xl border border-[var(--hair)] bg-[#0B1120] sm:h-60">
+            <img
+              src={CATEGORY_MEDIA[project.category].image}
+              alt={CATEGORY_MEDIA[project.category].alt}
+              className="h-full w-full object-cover"
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1120]/85 via-[#0B1120]/20 to-transparent"
+              aria-hidden="true"
+            />
+            <span className="font-mono-code absolute bottom-4 left-5 rounded-md border border-white/15 bg-[#0B1120]/80 px-3 py-1 text-[12px] font-medium text-sky-300 backdrop-blur-xs">
+              {project.categoryLabel}
+            </span>
+          </div>
           <div role="heading" aria-level={1}>
             <BlurText
               text={project.title}

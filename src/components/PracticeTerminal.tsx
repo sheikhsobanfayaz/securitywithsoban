@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { ArrowRight, Terminal } from 'lucide-react';
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { ArrowRight, Check, Copy, Terminal } from 'lucide-react';
 import type { AppRoute } from '@/types/project';
 
 type ScenarioKey = 'c2' | 'unsloth' | 'vpn' | 'portscan';
@@ -138,6 +138,9 @@ const PRESET_BUTTONS: { key: ScenarioKey; label: string }[] = [
 export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalProps) {
   const [lines, setLines] = useState<TerminalLine[]>(INITIAL_LINES);
   const [commandInput, setCommandInput] = useState('');
+  const [cmdHistory, setCmdHistory] = useState<string[]>([]);
+  const [historyCursor, setHistoryCursor] = useState<number>(-1);
+  const [copiedLog, setCopiedLog] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
   const nextIdRef = useRef(100);
 
@@ -169,11 +172,52 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
     appendLines(SCENARIOS[key]);
   };
 
+  const handleCopyOutput = async () => {
+    const transcript = lines
+      .map((line) => {
+        if (line.kind === 'spacer') return '';
+        if (line.kind === 'cmd') return `soban@desk:~$ ${line.text ?? ''}`;
+        return line.text ?? '';
+      })
+      .join('\n')
+      .trim();
+    try {
+      await navigator.clipboard.writeText(transcript);
+      setCopiedLog(true);
+      window.setTimeout(() => setCopiedLog(false), 1800);
+    } catch {
+      // ignore clipboard errors
+    }
+  };
+
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowUp') {
+      if (cmdHistory.length === 0) return;
+      e.preventDefault();
+      const nextCursor = historyCursor === -1 ? cmdHistory.length - 1 : Math.max(0, historyCursor - 1);
+      setHistoryCursor(nextCursor);
+      setCommandInput(cmdHistory[nextCursor] ?? '');
+    } else if (e.key === 'ArrowDown') {
+      if (historyCursor === -1) return;
+      e.preventDefault();
+      const nextCursor = historyCursor + 1;
+      if (nextCursor >= cmdHistory.length) {
+        setHistoryCursor(-1);
+        setCommandInput('');
+      } else {
+        setHistoryCursor(nextCursor);
+        setCommandInput(cmdHistory[nextCursor] ?? '');
+      }
+    }
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const val = commandInput.trim().toLowerCase();
     setCommandInput('');
+    setHistoryCursor(-1);
     if (!val) return;
+    setCmdHistory((prev) => [...prev, val]);
 
     if (val === 'clear') {
       clearTerminal();
@@ -269,10 +313,29 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
               soban-practice-console
             </span>
           </div>
-          <span className="font-mono-code inline-flex items-center gap-2 text-[12px] font-medium text-emerald-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
-            Ready
-          </span>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleCopyOutput}
+              className="font-mono-code inline-flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-800/80 px-2.5 py-1 text-[11.5px] text-slate-300 transition-colors duration-150 hover:border-slate-500 hover:text-white cursor-pointer"
+            >
+              {copiedLog ? (
+                <>
+                  <Check className="h-3.5 w-3.5 text-emerald-400" strokeWidth={1.5} aria-hidden="true" />
+                  <span>Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
+                  <span>Copy output</span>
+                </>
+              )}
+            </button>
+            <span className="font-mono-code inline-flex items-center gap-2 text-[12px] font-medium text-emerald-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
+              Ready
+            </span>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-b border-slate-800/80 bg-[#0F172A] px-4 py-2.5">
@@ -384,7 +447,8 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
             type="text"
             value={commandInput}
             onChange={(e) => setCommandInput(e.target.value)}
-            placeholder="Type c2, unsloth, vpn, portscan, cases, or help"
+            onKeyDown={handleInputKeyDown}
+            placeholder="Type c2, unsloth, vpn, portscan, cases, or help (Up/Down for history)"
             aria-label="Practice terminal command input"
             autoComplete="off"
             spellCheck={false}

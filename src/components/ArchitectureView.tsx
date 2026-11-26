@@ -1,7 +1,10 @@
 import { useMemo, type CSSProperties } from 'react';
 import { ArrowRight, Layers } from 'lucide-react';
 import BlurText from '@/components/reactbits/BlurText/BlurText';
+import CountUp from '@/components/reactbits/CountUp/CountUp';
 import SpotlightCard from '@/components/reactbits/SpotlightCard/SpotlightCard';
+import TiltedCard from '@/components/reactbits/TiltedCard/TiltedCard';
+import { HERO_MEDIA } from '@/data/portfolio';
 import type { AppRoute } from '@/types/project';
 
 interface ArchitectureViewProps {
@@ -23,46 +26,81 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
   return (
     <main className="mx-auto max-w-[1120px] px-5 pt-12 pb-20 sm:px-8 lg:px-12">
       <section className="border-b border-[var(--hair)] pb-12">
-        <div className="font-mono-code mb-3 inline-flex items-center gap-2 text-[12px] font-medium text-[var(--accent-text)]">
-          <Layers className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-          <span>Behind the scenes</span>
-        </div>
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1.2fr_0.85fr]">
+          <div>
+            <div className="font-mono-code mb-3 inline-flex items-center gap-2 text-[12px] font-medium text-[var(--accent-text)]">
+              <Layers className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+              <span>Behind the scenes</span>
+            </div>
 
-        <div role="heading" aria-level={1} className="max-w-[22ch]">
-          <BlurText
-            text="How this website is built. Simple, fast, and private"
-            trigger="load"
-            animateBy="words"
-            direction="top"
-            delay={50}
-            stepDuration={0.3}
-            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]"
+            <div role="heading" aria-level={1} className="max-w-[22ch]">
+              <BlurText
+                text="How this website is built. Simple, fast, and private"
+                trigger="load"
+                animateBy="words"
+                direction="top"
+                delay={50}
+                stepDuration={0.3}
+                className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]"
+              />
+            </div>
+
+            <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed text-[var(--ink2)]">
+              Most websites rely on heavy backends, databases, and background trackers. This portfolio builds into lightweight static files on GitHub Pages so it loads fast, exposes zero server attack surface, and respects visitor privacy.
+            </p>
+          </div>
+
+          <TiltedCard
+            imageSrc={HERO_MEDIA.image}
+            altText={HERO_MEDIA.alt}
+            captionText="Static Vite & GitHub Pages Delivery"
+            containerWidth="100%"
+            containerHeight="240px"
+            imageWidth="100%"
+            imageHeight="240px"
+            rotateAmplitude={7}
+            scaleOnHover={1.02}
+            radius={16}
+            showTooltip={false}
+            displayOverlayContent
+            overlayContent={
+              <div className="flex h-full w-full items-end bg-gradient-to-t from-[#0B0F17]/90 via-transparent to-transparent p-5">
+                <div>
+                  <span className="font-mono-code block text-[11px] text-sky-300">
+                    Static Edge Architecture
+                  </span>
+                  <span className="font-display text-[15.5px] font-semibold text-white">
+                    Zero database, zero server attack surface
+                  </span>
+                </div>
+              </div>
+            }
           />
         </div>
 
-        <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed text-[var(--ink2)]">
-          Most websites rely on heavy backends, databases, and background trackers. This portfolio builds into lightweight static files on GitHub Pages so it loads fast, exposes zero server attack surface, and respects visitor privacy.
-        </p>
-
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {[
-            { val: '0', label: 'Trackers or Ads' },
-            { val: 'Vite', label: 'Static Bundle Output' },
-            { val: '100%', label: 'Runs in Browser' },
-            { val: '17+', label: 'JSON-Driven Cases' },
-          ].map((metric) => (
-            <div
-              key={metric.label}
-              className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-5"
-            >
-              <div className="font-display tabular-nums text-[28px] font-medium text-[var(--ink)]">
-                {metric.val}
-              </div>
-              <div className="mt-1.5 text-[13px] font-normal text-[var(--mute)]">
-                {metric.label}
-              </div>
+          <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-5">
+            <div className="font-display tabular-nums text-[28px] font-semibold text-[var(--ink)]">
+              <CountUp to={0} duration={0.8} trigger="load" />
             </div>
-          ))}
+            <div className="mt-1.5 text-[13px] font-normal text-[var(--mute)]">Trackers or Ads</div>
+          </div>
+          <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-5">
+            <div className="font-display text-[28px] font-semibold text-[var(--ink)]">Vite</div>
+            <div className="mt-1.5 text-[13px] font-normal text-[var(--mute)]">Static Bundle Output</div>
+          </div>
+          <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-5">
+            <div className="font-display tabular-nums text-[28px] font-semibold text-[var(--ink)]">
+              <CountUp to={100} suffix="%" duration={1.1} trigger="load" />
+            </div>
+            <div className="mt-1.5 text-[13px] font-normal text-[var(--mute)]">Runs in Browser</div>
+          </div>
+          <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-5">
+            <div className="font-display tabular-nums text-[28px] font-semibold text-[var(--ink)]">
+              <CountUp to={17} suffix="+" duration={1.1} trigger="load" />
+            </div>
+            <div className="mt-1.5 text-[13px] font-normal text-[var(--mute)]">JSON-Driven Cases</div>
+          </div>
         </div>
       </section>
 
