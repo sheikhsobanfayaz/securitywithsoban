@@ -112,9 +112,9 @@ export function InvestigationsView({
   return (
     <main className="mx-auto max-w-[1120px] px-5 pt-12 pb-20 sm:px-8 lg:px-12">
       <section className="border-b border-[var(--hair)] pb-8">
-        <div className="font-mono-code mb-3 inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[12px] font-medium text-[var(--accent-text)]">
-          <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
-          <span>Case Studies &amp; Notes</span>
+        <div className="font-mono-code mb-3 inline-flex items-center gap-2 text-[12px] font-medium text-[var(--accent-text)]">
+          <BookOpen className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+          <span>Case studies &amp; notes</span>
         </div>
 
         <div role="heading" aria-level={1}>
@@ -125,21 +125,21 @@ export function InvestigationsView({
             direction="top"
             delay={55}
             stepDuration={0.3}
-            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-bold leading-[1.15] tracking-[-0.025em] text-[var(--ink)]"
+            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]"
           />
         </div>
 
-        <p className="mt-3 max-w-[740px] text-[16.5px] leading-relaxed text-[var(--ink2)]">
+        <p className="mt-3 max-w-[740px] text-[16px] leading-relaxed text-[var(--ink2)]">
           Real-world investigation walkthroughs covering firewall and VPN diagnostics, SIEM alert validation, and automation tooling across {projects.length || 17} documented cases.
         </p>
 
-        <div className="mt-7 rounded-2xl border border-[var(--hair)] bg-[var(--surface)] p-5">
-          <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2">
-            <span className="font-display text-[15px] font-bold text-[var(--ink)]">
+        <div className="mt-8 rounded-2xl border border-[var(--hair)] bg-[var(--surface)] p-5">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <span className="font-display text-[15px] font-semibold text-[var(--ink)]">
               Quick Topic Filter
             </span>
             <span className="font-mono-code text-[12px] text-[var(--mute)]">
-              Click a card to filter
+              Select a topic to filter
             </span>
           </div>
 
@@ -152,12 +152,12 @@ export function InvestigationsView({
                   setActiveFilter('all');
                   setSearchQuery(topic.tag);
                 }}
-                className="rounded-xl border border-[var(--hair)] bg-[var(--paper)] p-3.5 text-left transition-colors hover:border-[var(--accent)] cursor-pointer"
+                className="rounded-xl border border-[var(--hair)] bg-[var(--paper)] p-4 text-left transition-colors duration-150 hover:border-[var(--accent)] cursor-pointer"
               >
                 <div className="font-display text-[15px] font-semibold text-[var(--ink)]">
                   {topic.title}
                 </div>
-                <div className="font-mono-code mt-0.5 text-[11.5px] text-[var(--accent-text)]">
+                <div className="font-mono-code mt-1 text-[12px] text-[var(--accent-text)]">
                   {topic.tech}
                 </div>
                 <div className="mt-1.5 text-[12.5px] text-[var(--mute)]">{topic.cases}</div>
@@ -166,7 +166,7 @@ export function InvestigationsView({
           </div>
         </div>
 
-        <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filter case studies by category">
             {FILTER_OPTIONS.map((opt) => {
               const isActive = activeFilter === opt.value;
@@ -175,7 +175,7 @@ export function InvestigationsView({
                   key={opt.value}
                   type="button"
                   onClick={() => setActiveFilter(opt.value)}
-                  className={`font-mono-code rounded-md border px-3 py-1.5 text-[12.5px] transition-colors cursor-pointer ${
+                  className={`font-mono-code rounded-lg border px-3 py-1.5 text-[12.5px] transition-colors duration-150 cursor-pointer ${
                     isActive
                       ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)]'
                       : 'border-[var(--hair)] bg-[var(--paper)] text-[var(--ink2)] hover:border-[var(--ink2)]'
@@ -189,16 +189,17 @@ export function InvestigationsView({
 
           <div className="relative w-full sm:w-72">
             <Search
-              className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-[var(--mute)]"
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[var(--mute)]"
+              strokeWidth={1.5}
               aria-hidden="true"
             />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by tool, keyword, or indicator..."
+              placeholder="Search by tool, keyword, or indicator"
               aria-label="Search investigations"
-              className="w-full rounded-lg border border-[var(--hair)] bg-[var(--paper)] py-2 pr-3 pl-8 text-[13.5px] text-[var(--ink)] placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
+              className="w-full rounded-lg border border-[var(--hair)] bg-[var(--paper)] py-2 pr-3 pl-9 text-[13.5px] text-[var(--ink)] placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
             />
           </div>
         </div>
@@ -210,7 +211,7 @@ export function InvestigationsView({
             {[0, 1, 2, 3].map((idx) => (
               <div
                 key={idx}
-                className="h-56 animate-pulse rounded-xl border border-[var(--hair)] bg-[var(--surface)]"
+                className="h-56 rounded-xl border border-[var(--hair)] bg-[var(--surface)]"
               />
             ))}
           </div>
@@ -235,8 +236,8 @@ export function InvestigationsView({
                 key={project.id}
                 theme={theme}
                 spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-                intensity={theme === 'dark' ? 0.16 : 0.1}
-                borderGlow={0.48}
+                intensity={theme === 'dark' ? 0.1 : 0.06}
+                borderGlow={0.25}
                 spotlightSize={260}
                 style={spotlightStyle}
                 className="flex flex-col justify-between gap-4 rounded-xl! border! border-[var(--hair)]! p-6!"
@@ -245,17 +246,17 @@ export function InvestigationsView({
                   <span className="font-mono-code mb-2 block text-[12px] text-[var(--accent-text)]">
                     {project.categoryLabel}
                   </span>
-                  <h2 className="font-display mt-0 mb-2.5 text-[20px] font-semibold leading-snug text-[var(--ink)]">
+                  <h2 className="font-display mt-0 mb-2 text-[20px] font-semibold leading-snug text-[var(--ink)]">
                     {project.title}
                   </h2>
                   <p className="m-0 text-[14.5px] leading-relaxed text-[var(--ink2)]">
                     {project.summary}
                   </p>
-                  <div className="mt-3.5 flex flex-wrap gap-1.5">
+                  <div className="mt-4 flex flex-wrap gap-1.5">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="font-mono-code rounded border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
+                        className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
                       >
                         {tag}
                       </span>
@@ -263,22 +264,22 @@ export function InvestigationsView({
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 border-t border-[var(--hair)] pt-3.5">
+                <div className="flex flex-wrap items-center gap-2 border-t border-[var(--hair)] pt-4">
                   <button
                     type="button"
                     onClick={() => onPreviewProject(project)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink2)] cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
                   >
-                    <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+                    <Eye className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
                     <span>Quick Preview</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => onOpenCase(project.id)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
                   >
                     <span>Read Deep-Dive</span>
-                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
                   </button>
                 </div>
               </SpotlightCard>

@@ -1,5 +1,5 @@
 import { useMemo, type CSSProperties } from 'react';
-import { ArrowRight, Wrench } from 'lucide-react';
+import { ArrowRight, Check, Wrench } from 'lucide-react';
 import BlurText from '@/components/reactbits/BlurText/BlurText';
 import SpotlightCard from '@/components/reactbits/SpotlightCard/SpotlightCard';
 import type { AppRoute } from '@/types/project';
@@ -23,26 +23,26 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
   return (
     <main className="mx-auto max-w-[1120px] px-5 pt-12 pb-20 sm:px-8 lg:px-12">
       <section className="border-b border-[var(--hair)] pb-10">
-        <div className="font-mono-code mb-3 inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[12px] font-medium text-[var(--accent-text)]">
-          <Wrench className="h-3.5 w-3.5" aria-hidden="true" />
+        <div className="font-mono-code mb-3 inline-flex items-center gap-2 text-[12px] font-medium text-[var(--accent-text)]">
+          <Wrench className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
           <span>
-            Tools Built by <strong className="font-bold">Soban</strong>
+            Tools built by <strong className="font-semibold">Soban</strong>
           </span>
         </div>
 
         <div role="heading" aria-level={1} className="max-w-[18ch]">
           <BlurText
-            text="Simple browser tools. No setup needed."
+            text="Simple browser tools. No setup needed"
             trigger="load"
             animateBy="words"
             direction="top"
             delay={55}
             stepDuration={0.3}
-            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-bold leading-[1.14] tracking-[-0.025em] text-[var(--ink)]"
+            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]"
           />
         </div>
 
-        <p className="mt-3 max-w-[66ch] text-[16.5px] leading-relaxed text-[var(--ink2)]">
+        <p className="mt-3 max-w-[66ch] text-[16px] leading-relaxed text-[var(--ink2)]">
           Small tools built to make studying for security exams and working with logs easier. Everything runs right in your browser, with nothing saved on any outside server.
         </p>
 
@@ -50,18 +50,18 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
           <button
             type="button"
             onClick={() => onNavigate('cc-simulator')}
-            className="inline-flex items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-4 py-2.5 text-[14px] font-semibold text-white transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+            className="inline-flex h-11 items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
           >
             <span>Open CC Practice Quiz</span>
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
           </button>
           <button
             type="button"
             onClick={() => onNavigate('ai-sanitizer')}
-            className="inline-flex items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-4 py-2.5 text-[14px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink2)] cursor-pointer"
+            className="inline-flex h-11 items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-5 text-[14px] font-semibold text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
           >
             <span>Open SanitizeAI</span>
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <ArrowRight className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
           </button>
         </div>
       </section>
@@ -71,8 +71,8 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
           <h2 className="font-display m-0 text-[26px] font-semibold text-[var(--ink)]">
             Available Tools
           </h2>
-          <p className="mt-1 mb-0 text-[15px] text-[var(--mute)]">
-            Pick a browser utility below to launch it immediately.
+          <p className="mt-1.5 mb-0 text-[15px] text-[var(--mute)]">
+            Pick a browser utility below to launch it immediately
           </p>
         </div>
 
@@ -80,34 +80,43 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
           <SpotlightCard
             theme={theme}
             spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-            intensity={theme === 'dark' ? 0.16 : 0.1}
-            borderGlow={0.48}
+            intensity={theme === 'dark' ? 0.1 : 0.06}
+            borderGlow={0.25}
             spotlightSize={280}
             style={spotlightStyle}
-            className="flex flex-col justify-between gap-5 rounded-xl! border! border-[var(--hair)]! p-7!"
+            className="flex flex-col justify-between gap-5 rounded-xl! border! border-[var(--hair)]! p-6!"
           >
             <div>
               <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="font-mono-code inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--hair)] bg-[var(--accent-soft)] text-[15px] font-bold text-[var(--accent-text)]">
+                <span className="font-mono-code inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--accent-soft)] text-[14px] font-semibold text-[var(--accent-text)]">
                   CC
                 </span>
-                <span className="font-mono-code rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold text-[var(--emerald)]">
+                <span className="font-mono-code tabular-nums rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11.5px] font-medium text-[var(--emerald)]">
                   143 Questions
                 </span>
               </div>
               <span className="font-mono-code text-[12px] text-[var(--accent-text)]">
-                Exam Prep
+                Exam prep
               </span>
-              <h3 className="font-display mt-1 mb-2.5 text-[22px] font-semibold text-[var(--ink)]">
+              <h3 className="font-display mt-1 mb-2 text-[22px] font-semibold text-[var(--ink)]">
                 ISC2 CC Practice Quiz
               </h3>
               <p className="mt-0 mb-4 text-[14.5px] leading-relaxed text-[var(--ink2)]">
                 Practice quiz for the ISC2 Certified in Cybersecurity exam. Pick how many questions you want, click an answer, and immediately see why it is right or wrong.
               </p>
               <ul className="m-0 list-none space-y-2 p-0 text-[13.5px] text-[var(--ink2)]">
-                <li>&gt; Pick 10, 25, 50, 100, or all 143 questions right from the menu</li>
-                <li>&gt; Instant explanation showing why the right answer works and why others fail</li>
-                <li>&gt; Shows your score by topic and lets you retry only missed questions</li>
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                  <span>Pick 10, 25, 50, 100, or all 143 questions right from the menu</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                  <span>Instant explanation showing why the right answer works and why others fail</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                  <span>Shows your score by topic and lets you retry only missed questions</span>
+                </li>
               </ul>
             </div>
 
@@ -116,7 +125,7 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
                 {['ISC2 CC', '5 Topics', 'Static'].map((tag) => (
                   <span
                     key={tag}
-                    className="font-mono-code rounded border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
+                    className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
                   >
                     {tag}
                   </span>
@@ -125,10 +134,10 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
               <button
                 type="button"
                 onClick={() => onNavigate('cc-simulator')}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
               >
                 <span>Start Quiz</span>
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
               </button>
             </div>
           </SpotlightCard>
@@ -136,34 +145,43 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
           <SpotlightCard
             theme={theme}
             spotlightColor={theme === 'dark' ? '#0D9488' : '#2563EB'}
-            intensity={theme === 'dark' ? 0.16 : 0.1}
-            borderGlow={0.48}
+            intensity={theme === 'dark' ? 0.1 : 0.06}
+            borderGlow={0.25}
             spotlightSize={280}
             style={spotlightStyle}
-            className="flex flex-col justify-between gap-5 rounded-xl! border! border-[var(--hair)]! p-7!"
+            className="flex flex-col justify-between gap-5 rounded-xl! border! border-[var(--hair)]! p-6!"
           >
             <div>
               <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="font-mono-code inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--hair)] bg-[var(--accent-soft)] text-[15px] font-bold text-[var(--accent-text)]">
+                <span className="font-mono-code inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--accent-soft)] text-[14px] font-semibold text-[var(--accent-text)]">
                   AI
                 </span>
-                <span className="font-mono-code rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold text-[var(--emerald)]">
+                <span className="font-mono-code rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11.5px] font-medium text-[var(--emerald)]">
                   Runs Locally
                 </span>
               </div>
               <span className="font-mono-code text-[12px] text-[var(--accent-text)]">
-                Privacy Helper
+                Privacy helper
               </span>
-              <h3 className="font-display mt-1 mb-2.5 text-[22px] font-semibold text-[var(--ink)]">
+              <h3 className="font-display mt-1 mb-2 text-[22px] font-semibold text-[var(--ink)]">
                 SanitizeAI Log Cleaner
               </h3>
               <p className="mt-0 mb-4 text-[14.5px] leading-relaxed text-[var(--ink2)]">
                 Before pasting work logs into an AI assistant, clean them here first. It automatically hides client names, IP addresses, emails, usernames, and passwords inside your browser.
               </p>
               <ul className="m-0 list-none space-y-2 p-0 text-[13.5px] text-[var(--ink2)]">
-                <li>&gt; Finds client names even with spaces, hyphens, underscores, or inside domains</li>
-                <li>&gt; Replaces details with clean placeholders like [CLIENT_1] or [IP_1]</li>
-                <li>&gt; Includes a lookup table so you can match placeholders back to real values</li>
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                  <span>Finds client names even with spaces, hyphens, underscores, or inside domains</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                  <span>Replaces details with clean placeholders like [CLIENT_1] or [IP_1]</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                  <span>Includes a lookup table so you can match placeholders back to real values</span>
+                </li>
               </ul>
             </div>
 
@@ -172,7 +190,7 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
                 {['Privacy', 'Log Cleaner', 'Browser Only'].map((tag) => (
                   <span
                     key={tag}
-                    className="font-mono-code rounded border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
+                    className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
                   >
                     {tag}
                   </span>
@@ -181,10 +199,10 @@ export function ToolsView({ theme, onNavigate }: ToolsViewProps) {
               <button
                 type="button"
                 onClick={() => onNavigate('ai-sanitizer')}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
               >
                 <span>Open SanitizeAI</span>
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
               </button>
             </div>
           </SpotlightCard>

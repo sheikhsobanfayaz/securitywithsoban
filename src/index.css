@@ -8,11 +8,13 @@
   --ink: #0F172A;
   --ink2: #334155;
   --mute: #475569;
-  --hair: #E2E8F0;
+  --hair: rgba(15, 23, 42, 0.1);
   --accent: #2563EB;
   --accent-text: #1E40AF;
   --accent-soft: #EFF6FF;
   --emerald: #0D9488;
+  --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.05);
+  --ease-unslop: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 [data-theme="dark"] {
@@ -23,11 +25,12 @@
   --ink: #F8FAFC;
   --ink2: #CBD5E1;
   --mute: #94A3B8;
-  --hair: #1E293B;
+  --hair: rgba(248, 250, 252, 0.09);
   --accent: #3B82F6;
   --accent-text: #60A5FA;
   --accent-soft: #172554;
   --emerald: #2DD4BF;
+  --card-shadow: none;
 }
 
 @layer base {
@@ -49,7 +52,7 @@
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 16px;
     line-height: 1.65;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.18s var(--ease-unslop), color 0.18s var(--ease-unslop);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }

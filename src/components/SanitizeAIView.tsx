@@ -1,5 +1,5 @@
 import { Fragment, useMemo, useState } from 'react';
-import { ArrowLeft, ChevronDown, Copy, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Copy, ShieldCheck, X } from 'lucide-react';
 import type { AppRoute } from '@/types/project';
 
 interface SanitizeAIViewProps {
@@ -311,14 +311,14 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
 
   const copyCleaned = async () => {
     if (!result.clean.trim()) {
-      onNotify('Paste original text on the left first.');
+      onNotify('Paste original text on the left first');
       return;
     }
     try {
       await navigator.clipboard.writeText(result.clean);
-      onNotify('Cleaned text copied!');
+      onNotify('Cleaned text copied');
     } catch {
-      onNotify('Copy failed; select text manually.');
+      onNotify('Copy failed; select text manually');
     }
   };
 
@@ -327,7 +327,7 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
       const txt = await navigator.clipboard.readText();
       setRawText(txt);
     } catch {
-      onNotify('Press Ctrl+V inside the left text box.');
+      onNotify('Press Ctrl+V inside the left text box');
     }
   };
 
@@ -335,11 +335,11 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
     <main className="mx-auto max-w-[1120px] px-5 pt-10 pb-20 sm:px-8 lg:px-12">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <span className="font-mono-code mb-2 inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[12px] font-medium text-[var(--accent-text)]">
-            <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>Privacy Tool &middot; Runs Locally</span>
+          <span className="font-mono-code mb-2 inline-flex items-center gap-2 text-[12px] font-medium text-[var(--accent-text)]">
+            <ShieldCheck className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+            <span>Privacy tool &middot; Runs locally</span>
           </span>
-          <h1 className="font-display m-0 text-[clamp(26px,4vw,38px)] font-bold text-[var(--ink)]">
+          <h1 className="font-display m-0 text-[clamp(26px,4vw,38px)] font-semibold text-[var(--ink)]">
             SanitizeAI Log Cleaner
           </h1>
           <p className="mt-1.5 mb-0 max-w-[680px] text-[15px] text-[var(--ink2)]">
@@ -351,9 +351,9 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
           <button
             type="button"
             onClick={() => onNavigate('tools')}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-semibold text-[var(--ink)] cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
           >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowLeft className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
             <span>All Tools</span>
           </button>
           <button
@@ -362,16 +362,16 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
               setTargetClient('ABC_Client');
               setRawText(SAMPLE_ALERT_LOG);
             }}
-            className="rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-semibold text-[var(--ink)] cursor-pointer"
+            className="rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
           >
             Load Example Log
           </button>
           <button
             type="button"
             onClick={copyCleaned}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
           >
-            <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+            <Copy className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
             <span>Copy Cleaned Text</span>
           </button>
         </div>
@@ -380,10 +380,10 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
       {/* Client name section */}
       <section className="mb-4 rounded-xl border border-[var(--hair)] border-l-4 border-l-[var(--accent)] bg-[var(--surface)] p-4 sm:p-5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <span className="font-mono-code text-[12px] font-semibold uppercase tracking-wider text-[var(--accent-text)]">
-            Company or Client Name to Hide
+          <span className="font-mono-code text-[12px] font-medium text-[var(--accent-text)]">
+            Company or client name to hide
           </span>
-          <span className="font-mono-code rounded-full border border-emerald-500/35 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-[var(--emerald)]">
+          <span className="font-mono-code rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[11.5px] font-medium text-[var(--emerald)]">
             100% Local &middot; Stays on your device
           </span>
         </div>
@@ -393,29 +393,29 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
             type="text"
             value={targetClient}
             onChange={(e) => setTargetClient(e.target.value)}
-            placeholder="Type client name (e.g. ABC_Client, Acme Corp, Starlight Health)..."
+            placeholder="Client name, e.g. ABC_Client or Acme Corp"
             aria-label="Company or Client Name to Hide"
-            className="min-w-[220px] flex-1 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3.5 py-2.5 text-[14.5px] font-semibold text-[var(--ink)] placeholder:font-normal placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
+            className="min-w-[220px] flex-1 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3.5 py-2.5 text-[14.5px] font-medium text-[var(--ink)] placeholder:font-normal placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
           />
           <button
             type="button"
             onClick={saveClientPill}
-            className="rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-2.5 text-[13px] font-semibold text-white cursor-pointer"
+            className="rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-4 py-2.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
           >
-            + Save Quick Pick
+            Save Quick Pick
           </button>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-mono-code text-[11px] uppercase text-[var(--mute)]">
-            Saved Names:
+          <span className="font-mono-code text-[12px] text-[var(--mute)]">
+            Saved names:
           </span>
           {savedClients.map((cName, idx) => {
             const active = cName.trim().toLowerCase() === targetClient.trim().toLowerCase();
             return (
               <div
                 key={cName}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-semibold transition-colors ${
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[12px] font-medium transition-colors duration-150 ${
                   active
                     ? 'border-[var(--accent)] bg-[var(--accent)] text-white'
                     : 'border-[var(--hair)] bg-[var(--paper)] text-[var(--ink2)]'
@@ -432,9 +432,9 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
                   type="button"
                   aria-label={`Remove ${cName}`}
                   onClick={() => removeClientPill(idx)}
-                  className="cursor-pointer bg-transparent border-0 p-0 text-[10px] opacity-75 hover:opacity-100 text-inherit"
+                  className="inline-flex items-center cursor-pointer bg-transparent border-0 p-0 opacity-75 hover:opacity-100 text-inherit"
                 >
-                  &#10005;
+                  <X className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
                 </button>
               </div>
             );
@@ -445,7 +445,7 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
       {/* Toolbar rules */}
       <section className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--hair)] bg-[var(--surface)] px-4 py-3.5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-mono-code text-[11px] uppercase text-[var(--mute)]">
+          <span className="font-mono-code text-[12px] text-[var(--mute)]">
             What to hide:
           </span>
           {RULE_LABELS.map((rule) => {
@@ -457,14 +457,14 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
                 onClick={() =>
                   setToggles((prev) => ({ ...prev, [rule.key]: !prev[rule.key] }))
                 }
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-semibold transition-colors cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[12px] font-medium transition-colors duration-150 cursor-pointer ${
                   active
                     ? 'border-[var(--accent)]/40 bg-[var(--accent-soft)] text-[var(--accent-text)]'
                     : 'border-[var(--hair)] bg-[var(--paper)] text-[var(--mute)]'
                 }`}
               >
                 <span
-                  className={`h-2 w-2 rounded-full ${
+                  className={`h-1.5 w-1.5 rounded-full ${
                     active ? 'bg-[var(--accent)]' : 'bg-[var(--mute)]'
                   }`}
                 />
@@ -475,12 +475,12 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="font-mono-code text-[11px] uppercase text-[var(--mute)]">Style:</span>
-          <div className="inline-flex rounded-full border border-[var(--hair)] bg-[var(--paper)] p-0.5">
+          <span className="font-mono-code text-[12px] text-[var(--mute)]">Style:</span>
+          <div className="inline-flex rounded-lg border border-[var(--hair)] bg-[var(--paper)] p-0.5">
             <button
               type="button"
               onClick={() => setIsConsistentMode(true)}
-              className={`font-mono-code rounded-full px-3 py-1 text-[11.5px] font-semibold cursor-pointer ${
+              className={`font-mono-code rounded-md px-2.5 py-1 text-[11.5px] font-medium cursor-pointer ${
                 isConsistentMode
                   ? 'bg-[var(--accent)] text-white'
                   : 'text-[var(--ink2)]'
@@ -491,7 +491,7 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
             <button
               type="button"
               onClick={() => setIsConsistentMode(false)}
-              className={`font-mono-code rounded-full px-3 py-1 text-[11.5px] font-semibold cursor-pointer ${
+              className={`font-mono-code rounded-md px-2.5 py-1 text-[11.5px] font-medium cursor-pointer ${
                 !isConsistentMode
                   ? 'bg-[var(--accent)] text-white'
                   : 'text-[var(--ink2)]'
@@ -507,24 +507,24 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
       <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="flex min-h-[420px] flex-col overflow-hidden rounded-xl border border-[var(--hair)] bg-[var(--surface)]">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--hair)] bg-[var(--paper)] px-4 py-3">
-            <span className="text-[13.5px] font-bold text-[var(--ink)]">
+            <span className="text-[13.5px] font-semibold text-[var(--ink)]">
               Original Text (Paste Log or Alert)
             </span>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono-code rounded-full border border-[var(--hair)] bg-[var(--surface)] px-2.5 py-0.5 text-[11px] text-[var(--ink2)]">
+              <span className="font-mono-code tabular-nums text-[12px] text-[var(--mute)]">
                 {rawText.length} chars &middot; {lineCount} lines
               </span>
               <button
                 type="button"
                 onClick={pasteClipboard}
-                className="rounded-md border border-[var(--hair)] bg-[var(--surface)] px-2.5 py-1 text-[12px] font-semibold text-[var(--ink)] cursor-pointer"
+                className="rounded-md border border-[var(--hair)] bg-[var(--surface)] px-2.5 py-1 text-[12px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
               >
                 Paste
               </button>
               <button
                 type="button"
                 onClick={() => setRawText('')}
-                className="rounded-md border border-[var(--hair)] bg-[var(--surface)] px-2.5 py-1 text-[12px] font-semibold text-[var(--ink)] cursor-pointer"
+                className="rounded-md border border-[var(--hair)] bg-[var(--surface)] px-2.5 py-1 text-[12px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
               >
                 Clear
               </button>
@@ -534,7 +534,7 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
           <textarea
             value={rawText}
             onChange={(e) => setRawText(e.target.value)}
-            placeholder="Paste any log, alert, or note here. Private details are hidden right away as you type."
+            placeholder="Paste a log, alert, or note to redact sensitive details locally"
             aria-label="Original log text"
             className="font-mono-code min-h-[340px] w-full flex-1 resize-y border-0 bg-transparent p-4 text-[13px] leading-relaxed text-[var(--ink)] placeholder:text-[var(--mute)] focus:outline-none"
           />
@@ -542,13 +542,13 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
 
         <div className="flex min-h-[420px] flex-col overflow-hidden rounded-xl border border-[var(--hair)] bg-[var(--surface)]">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--hair)] bg-[var(--paper)] px-4 py-3">
-            <span className="text-[13.5px] font-bold text-[var(--accent-text)]">
+            <span className="text-[13.5px] font-semibold text-[var(--accent-text)]">
               Cleaned Output (Safe to Share)
             </span>
             <button
               type="button"
               onClick={copyCleaned}
-              className="rounded-md border border-[var(--accent)] bg-[var(--accent)] px-3 py-1 text-[12px] font-semibold text-white cursor-pointer"
+              className="rounded-md border border-[var(--accent)] bg-[var(--accent)] px-3 py-1 text-[12px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
             >
               Copy Cleaned Text
             </button>
@@ -579,12 +579,12 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
                 return <Fragment key={idx}>{part}</Fragment>;
               })
             ) : (
-              <span className="text-[var(--mute)]">Cleaned text will appear here...</span>
+              <span className="text-[var(--mute)]">Cleaned output appears here</span>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 border-t border-[var(--hair)] bg-[var(--paper)] px-4 py-2.5">
-            <span className="font-mono-code text-[11px] uppercase text-[var(--mute)]">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-[var(--hair)] bg-[var(--paper)] px-4 py-2.5">
+            <span className="font-mono-code text-[12px] text-[var(--mute)]">
               Hidden:
             </span>
             {[
@@ -599,9 +599,9 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
             ].map(([label, val]) => (
               <span
                 key={String(label)}
-                className="font-mono-code rounded-full border border-[var(--hair)] bg-[var(--surface)] px-2.5 py-0.5 text-[11px] text-[var(--ink2)]"
+                className="font-mono-code tabular-nums text-[12px] text-[var(--mute)]"
               >
-                {label}: <strong className="text-[var(--accent-text)]">{val}</strong>
+                {label}: <strong className="font-medium text-[var(--ink)]">{val}</strong>
               </span>
             ))}
           </div>
@@ -613,13 +613,14 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
         <button
           type="button"
           onClick={() => setLookupOpen((prev) => !prev)}
-          className="flex w-full items-center justify-between text-left text-[14px] font-bold text-[var(--ink)] cursor-pointer"
+          className="flex w-full items-center justify-between text-left text-[14px] font-semibold text-[var(--ink)] cursor-pointer"
         >
-          <span>Placeholder Lookup Table ({result.reverseEntries.length} items hidden)</span>
+          <span className="tabular-nums">Placeholder Lookup Table ({result.reverseEntries.length} items hidden)</span>
           <ChevronDown
-            className={`h-4 w-4 transition-transform duration-200 ${
+            className={`h-4 w-4 text-[var(--mute)] transition-transform duration-200 ${
               lookupOpen ? 'rotate-180' : ''
             }`}
+            strokeWidth={1.5}
             aria-hidden="true"
           />
         </button>
@@ -634,17 +635,17 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
             <div className="max-h-60 overflow-y-auto">
               <table className="font-mono-code w-full border-collapse text-[12.5px]">
                 <thead>
-                  <tr className="border-b border-[var(--hair)] text-left text-[11px] uppercase text-[var(--mute)]">
+                  <tr className="border-b border-[var(--hair)] text-left text-[12px] font-medium text-[var(--mute)]">
                     <th className="px-2.5 py-2">Placeholder</th>
                     <th className="px-2.5 py-2">Type</th>
-                    <th className="px-2.5 py-2">Original Value</th>
+                    <th className="px-2.5 py-2">Original value</th>
                   </tr>
                 </thead>
                 <tbody>
                   {result.reverseEntries.length === 0 ? (
                     <tr>
                       <td colSpan={3} className="py-4 text-center text-[var(--mute)]">
-                        Nothing hidden yet.
+                        Nothing hidden yet
                       </td>
                     </tr>
                   ) : (
@@ -661,7 +662,7 @@ export function SanitizeAIView({ onNavigate, onNotify }: SanitizeAIViewProps) {
                             {entry.token}
                           </span>
                         </td>
-                        <td className="px-2.5 py-2 font-bold text-[var(--ink2)]">
+                        <td className="px-2.5 py-2 font-medium text-[var(--ink2)]">
                           {entry.type}
                         </td>
                         <td className="px-2.5 py-2 text-[var(--ink)]">{entry.original}</td>

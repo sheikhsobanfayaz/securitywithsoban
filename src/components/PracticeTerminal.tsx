@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { Terminal } from 'lucide-react';
+import { ArrowRight, Terminal } from 'lucide-react';
 import type { AppRoute } from '@/types/project';
 
 type ScenarioKey = 'c2' | 'unsloth' | 'vpn' | 'portscan';
@@ -240,40 +240,43 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
   };
 
   return (
-    <section id="terminal" className="border-b border-[var(--hair)] py-14">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+    <section id="terminal" className="border-b border-[var(--hair)] py-16">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="font-mono-code mb-1.5 inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent-text)]">
-            <Terminal className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>INTERACTIVE PRACTICE CONSOLE</span>
+          <div className="font-mono-code mb-2 inline-flex items-center gap-2 text-[12px] font-medium text-[var(--accent-text)]">
+            <Terminal className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+            <span>Interactive practice console</span>
           </div>
-          <h2 className="font-display m-0 text-[clamp(24px,3vw,32px)] font-semibold leading-[1.14] tracking-[-0.025em] text-[var(--ink)]">
+          <h2 className="font-display m-0 text-[clamp(24px,3vw,32px)] font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]">
             Live Investigation Terminal
           </h2>
         </div>
         <p className="m-0 max-w-[46ch] text-[14px] text-[var(--mute)]">
-          Walk through real SOC triage logic step by step or type <code className="font-mono-code text-[var(--accent-text)]">help</code> below.
+          Walk through real SOC triage logic step by step or type <code className="font-mono-code text-[var(--accent-text)]">help</code> below
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-[#0B1120] text-slate-200 shadow-2xl">
+      <div
+        className="overflow-hidden rounded-2xl border border-slate-800 bg-[#0B1120] text-slate-200"
+        style={{ boxShadow: 'var(--card-shadow)' }}
+      >
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-[#111827] px-4 py-3">
           <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-rose-500/90" aria-hidden="true" />
-            <span className="h-3 w-3 rounded-full bg-amber-400/90" aria-hidden="true" />
-            <span className="h-3 w-3 rounded-full bg-emerald-500/90" aria-hidden="true" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-600" aria-hidden="true" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-600" aria-hidden="true" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-600" aria-hidden="true" />
             <span className="font-mono-code ml-2 text-[12px] text-slate-400">
               soban-practice-console
             </span>
           </div>
-          <span className="font-mono-code inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-300">
+          <span className="font-mono-code inline-flex items-center gap-2 text-[12px] font-medium text-emerald-400">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
             Ready
           </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-b border-slate-800/80 bg-[#0F172A] px-4 py-2.5">
-          <span className="font-mono-code mr-1 text-[11.5px] uppercase tracking-wider text-slate-400">
+          <span className="font-mono-code mr-1 text-[12px] text-slate-400">
             Presets:
           </span>
           {PRESET_BUTTONS.map((preset) => (
@@ -281,7 +284,7 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
               key={preset.key}
               type="button"
               onClick={() => runScenario(preset.key)}
-              className="font-mono-code rounded-md border border-slate-700 bg-slate-800/80 px-2.5 py-1 text-[12px] text-slate-200 transition-colors hover:border-blue-400 hover:bg-blue-500/15 hover:text-blue-300 cursor-pointer"
+              className="font-mono-code rounded-md border border-slate-700 bg-slate-800/80 px-2.5 py-1 text-[12px] text-slate-200 transition-colors duration-150 hover:border-blue-400 hover:bg-blue-500/15 hover:text-blue-300 cursor-pointer"
             >
               {preset.label}
             </button>
@@ -289,7 +292,7 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
           <button
             type="button"
             onClick={clearTerminal}
-            className="font-mono-code rounded-md border border-slate-700 bg-slate-900 px-2.5 py-1 text-[12px] text-slate-400 transition-colors hover:border-slate-500 hover:text-slate-200 cursor-pointer"
+            className="font-mono-code rounded-md border border-slate-700 bg-slate-900 px-2.5 py-1 text-[12px] text-slate-400 transition-colors duration-150 hover:border-slate-500 hover:text-slate-200 cursor-pointer"
           >
             Clear
           </button>
@@ -297,11 +300,11 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
 
         <div
           ref={bodyRef}
-          className="font-mono-code h-[290px] overflow-y-auto px-4 py-4 text-[12.5px] leading-6 sm:px-5 sm:text-[13px]"
+          className="font-mono-code h-72 overflow-y-auto px-4 py-4 text-[12.5px] leading-6 sm:px-5 sm:text-[13px]"
         >
           {lines.map((line) => {
             if (line.kind === 'spacer') {
-              return <div key={line.id} className="h-2.5" />;
+              return <div key={line.id} className="h-2" />;
             }
             if (line.kind === 'cmd') {
               return (
@@ -340,7 +343,7 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
             }
             if (line.kind === 'code') {
               return (
-                <div key={line.id} className="my-1 rounded border border-slate-800 bg-slate-950/80 px-2.5 py-1.5 text-[12px] text-slate-300">
+                <div key={line.id} className="my-1 rounded-md border border-slate-800 bg-slate-950/80 px-3 py-1.5 text-[12px] text-slate-300">
                   {line.text}
                 </div>
               );
@@ -354,9 +357,10 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
                       if (line.caseId) onOpenCase(line.caseId);
                       else if (line.route) onNavigate(line.route);
                     }}
-                    className="font-mono-code text-left text-[12.5px] text-blue-400 underline underline-offset-4 transition-colors hover:text-blue-300 cursor-pointer"
+                    className="font-mono-code inline-flex items-center gap-1.5 text-left text-[12.5px] text-blue-400 underline underline-offset-4 transition-colors duration-150 hover:text-blue-300 cursor-pointer"
                   >
-                    &rarr; {line.text}
+                    <ArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden="true" />
+                    <span>{line.text}</span>
                   </button>
                 </div>
               );
@@ -380,7 +384,7 @@ export function PracticeTerminal({ onOpenCase, onNavigate }: PracticeTerminalPro
             type="text"
             value={commandInput}
             onChange={(e) => setCommandInput(e.target.value)}
-            placeholder="Type 'c2', 'unsloth', 'vpn', 'portscan', 'cases', or 'help'..."
+            placeholder="Type c2, unsloth, vpn, portscan, cases, or help"
             aria-label="Practice terminal command input"
             autoComplete="off"
             spellCheck={false}

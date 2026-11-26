@@ -372,15 +372,15 @@ export function App() {
               <Aurora
                 colorStops={
                   theme === 'dark'
-                    ? ['#1D4ED8', '#06B6D4', '#3B82F6']
+                    ? ['#1D4ED8', '#0D9488', '#3B82F6']
                     : ['#2563EB', '#0D9488', '#60A5FA']
                 }
-                amplitude={1.2}
-                blend={0.6}
-                speed={0.85}
-                height={1.15}
-                brightness={theme === 'dark' ? 1.18 : 1.05}
-                opacity={theme === 'dark' ? 0.65 : 0.4}
+                amplitude={0.85}
+                blend={0.55}
+                speed={0.7}
+                height={1.1}
+                brightness={theme === 'dark' ? 1.04 : 1.0}
+                opacity={theme === 'dark' ? 0.46 : 0.26}
                 lightMode={theme === 'light'}
                 direction="top"
                 mouseInteraction
@@ -388,18 +388,18 @@ export function App() {
               <div
                 className={`absolute inset-0 ${
                   theme === 'dark'
-                    ? 'bg-gradient-to-b from-[#0B0F17]/30 via-[#0B0F17]/55 to-[#0B0F17]'
-                    : 'bg-gradient-to-b from-white/45 via-white/70 to-white'
+                    ? 'bg-gradient-to-b from-[#0B0F17]/40 via-[#0B0F17]/65 to-[#0B0F17]'
+                    : 'bg-gradient-to-b from-white/55 via-white/75 to-white'
                 }`}
               />
             </div>
 
             <div
               id="top"
-              className="relative z-10 mx-auto grid max-w-[1120px] grid-cols-1 items-center gap-10 px-5 pt-14 pb-14 sm:px-8 sm:pt-[72px] sm:pb-[64px] lg:grid-cols-[1.35fr_0.95fr] lg:px-12"
+              className="relative z-10 mx-auto grid max-w-[1120px] grid-cols-1 items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1.35fr_0.95fr] lg:px-12"
             >
               <div>
-                <div className="font-mono-code mb-5 inline-flex items-center gap-2 rounded-full border border-[var(--accent)]/25 bg-[var(--accent-soft)]/90 px-3.5 py-1.5 text-[12.5px] font-medium text-[var(--accent-text)] backdrop-blur-xs">
+                <div className="font-mono-code mb-4 inline-flex items-center gap-2 text-[12.5px] font-medium text-[var(--accent-text)]">
                   <span
                     className="h-2 w-2 shrink-0 rounded-full bg-[var(--emerald)]"
                     aria-hidden="true"
@@ -415,65 +415,68 @@ export function App() {
 
                 <div role="heading" aria-level={1} className="m-0 max-w-[19ch]">
                   <BlurText
-                    text="Network security roots. Modern SOC execution."
+                    text="Network security roots. Modern SOC execution"
                     trigger="load"
                     animateBy="words"
                     direction="top"
                     delay={65}
                     stepDuration={0.32}
-                    className="m-0 font-display text-[clamp(36px,5vw,56px)] font-bold leading-[1.1] tracking-[-0.025em] text-[var(--ink)]"
+                    className="m-0 font-display text-[clamp(36px,5vw,56px)] font-semibold leading-[1.08] tracking-[-0.025em] text-[var(--ink)]"
                   />
                 </div>
 
-                <p className="mt-5 max-w-[60ch] text-[clamp(16.5px,2vw,19px)] leading-relaxed text-[var(--ink2)]">
+                <p className="mt-5 max-w-[58ch] text-[clamp(16px,2vw,18.5px)] leading-relaxed text-[var(--ink2)]">
                   I&apos;m{' '}
                   <GradientText
                     colors={
                       theme === 'dark'
-                        ? ['#60A5FA', '#2DD4BF', '#93C5FD']
-                        : ['#1E40AF', '#0D9488', '#2563EB']
+                        ? ['#93C5FD', '#60A5FA', '#93C5FD']
+                        : ['#1E40AF', '#2563EB', '#1E40AF']
                     }
-                    animationSpeed={7}
-                    className="font-display font-bold"
+                    animationSpeed={10}
+                    className="font-display font-semibold"
                   >
                     Sheikh Soban Fayaz
                   </GradientText>
                   , a Security Operations Center (SOC) analyst in an MSSP environment. Combining enterprise network security engineering roots with ISC2 Certified in Cybersecurity (CC) fundamentals, I focus on fast alert triage, endpoint-to-network correlation, and practical browser utilities.
                 </p>
 
-                <div className="mt-7 flex flex-wrap gap-3">
+                <div className="mt-8 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
                     onClick={() => navigate('investigations')}
-                    className="inline-flex items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-[18px] py-2.5 text-[14px] font-semibold text-white transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                    className="inline-flex h-11 items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] active:scale-[0.98] cursor-pointer"
                   >
                     <span>Explore Case Studies</span>
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
                   </button>
                   <button
                     type="button"
                     onClick={() => navigate('home', { sectionId: 'terminal' })}
-                    className="inline-flex items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--paper)]/90 px-[18px] py-2.5 text-[14px] font-semibold text-[var(--ink)] backdrop-blur-xs transition-colors hover:border-[var(--ink2)] cursor-pointer"
+                    className="inline-flex h-11 items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--surface-elevated)] px-5 text-[14px] font-semibold text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] active:scale-[0.98] cursor-pointer"
                   >
-                    <Terminal className="h-4 w-4" aria-hidden="true" />
+                    <Terminal className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
                     <span>Try Practice Console</span>
-                    <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+                    <ArrowDown className="h-3.5 w-3.5 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
                   </button>
                   <button
                     type="button"
                     onClick={copyEmail}
-                    className="inline-flex items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--paper)]/90 px-[18px] py-2.5 text-[14px] font-semibold text-[var(--ink)] backdrop-blur-xs transition-colors hover:border-[var(--ink2)] cursor-pointer"
+                    className="inline-flex h-11 items-center gap-2 rounded-lg px-3 text-[13.5px] font-medium text-[var(--ink2)] transition-colors duration-150 hover:text-[var(--ink)] cursor-pointer"
                   >
-                    <Copy className="h-4 w-4" aria-hidden="true" />
-                    <span>Copy Email</span>
+                    <Copy className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                    <span>Copy email</span>
                   </button>
                 </div>
               </div>
 
               {/* Quick Jump Panel */}
-              <div className="rounded-2xl border border-[var(--hair)] bg-[var(--paper)]/85 p-4 shadow-lg backdrop-blur-md sm:p-5">
-                <div className="font-mono-code mb-3 border-b border-[var(--hair)] pb-2.5 text-[11.5px] font-semibold uppercase tracking-wider text-[var(--accent-text)]">
-                  Quick Jump
+              <div
+                className="rounded-2xl border border-[var(--hair)] bg-[var(--surface-elevated)] p-5 sm:p-6"
+                style={{ boxShadow: 'var(--card-shadow)' }}
+              >
+                <div className="font-mono-code mb-2 border-b border-[var(--hair)] pb-3 text-[12px] font-medium text-[var(--accent-text)]">
+                  Quick jump
                 </div>
                 <div className="flex flex-col divide-y divide-[var(--hair)]">
                   {[
@@ -481,50 +484,52 @@ export function App() {
                       title: 'ISC2 CC Practice Quiz',
                       sub: '143 exam questions with instant explanations',
                       action: () => navigate('cc-simulator'),
-                      arrow: '->',
+                      arrow: 'right',
                     },
                     {
                       title: 'SanitizeAI Log Cleaner',
                       sub: 'Strip client names, IPs, and secrets locally',
                       action: () => navigate('ai-sanitizer'),
-                      arrow: '->',
+                      arrow: 'right',
                     },
                     {
                       title: 'Cybersecurity News Feed',
                       sub: 'Daily CISA, SANS ISC, and threat intel briefings',
                       action: () => navigate('news'),
-                      arrow: '->',
+                      arrow: 'right',
                     },
                     {
                       title: 'Practice Terminal',
                       sub: 'Walk through sample alert checks step by step',
                       action: () => navigate('home', { sectionId: 'terminal' }),
-                      arrow: 'v',
+                      arrow: 'down',
                     },
                     {
                       title: 'Case Studies Archive',
                       sub: 'All 17 firewall, VPN, Sentinel, and AI notes',
                       action: () => navigate('investigations'),
-                      arrow: '->',
+                      arrow: 'right',
                     },
                   ].map((item) => (
                     <button
                       key={item.title}
                       type="button"
                       onClick={item.action}
-                      className="flex w-full items-center justify-between gap-3 py-3 text-left transition-colors hover:text-[var(--accent-text)] cursor-pointer"
+                      className="group flex w-full items-center justify-between gap-3 py-3 text-left transition-colors duration-150 hover:text-[var(--accent-text)] cursor-pointer"
                     >
                       <div>
-                        <strong className="font-display block text-[14.5px] font-semibold text-[var(--ink)]">
+                        <strong className="font-display block text-[14.5px] font-semibold text-[var(--ink)] group-hover:text-[var(--accent-text)]">
                           {item.title}
                         </strong>
-                        <small className="block text-[12.5px] text-[var(--mute)]">
+                        <small className="block text-[13px] text-[var(--mute)]">
                           {item.sub}
                         </small>
                       </div>
-                      <span className="font-mono-code text-[13px] font-semibold text-[var(--accent-text)]">
-                        {item.arrow === 'v' ? <>&darr;</> : <>&rarr;</>}
-                      </span>
+                      {item.arrow === 'down' ? (
+                        <ArrowDown className="h-4 w-4 shrink-0 text-[var(--mute)] group-hover:text-[var(--accent-text)]" strokeWidth={1.5} aria-hidden="true" />
+                      ) : (
+                        <ArrowRight className="h-4 w-4 shrink-0 text-[var(--mute)] group-hover:text-[var(--accent-text)]" strokeWidth={1.5} aria-hidden="true" />
+                      )}
                     </button>
                   ))}
                 </div>
@@ -540,22 +545,22 @@ export function App() {
             <section id="experience" className="border-b border-[var(--hair)] py-16">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]">
+                  <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]">
                     Background &amp; Trajectory
                   </h2>
-                  <p className="mt-1.5 mb-0 max-w-[52ch] text-[15px] text-[var(--mute)]">
-                    Bridging perimeter firewall intuition with multi-tenant threat detection and response.
+                  <p className="mt-2 mb-0 max-w-[52ch] text-[15px] text-[var(--mute)]">
+                    Bridging perimeter firewall intuition with multi-tenant threat detection and response
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-7 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                 {EXPERIENCE_ITEMS.map((item) => (
-                  <div key={item.title} className="border-t-2 border-[var(--ink)] pt-[18px]">
+                  <div key={item.title} className="border-t-2 border-[var(--ink)] pt-4">
                     <span className="font-mono-code mb-2 block text-[12px] text-[var(--accent-text)]">
                       {item.meta}
                     </span>
-                    <h3 className="font-display mb-2.5 text-[19px] font-semibold text-[var(--ink)]">
+                    <h3 className="font-display mb-2 text-[19px] font-semibold text-[var(--ink)]">
                       {item.title}
                     </h3>
                     <p className="m-0 text-[15px] text-[var(--ink2)]">{item.description}</p>
@@ -568,10 +573,10 @@ export function App() {
             <section id="projects" className="border-b border-[var(--hair)] py-16">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]">
+                  <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]">
                     Investigations &amp; Lab Write-Ups
                   </h2>
-                  <p className="mt-1.5 mb-0 max-w-[54ch] text-[15px] text-[var(--mute)]">
+                  <p className="mt-2 mb-0 max-w-[54ch] text-[15px] text-[var(--mute)]">
                     Practical playbooks, detection logic, and triage workflows. Preview here or open the full deep-dive page.
                   </p>
                 </div>
@@ -589,7 +594,7 @@ export function App() {
                           key={opt.value}
                           type="button"
                           onClick={() => setActiveFilter(opt.value)}
-                          className={`font-mono-code rounded-md border px-3 py-1.5 text-[12.5px] transition-colors cursor-pointer ${
+                          className={`font-mono-code rounded-lg border px-3 py-1.5 text-[12.5px] transition-colors duration-150 cursor-pointer ${
                             isActive
                               ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)]'
                               : 'border-[var(--hair)] bg-[var(--paper)] text-[var(--ink2)] hover:border-[var(--ink2)]'
@@ -603,16 +608,17 @@ export function App() {
 
                   <div className="relative w-full sm:w-64">
                     <Search
-                      className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-[var(--mute)]"
+                      className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[var(--mute)]"
+                      strokeWidth={1.5}
                       aria-hidden="true"
                     />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search keyword or tool..."
+                      placeholder="Search keyword or tool"
                       aria-label="Search write-ups"
-                      className="w-full rounded-lg border border-[var(--hair)] bg-[var(--paper)] py-1.5 pr-3 pl-8 text-[13.5px] text-[var(--ink)] placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
+                      className="w-full rounded-lg border border-[var(--hair)] bg-[var(--paper)] py-2 pr-3 pl-9 text-[13.5px] text-[var(--ink)] placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
                     />
                   </div>
                 </div>
@@ -623,13 +629,13 @@ export function App() {
                   {[0, 1, 2, 3].map((idx) => (
                     <div
                       key={idx}
-                      className="h-56 animate-pulse rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-6"
+                      className="h-56 rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-6"
                     />
                   ))}
                 </div>
               ) : filteredProjects.length === 0 ? (
                 <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] px-6 py-12 text-center text-[15px] text-[var(--mute)]">
-                  No write-ups matched your current filter or search term.
+                  No write-ups matched your current filter or search term
                 </div>
               ) : (
                 <>
@@ -639,8 +645,8 @@ export function App() {
                         key={project.id}
                         theme={theme}
                         spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-                        intensity={theme === 'dark' ? 0.16 : 0.1}
-                        borderGlow={0.48}
+                        intensity={theme === 'dark' ? 0.1 : 0.06}
+                        borderGlow={0.25}
                         spotlightSize={260}
                         style={spotlightStyle}
                         className="flex flex-col justify-between gap-4 rounded-xl! border! border-[var(--hair)]! p-6!"
@@ -649,53 +655,53 @@ export function App() {
                           <span className="font-mono-code mb-2 block text-[12px] text-[var(--accent-text)]">
                             {project.categoryLabel}
                           </span>
-                          <h3 className="font-display mb-2.5 text-[20px] font-semibold leading-snug text-[var(--ink)]">
+                          <h3 className="font-display mb-2 text-[20px] font-semibold leading-snug text-[var(--ink)]">
                             {project.title}
                           </h3>
                           <p className="m-0 text-[14.5px] text-[var(--ink2)]">
                             {project.summary}
                           </p>
-                          <div className="mt-3.5 flex flex-wrap gap-1.5">
+                          <div className="mt-4 flex flex-wrap gap-1.5">
                             {project.tags.slice(0, 4).map((tag) => (
                               <span
                                 key={tag}
-                                className="font-mono-code rounded border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
+                                className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
                               >
                                 {tag}
                               </span>
                             ))}
                           </div>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 border-t border-[var(--hair)] pt-3.5">
+                        <div className="flex flex-wrap items-center gap-2 border-t border-[var(--hair)] pt-4">
                           <button
                             type="button"
                             onClick={() => setSelectedProject(project)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink2)] cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
                           >
-                            <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+                            <Eye className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
                             <span>Quick Preview</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => openCaseDetail(project.id)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
                           >
                             <span>Read Deep-Dive</span>
-                            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
                           </button>
                         </div>
                       </SpotlightCard>
                     ))}
                   </div>
 
-                  <div className="mt-7 flex justify-end">
+                  <div className="mt-8 flex justify-end">
                     <button
                       type="button"
                       onClick={() => navigate('investigations')}
-                      className="inline-flex items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-4 py-2 text-[13.5px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-text)] cursor-pointer"
+                      className="inline-flex items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-4 py-2 text-[13.5px] font-semibold text-[var(--ink)] transition-colors duration-150 hover:border-[var(--accent)] hover:text-[var(--accent-text)] cursor-pointer"
                     >
-                      <span>View All {projects.length} Case Studies</span>
-                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      <span className="tabular-nums">View All {projects.length} Case Studies</span>
+                      <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
                     </button>
                   </div>
                 </>
@@ -706,31 +712,31 @@ export function App() {
             <section id="mitre" className="border-b border-[var(--hair)] py-16">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]">
+                  <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]">
                     Attack Stages Monitored
                   </h2>
-                  <p className="mt-1.5 mb-0 max-w-[54ch] text-[15px] text-[var(--mute)]">
-                    Select an attack stage below to open a matching investigation walkthrough.
+                  <p className="mt-2 mb-0 max-w-[54ch] text-[15px] text-[var(--mute)]">
+                    Select an attack stage below to open a matching investigation walkthrough
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => navigate('investigations')}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3.5 py-2 text-[13px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink2)] cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3.5 py-2 text-[13px] font-semibold text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
                 >
                   <span>Explore Case Studies</span>
-                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  <ArrowRight className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {MITRE_STAGES.map((stage) => (
                   <SpotlightCard
                     key={stage.caseId}
                     theme={theme}
                     spotlightColor={theme === 'dark' ? '#0D9488' : '#2563EB'}
-                    intensity={theme === 'dark' ? 0.16 : 0.09}
-                    borderGlow={0.45}
+                    intensity={theme === 'dark' ? 0.1 : 0.06}
+                    borderGlow={0.25}
                     spotlightSize={240}
                     style={spotlightStyle}
                     onClick={() => openCaseDetail(stage.caseId)}
@@ -742,14 +748,15 @@ export function App() {
                         openCaseDetail(stage.caseId);
                       }
                     }}
-                    className="cursor-pointer rounded-xl! border! border-[var(--hair)]! p-5! transition-transform hover:-translate-y-0.5"
+                    className="cursor-pointer rounded-xl! border! border-[var(--hair)]! p-6! transition-colors duration-150 hover:border-[var(--accent)]/50!"
                   >
-                    <h3 className="font-display mt-0 mb-1.5 text-[18px] font-semibold text-[var(--ink)]">
+                    <h3 className="font-display mt-0 mb-2 text-[18px] font-semibold text-[var(--ink)]">
                       {stage.name}
                     </h3>
-                    <p className="mt-0 mb-3 text-[14px] text-[var(--ink2)]">{stage.summary}</p>
-                    <div className="font-mono-code text-[12px] text-[var(--accent-text)]">
-                      {stage.technique} &rarr;
+                    <p className="mt-0 mb-4 text-[14px] text-[var(--ink2)]">{stage.summary}</p>
+                    <div className="font-mono-code inline-flex items-center gap-1.5 text-[12px] text-[var(--accent-text)]">
+                      <span>{stage.technique}</span>
+                      <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
                     </div>
                   </SpotlightCard>
                 ))}
@@ -759,11 +766,11 @@ export function App() {
             {/* Interactive Investigation Playbook */}
             <section id="methodology" className="border-b border-[var(--hair)] py-16">
               <div className="mb-8">
-                <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]">
+                <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]">
                   How I Investigate an Alert
                 </h2>
-                <p className="mt-1.5 mb-0 max-w-[56ch] text-[15px] text-[var(--mute)]">
-                  Walk through each step before closing a false positive or escalating a real incident.
+                <p className="mt-2 mb-0 max-w-[56ch] text-[15px] text-[var(--mute)]">
+                  Walk through each step before closing a false positive or escalating a real incident
                 </p>
               </div>
 
@@ -782,14 +789,14 @@ export function App() {
                         role="tab"
                         aria-selected={isActive}
                         onClick={() => setActivePlaybookIdx(idx)}
-                        className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors cursor-pointer ${
+                        className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors duration-150 cursor-pointer ${
                           isActive
                             ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--ink)]'
                             : 'border-[var(--hair)] bg-[var(--surface)] text-[var(--ink2)] hover:border-[var(--ink2)]'
                         }`}
                       >
                         <span
-                          className={`font-mono-code inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[12px] font-bold ${
+                          className={`font-mono-code tabular-nums inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[12px] font-semibold ${
                             isActive
                               ? 'bg-[var(--accent)] text-white'
                               : 'border border-[var(--hair)] bg-[var(--paper)] text-[var(--mute)]'
@@ -807,13 +814,13 @@ export function App() {
 
                 <div
                   aria-live="polite"
-                  className="flex flex-col justify-between gap-5 rounded-2xl border border-[var(--hair)] bg-[var(--surface)] p-6 sm:p-7"
+                  className="flex flex-col justify-between gap-5 rounded-2xl border border-[var(--hair)] bg-[var(--surface)] p-6"
                 >
                   <div>
-                    <span className="font-mono-code text-[12px] font-semibold text-[var(--accent-text)]">
+                    <span className="font-mono-code text-[12px] font-medium text-[var(--accent-text)]">
                       {activePlaybook.stepTag}
                     </span>
-                    <h3 className="font-display mt-1.5 mb-3 text-[22px] font-semibold text-[var(--ink)]">
+                    <h3 className="font-display mt-2 mb-3 text-[22px] font-semibold text-[var(--ink)]">
                       {activePlaybook.title}
                     </h3>
                     <p className="m-0 text-[15.5px] leading-relaxed text-[var(--ink2)]">
@@ -821,7 +828,7 @@ export function App() {
                     </p>
                   </div>
 
-                  <div className="font-mono-code rounded-xl border border-[var(--hair)] bg-[var(--paper)] p-4 text-[13px] leading-relaxed text-[var(--ink)]">
+                  <div className="font-mono-code rounded-lg border border-[var(--hair)] bg-[var(--paper)] p-4 text-[13px] leading-relaxed text-[var(--ink)]">
                     {activePlaybook.example}
                   </div>
                 </div>
@@ -832,11 +839,11 @@ export function App() {
             <section id="stack" className="border-b border-[var(--hair)] py-16">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]">
+                  <h2 className="font-display m-0 text-[clamp(26px,3vw,34px)] font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]">
                     Core Capabilities
                   </h2>
-                  <p className="mt-1.5 mb-0 max-w-[52ch] text-[15px] text-[var(--mute)]">
-                    Tools and operational domains I work with across network, endpoint, and automation layers.
+                  <p className="mt-2 mb-0 max-w-[52ch] text-[15px] text-[var(--mute)]">
+                    Tools and operational domains I work with across network, endpoint, and automation layers
                   </p>
                 </div>
               </div>
@@ -845,7 +852,7 @@ export function App() {
                 {CAPABILITY_GROUPS.map((group) => (
                   <div
                     key={group.title}
-                    className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-[22px]"
+                    className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-6"
                   >
                     <h3 className="font-display mb-3 text-[17px] font-semibold text-[var(--ink)]">
                       {group.title}
@@ -854,7 +861,7 @@ export function App() {
                       {group.items.map((item) => (
                         <li
                           key={item.name}
-                          className="flex items-center justify-between gap-2 border-b border-dashed border-[var(--hair)] pb-1.5 last:border-b-0 last:pb-0"
+                          className="flex items-center justify-between gap-2 border-b border-dashed border-[var(--hair)] pb-2 last:border-b-0 last:pb-0"
                         >
                           <span>{item.name}</span>
                           <span className="font-mono-code shrink-0 text-[12px] text-[var(--mute)]">
@@ -889,11 +896,11 @@ export function App() {
       <div
         role="status"
         aria-live="polite"
-        className={`fixed right-6 bottom-6 z-50 flex items-center gap-2 rounded-lg bg-[var(--ink)] px-4 py-3 text-[13.5px] font-medium text-[var(--paper)] shadow-lg transition-all duration-200 ${
+        className={`fixed right-6 bottom-6 z-50 flex items-center gap-2 rounded-lg bg-[var(--ink)] px-4 py-3 text-[13.5px] font-medium text-[var(--paper)] shadow-lg transition-[transform,opacity] duration-200 ease-[var(--ease-unslop)] ${
           toastMessage ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0'
         }`}
       >
-        <Check className="h-4 w-4 text-[var(--emerald)]" aria-hidden="true" />
+        <Check className="h-4 w-4 text-[var(--emerald)]" strokeWidth={1.5} aria-hidden="true" />
         <span>{toastMessage}</span>
       </div>
     </ClickSpark>

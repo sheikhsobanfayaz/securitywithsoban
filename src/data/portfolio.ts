@@ -32,19 +32,19 @@ export interface CapabilityGroup {
 
 export const EXPERIENCE_ITEMS: ExperienceItem[] = [
   {
-    meta: 'CURRENT · MSSP ENVIRONMENT',
+    meta: 'Current · MSSP environment',
     title: 'SOC Analyst',
     description:
       'Monitoring multi-tenant SIEM and EDR queues, validating true-positive incidents against MITRE ATT&CK, and writing clear client-ready escalation reports under strict SLAs.',
   },
   {
-    meta: 'PRIOR · NETWORK SECURITY',
+    meta: 'Prior · Network security',
     title: 'Network Security Engineer',
     description:
       'Enterprise firewall troubleshooting, NAT translations, site-to-site IPsec and SSL VPN tunnels, Layer 2 bridge interfaces, and physical hardware diagnostics for perimeter defense.',
   },
   {
-    meta: 'CREDENTIALS · ACTIVE STUDY',
+    meta: 'Credentials · Active study',
     title: 'ISC2 CC & Detection',
     description:
       'ISC2 Certified in Cybersecurity (CC) holder, actively advancing through CompTIA Security+ (V8), Sigma rule engineering, and Python log automation.',
@@ -53,7 +53,7 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
 
 export const PLAYBOOK_STEPS: PlaybookStep[] = [
   {
-    stepTag: 'STEP 1',
+    stepTag: 'Step 1',
     num: '01',
     title: 'Verify What Triggered',
     description:
@@ -62,7 +62,7 @@ export const PLAYBOOK_STEPS: PlaybookStep[] = [
       'Example: Confirm username, device IP (10.16.56.241), and which program started the action.',
   },
   {
-    stepTag: 'STEP 2',
+    stepTag: 'Step 2',
     num: '02',
     title: 'Query Historical Telemetry',
     description:
@@ -71,7 +71,7 @@ export const PLAYBOOK_STEPS: PlaybookStep[] = [
       'Example: Query the last 24h-7d of logs for matching source IPs, hashes, or account logins.',
   },
   {
-    stepTag: 'STEP 3',
+    stepTag: 'Step 3',
     num: '03',
     title: 'Correlate Endpoint & Firewall',
     description:
@@ -80,7 +80,7 @@ export const PLAYBOOK_STEPS: PlaybookStep[] = [
       'Example: Endpoint says ConnectionSuccess, while Firewall DeviceAction shows DROP -> blocked at the perimeter.',
   },
   {
-    stepTag: 'STEP 4',
+    stepTag: 'Step 4',
     num: '04',
     title: 'Validate Business Justification',
     description:
@@ -89,7 +89,7 @@ export const PLAYBOOK_STEPS: PlaybookStep[] = [
       'Example: Match Netskope DLP justification text against approved change or manager records.',
   },
   {
-    stepTag: 'STEP 5',
+    stepTag: 'Step 5',
     num: '05',
     title: 'Inspect Edge & Web Logs',
     description:
@@ -98,7 +98,7 @@ export const PLAYBOOK_STEPS: PlaybookStep[] = [
       'Example: Scanner requests /.env or /wp-config.php -> WAF rejects with HTTP 403.',
   },
   {
-    stepTag: 'STEP 6',
+    stepTag: 'Step 6',
     num: '06',
     title: 'Deliver Evidence-Backed Disposition',
     description:
@@ -149,37 +149,37 @@ export const MITRE_STAGES: MitreStage[] = [
 
 export const METHODOLOGY_ITEMS: MethodologyItem[] = [
   {
-    meta: 'TRIAGE & SCOPING',
+    meta: 'Triage & scoping',
     title: 'Alert Triage & Context Discovery',
     description:
       'Review alert severity, affected hosts, users, indicators, and timestamps. Prioritize investigations based on verifiable threat telemetry rather than assuming every alert is a compromise.',
   },
   {
-    meta: 'SIEM & LOG ANALYTICS',
+    meta: 'SIEM & log analytics',
     title: 'Microsoft Sentinel & KQL Analysis',
     description:
       'Scope investigations across lookback windows using KQL. Correlate user sessions, application activity, IP reputation, and build accurate multi-source event timelines.',
   },
   {
-    meta: 'CROSS-TELEMETRY',
+    meta: 'Cross-telemetry',
     title: 'Endpoint & Network Correlation',
     description:
       'Differentiate endpoint connection states from perimeter firewall disposition. Validate whether connections were allowed, denied, or dropped by matching CommonSecurityLog records with host process events.',
   },
   {
-    meta: 'DATA LOSS PREVENTION',
+    meta: 'Data loss prevention',
     title: 'Cloud DLP & User Justification',
     description:
       'Triage cloud DLP alerts across file repositories. Evaluate self-reported user justification strings against verified enterprise policies, sensitive data classifications, and authorized channels.',
   },
   {
-    meta: 'WEB DEFENSE',
+    meta: 'Web defense',
     title: 'WAF & Reconnaissance Analysis',
     description:
       'Inspect web application attack traffic targeting sensitive directories, credentials, and API endpoints. Separate automated vulnerability scanner sweeps from confirmed application impact.',
   },
   {
-    meta: 'REPORTING & HANDOVER',
+    meta: 'Reporting & handover',
     title: 'Evidence Collection & Escalation',
     description:
       'Distinguish observed facts from unconfirmed assumptions. Document technical timelines, preserve forensic evidence, and escalate actionable incident reports under strict SLAs.',

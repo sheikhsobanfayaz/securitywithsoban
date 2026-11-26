@@ -121,9 +121,9 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
   return (
     <main className="mx-auto max-w-[1120px] px-5 pt-12 pb-20 sm:px-8 lg:px-12">
       <section className="border-b border-[var(--hair)] pb-8">
-        <div className="font-mono-code mb-3 inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[12px] font-medium text-[var(--accent-text)]">
-          <Newspaper className="h-3.5 w-3.5" aria-hidden="true" />
-          <span>Daily Intelligence Feed</span>
+        <div className="font-mono-code mb-3 inline-flex items-center gap-2 text-[12px] font-medium text-[var(--accent-text)]">
+          <Newspaper className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+          <span>Daily intelligence feed</span>
         </div>
 
         <div role="heading" aria-level={1}>
@@ -134,27 +134,27 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
             direction="top"
             delay={55}
             stepDuration={0.3}
-            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-bold leading-[1.15] tracking-[-0.025em] text-[var(--ink)]"
+            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]"
           />
         </div>
 
-        <p className="mt-3 max-w-[760px] text-[16.5px] leading-relaxed text-[var(--ink2)]">
+        <p className="mt-3 max-w-[760px] text-[16px] leading-relaxed text-[var(--ink2)]">
           Curated advisories, threat intelligence, and defensive security reporting aggregated daily from CISA, SANS ISC, Krebs on Security, BleepingComputer, The Hacker News, and Dark Reading.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <div className="font-mono-code inline-flex items-center gap-2 rounded-full border border-[var(--hair)] bg-[var(--surface)] px-3.5 py-1.5 text-[12px] text-[var(--ink2)]">
+          <div className="font-mono-code inline-flex items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-3 py-1.5 text-[12px] text-[var(--ink2)]">
             <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
             <span>
-              Last Updated:{' '}
-              <strong className="text-[var(--ink)]">
-                {loading ? 'Loading...' : error ? 'Unavailable' : formatUpdatedTimestamp(generatedAt)}
+              Last updated:{' '}
+              <strong className="font-medium text-[var(--ink)]">
+                {loading ? 'Loading' : error ? 'Unavailable' : formatUpdatedTimestamp(generatedAt)}
               </strong>
             </span>
           </div>
-          <span className="font-mono-code text-[12.5px] text-[var(--mute)]">
+          <span className="font-mono-code tabular-nums text-[12.5px] text-[var(--mute)]">
             {loading
-              ? 'Fetching latest briefings...'
+              ? 'Fetching latest briefings'
               : error
                 ? 'Could not load feed'
                 : filteredItems.length === 1
@@ -172,7 +172,7 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
                   key={opt.value}
                   type="button"
                   onClick={() => setActiveFilter(opt.value)}
-                  className={`font-mono-code rounded-md border px-3 py-1.5 text-[12.5px] transition-colors cursor-pointer ${
+                  className={`font-mono-code rounded-lg border px-3 py-1.5 text-[12.5px] transition-colors duration-150 cursor-pointer ${
                     isActive
                       ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)]'
                       : 'border-[var(--hair)] bg-[var(--paper)] text-[var(--ink2)] hover:border-[var(--ink2)]'
@@ -186,16 +186,17 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
 
           <div className="relative w-full sm:w-80">
             <Search
-              className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-[var(--mute)]"
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[var(--mute)]"
+              strokeWidth={1.5}
               aria-hidden="true"
             />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search headlines, vendors, CVEs, or sources..."
+              placeholder="Search headlines, CVEs, or sources"
               aria-label="Search cybersecurity news"
-              className="w-full rounded-lg border border-[var(--hair)] bg-[var(--paper)] py-2 pr-3 pl-8 text-[13.5px] text-[var(--ink)] placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
+              className="w-full rounded-lg border border-[var(--hair)] bg-[var(--paper)] py-2 pr-3 pl-9 text-[13.5px] text-[var(--ink)] placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
             />
           </div>
         </div>
@@ -207,7 +208,7 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
             {[0, 1, 2, 3].map((idx) => (
               <div
                 key={idx}
-                className="h-52 animate-pulse rounded-xl border border-[var(--hair)] bg-[var(--surface)]"
+                className="h-52 rounded-xl border border-[var(--hair)] bg-[var(--surface)]"
               />
             ))}
           </div>
@@ -215,7 +216,7 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
           <div className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] px-6 py-12 text-center text-[15px] text-[var(--mute)]">
             {error
               ? 'Unable to load daily news right now. Please try refreshing shortly.'
-              : 'No cybersecurity briefings matched your current filter or search term.'}
+              : 'No cybersecurity briefings matched your current filter or search term'}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -224,8 +225,8 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
                 key={`${item.link}-${item.title}`}
                 theme={theme}
                 spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-                intensity={theme === 'dark' ? 0.16 : 0.1}
-                borderGlow={0.48}
+                intensity={theme === 'dark' ? 0.1 : 0.06}
+                borderGlow={0.25}
                 spotlightSize={260}
                 style={spotlightStyle}
                 className="flex flex-col justify-between gap-4 rounded-xl! border! border-[var(--hair)]! p-6!"
@@ -235,11 +236,11 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
                     <span className="font-mono-code text-[12px] font-medium text-[var(--accent-text)]">
                       {item.source}
                     </span>
-                    <span className="font-mono-code text-[11.5px] text-[var(--mute)]">
+                    <span className="font-mono-code tabular-nums text-[11.5px] text-[var(--mute)]">
                       {item.published_display || item.published}
                     </span>
                   </div>
-                  <h2 className="font-display mt-0 mb-2.5 text-[19px] font-semibold leading-snug text-[var(--ink)]">
+                  <h2 className="font-display mt-0 mb-2 text-[19px] font-semibold leading-snug text-[var(--ink)]">
                     {item.title}
                   </h2>
                   <p className="m-0 text-[14.5px] leading-relaxed text-[var(--ink2)]">
@@ -247,18 +248,18 @@ export function NewsView({ theme, initialCategory }: NewsViewProps) {
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--hair)] pt-3.5">
-                  <span className="font-mono-code rounded border border-[var(--hair)] bg-[var(--paper)] px-2.5 py-0.5 text-[11.5px] text-[var(--mute)]">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--hair)] pt-4">
+                  <span className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2.5 py-0.5 text-[11.5px] text-[var(--mute)]">
                     {item.category}
                   </span>
                   <a
                     href={safeExternalUrl(item.link)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white no-underline transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)]"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 text-[13px] font-semibold text-white no-underline transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)]"
                   >
                     <span>Read Article</span>
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                    <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
                   </a>
                 </div>
               </SpotlightCard>

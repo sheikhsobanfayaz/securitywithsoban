@@ -23,8 +23,8 @@ export function CaseDetailView({
   if (loading) {
     return (
       <main className="mx-auto max-w-[900px] px-5 py-16 sm:px-8">
-        <div className="h-10 w-48 animate-pulse rounded-lg bg-[var(--surface)]" />
-        <div className="mt-6 h-72 animate-pulse rounded-2xl border border-[var(--hair)] bg-[var(--surface)]" />
+        <div className="h-10 w-48 rounded-lg bg-[var(--surface)]" />
+        <div className="mt-6 h-72 rounded-2xl border border-[var(--hair)] bg-[var(--surface)]" />
       </main>
     );
   }
@@ -32,18 +32,18 @@ export function CaseDetailView({
   if (!project) {
     return (
       <main className="mx-auto max-w-[900px] px-5 py-20 text-center sm:px-8">
-        <h1 className="font-display text-[28px] font-bold text-[var(--ink)]">
+        <h1 className="font-display text-[28px] font-semibold text-[var(--ink)]">
           Case Study Not Found
         </h1>
         <p className="mt-2 text-[15px] text-[var(--mute)]">
-          The requested investigation write-up could not be found.
+          The requested investigation write-up could not be found
         </p>
         <button
           type="button"
           onClick={onBack}
           className="mt-6 inline-flex items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-4 py-2 text-[14px] font-semibold text-white cursor-pointer"
         >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
           <span>Back to Case Studies</span>
         </button>
       </main>
@@ -78,9 +78,9 @@ export function CaseDetailView({
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      onNotify('Case study link copied to clipboard!');
+      onNotify('Case study link copied');
     } catch {
-      onNotify('Copy link from the browser address bar.');
+      onNotify('Copy link from the browser address bar');
     }
   };
 
@@ -91,18 +91,18 @@ export function CaseDetailView({
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-3 py-1.5 text-[13px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink2)] cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
           >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowLeft className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
             <span>Back to Case Studies</span>
           </button>
-          <span className="font-mono-code text-[12px] text-[var(--mute)]">
-            Estimated Reading: {readMins} min &middot; Technical Playbook
+          <span className="font-mono-code tabular-nums text-[12px] text-[var(--mute)]">
+            Estimated reading: {readMins} min &middot; Technical playbook
           </span>
         </div>
 
-        <header className="border-b border-[var(--hair)] pb-7">
-          <span className="font-mono-code mb-2 inline-block rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[12px] font-medium text-[var(--accent-text)]">
+        <header className="border-b border-[var(--hair)] pb-8">
+          <span className="font-mono-code mb-2 block text-[12px] font-medium text-[var(--accent-text)]">
             {project.categoryLabel}
           </span>
           <div role="heading" aria-level={1}>
@@ -113,17 +113,17 @@ export function CaseDetailView({
               direction="top"
               delay={45}
               stepDuration={0.28}
-              className="font-display m-0 text-[clamp(26px,4vw,38px)] font-bold leading-[1.2] tracking-[-0.025em] text-[var(--ink)]"
+              className="font-display m-0 text-[clamp(26px,4vw,38px)] font-semibold leading-[1.18] tracking-[-0.02em] text-[var(--ink)]"
             />
           </div>
-          <p className="mt-3 mb-5 text-[17px] leading-relaxed text-[var(--ink2)]">
+          <p className="mt-3 mb-5 text-[16.5px] leading-relaxed text-[var(--ink2)]">
             {project.summary}
           </p>
           <div className="flex flex-wrap gap-2">
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="font-mono-code rounded border border-[var(--hair)] bg-[var(--surface)] px-2.5 py-1 text-[12px] text-[var(--mute)]"
+                className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--surface)] px-2.5 py-1 text-[12px] text-[var(--mute)]"
               >
                 {tag}
               </span>
@@ -200,9 +200,7 @@ export function CaseDetailView({
             <ul className="m-0 list-none space-y-2 p-0 text-[14.5px] text-[var(--ink2)]">
               {project.valueDemonstrated.map((val, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
-                  <span className="font-mono-code mt-0.5 font-bold text-[var(--emerald)]" aria-hidden="true">
-                    +
-                  </span>
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--emerald)]" strokeWidth={1.5} aria-hidden="true" />
                   <span>{val}</span>
                 </li>
               ))}

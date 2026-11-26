@@ -59,9 +59,9 @@ export function WriteUpModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs"
     >
-      <div className="max-h-[86vh] w-full max-w-[720px] overflow-y-auto rounded-[14px] border border-[var(--hair)] bg-[var(--paper)] p-6 shadow-2xl sm:p-7">
+      <div className="max-h-[86vh] w-full max-w-[720px] overflow-y-auto rounded-2xl border border-[var(--hair)] bg-[var(--paper)] p-6 shadow-xl">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <span className="font-mono-code mb-1.5 block text-[12px] text-[var(--accent-text)]">
@@ -75,9 +75,9 @@ export function WriteUpModal({
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink2)] cursor-pointer"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
           >
-            <X className="h-3.5 w-3.5" aria-hidden="true" />
+            <X className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
             <span>Close</span>
           </button>
         </div>
@@ -147,12 +147,10 @@ export function WriteUpModal({
               <h4 className="font-display mb-1.5 text-[15px] font-semibold text-[var(--ink)]">
                 Competencies &amp; Value Demonstrated
               </h4>
-              <ul className="m-0 list-none space-y-1.5 p-0 text-[14px]">
+              <ul className="m-0 list-none space-y-2 p-0 text-[14px]">
                 {project.valueDemonstrated.map((val, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="mt-0.5 text-[var(--emerald)]" aria-hidden="true">
-                      +
-                    </span>
+                  <li key={idx} className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--emerald)]" strokeWidth={1.5} aria-hidden="true" />
                     <span>{val}</span>
                   </li>
                 ))}

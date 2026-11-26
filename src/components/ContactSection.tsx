@@ -61,7 +61,7 @@ export function ContactSection({
           type: 'success',
           text: 'Message delivered directly to my inbox. Thank you for reaching out.',
         });
-        onNotify('Message delivered directly!');
+        onNotify('Message delivered');
       } else {
         throw new Error(data.message || 'Submission failed');
       }
@@ -70,7 +70,7 @@ export function ContactSection({
         type: 'error',
         text: `Could not deliver automatically right now. Please email ${CONTACT_EMAIL} directly.`,
       });
-      onNotify('Delivery issue. Use Copy Email to reach out.');
+      onNotify('Delivery issue. Use Copy email to reach out');
     } finally {
       setSubmittingForm(false);
     }
@@ -156,7 +156,7 @@ export function ContactSection({
 
       <form
         onSubmit={handleContactSubmit}
-        className="flex flex-col gap-3.5 rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-6"
+        className="flex flex-col gap-4 rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-6"
       >
         <input
           type="checkbox"
@@ -217,7 +217,7 @@ export function ContactSection({
             rows={4}
             value={senderMessage}
             onChange={(e) => setSenderMessage(e.target.value)}
-            placeholder="Role, project, or security topic..."
+            placeholder="Role, project, or security topic"
             required
             className="w-full rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-2.5 text-[14.5px] text-[var(--ink)] placeholder:text-[var(--mute)] focus:outline-2 focus:outline-[var(--accent)]"
           />
@@ -225,10 +225,10 @@ export function ContactSection({
         <button
           type="submit"
           disabled={submittingForm}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-[18px] py-2.5 text-[14px] font-semibold text-white transition-colors hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] disabled:opacity-60 cursor-pointer"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] disabled:opacity-60 cursor-pointer"
         >
-          <Send className="h-4 w-4" aria-hidden="true" />
-          <span>{submittingForm ? 'Sending...' : 'Send Message'}</span>
+          <Send className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+          <span>{submittingForm ? 'Sending' : 'Send Message'}</span>
         </button>
 
         {formFeedback && (

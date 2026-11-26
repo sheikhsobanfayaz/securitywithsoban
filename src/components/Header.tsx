@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, Moon, Sun, X } from 'lucide-react';
+import { ArrowRight, Menu, Moon, Sun, X } from 'lucide-react';
 import type { AppRoute } from '@/types/project';
 
 interface HeaderProps {
@@ -56,23 +56,23 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--hair)] bg-[var(--paper)]/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-[var(--hair)] bg-[var(--paper)]/95 backdrop-blur-sm">
       <div
-        className="h-[2px] bg-gradient-to-r from-[var(--accent)] to-[var(--emerald)] transition-[width] duration-150"
+        className="h-[2px] bg-[var(--accent)] transition-[width] duration-150 ease-[var(--ease-unslop)]"
         style={{ width: `${scrollProgress}%` }}
         aria-hidden="true"
       />
-      <div className="mx-auto flex h-[68px] max-w-[1120px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
+      <div className="mx-auto flex h-16 max-w-[1120px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
         <a
           href="#/"
           onClick={(e) => handleNavClick(e, 'home')}
-          className="font-display flex items-center gap-2.5 text-[17px] sm:text-[18px] font-normal tracking-[-0.02em] text-[var(--ink)] no-underline whitespace-nowrap"
+          className="font-display flex items-center gap-2.5 text-[16.5px] sm:text-[17px] font-medium tracking-normal text-[var(--ink)] no-underline whitespace-nowrap"
         >
-          <span className="font-mono-code inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--accent-soft)] text-[12px] font-bold text-[var(--accent-text)]">
+          <span className="font-mono-code inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--surface)] text-[12px] font-semibold text-[var(--ink)]">
             SF
           </span>
           <span>
-            Sheikh <strong className="font-bold text-[var(--accent)]">Soban</strong> Fayaz
+            Sheikh <strong className="font-semibold text-[var(--ink)]">Soban</strong> Fayaz
           </span>
         </a>
 
@@ -87,10 +87,10 @@ export function Header({
                 key={item.route}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.route)}
-                className={`relative py-1 text-[14px] font-medium no-underline whitespace-nowrap transition-colors ${
+                className={`relative py-1 text-[14px] font-medium no-underline whitespace-nowrap transition-colors duration-150 ${
                   active
-                    ? 'text-[var(--accent-text)] font-semibold'
-                    : 'text-[var(--ink2)] hover:text-[var(--accent-text)]'
+                    ? 'text-[var(--ink)] font-semibold'
+                    : 'text-[var(--mute)] hover:text-[var(--ink)]'
                 }`}
               >
                 {item.label}
@@ -105,23 +105,23 @@ export function Header({
           })}
         </nav>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onToggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--hair)] bg-[var(--paper)] px-3 py-1.5 text-[13px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink2)] cursor-pointer"
+            className="inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] cursor-pointer"
           >
             {theme === 'dark' ? (
               <>
-                <Sun className="h-3.5 w-3.5" aria-hidden="true" />
-                <span className="hidden sm:inline">Light Mode</span>
+                <Sun className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                <span className="hidden sm:inline">Light mode</span>
                 <span className="sm:hidden">Light</span>
               </>
             ) : (
               <>
-                <Moon className="h-3.5 w-3.5" aria-hidden="true" />
-                <span className="hidden sm:inline">Dark Mode</span>
+                <Moon className="h-4 w-4 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
+                <span className="hidden sm:inline">Dark mode</span>
                 <span className="sm:hidden">Dark</span>
               </>
             )}
@@ -132,12 +132,12 @@ export function Header({
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle mobile navigation menu"
             aria-expanded={mobileMenuOpen}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--paper)] text-[var(--ink)] transition-colors hover:border-[var(--ink2)] md:hidden cursor-pointer"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--hair)] bg-[var(--surface)] text-[var(--ink)] transition-colors duration-150 hover:border-[var(--ink2)] md:hidden cursor-pointer"
           >
             {mobileMenuOpen ? (
-              <X className="h-4 w-4" aria-hidden="true" />
+              <X className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
             ) : (
-              <Menu className="h-4 w-4" aria-hidden="true" />
+              <Menu className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
             )}
           </button>
         </div>
@@ -145,7 +145,7 @@ export function Header({
 
       {mobileMenuOpen && (
         <div className="border-t border-[var(--hair)] bg-[var(--paper)] px-5 py-4 md:hidden">
-          <nav aria-label="Mobile navigation" className="flex flex-col gap-1.5">
+          <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
             {NAV_ITEMS.map((item) => {
               const active = isRouteActive(item.route);
               return (
@@ -153,14 +153,14 @@ export function Header({
                   key={item.route}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.route)}
-                  className={`flex items-center justify-between rounded-lg px-3.5 py-2.5 text-[14.5px] font-medium no-underline transition-colors ${
+                  className={`flex items-center justify-between rounded-lg px-3 py-2 text-[14px] font-medium no-underline transition-colors duration-150 ${
                     active
                       ? 'bg-[var(--accent-soft)] text-[var(--accent-text)] font-semibold'
                       : 'text-[var(--ink2)] hover:bg-[var(--surface)]'
                   }`}
                 >
                   <span>{item.label}</span>
-                  <span className="text-[12px] opacity-70">&rarr;</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-[var(--mute)]" strokeWidth={1.5} aria-hidden="true" />
                 </a>
               );
             })}
@@ -168,14 +168,14 @@ export function Header({
               <a
                 href="#/cc-simulator"
                 onClick={(e) => handleNavClick(e, 'cc-simulator')}
-                className="rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-3 py-2 text-center text-[13px] font-semibold text-[var(--ink)] no-underline"
+                className="rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-3 py-2 text-center text-[13px] font-medium text-[var(--ink)] no-underline"
               >
                 CC Practice Quiz
               </a>
               <a
                 href="#/ai-sanitizer"
                 onClick={(e) => handleNavClick(e, 'ai-sanitizer')}
-                className="rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-3 py-2 text-center text-[13px] font-semibold text-[var(--ink)] no-underline"
+                className="rounded-lg border border-[var(--hair)] bg-[var(--surface)] px-3 py-2 text-center text-[13px] font-medium text-[var(--ink)] no-underline"
               >
                 SanitizeAI
               </a>

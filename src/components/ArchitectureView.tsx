@@ -23,24 +23,24 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
   return (
     <main className="mx-auto max-w-[1120px] px-5 pt-12 pb-20 sm:px-8 lg:px-12">
       <section className="border-b border-[var(--hair)] pb-12">
-        <div className="font-mono-code mb-3 inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[12px] font-medium text-[var(--accent-text)]">
-          <Layers className="h-3.5 w-3.5" aria-hidden="true" />
-          <span>Behind the Scenes</span>
+        <div className="font-mono-code mb-3 inline-flex items-center gap-2 text-[12px] font-medium text-[var(--accent-text)]">
+          <Layers className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+          <span>Behind the scenes</span>
         </div>
 
         <div role="heading" aria-level={1} className="max-w-[22ch]">
           <BlurText
-            text="How this website is built. Simple, fast, and private."
+            text="How this website is built. Simple, fast, and private"
             trigger="load"
             animateBy="words"
             direction="top"
             delay={50}
             stepDuration={0.3}
-            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-bold leading-[1.14] tracking-[-0.025em] text-[var(--ink)]"
+            className="font-display m-0 text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.12] tracking-[-0.025em] text-[var(--ink)]"
           />
         </div>
 
-        <p className="mt-3 max-w-[68ch] text-[16.5px] leading-relaxed text-[var(--ink2)]">
+        <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed text-[var(--ink2)]">
           Most websites rely on heavy backends, databases, and background trackers. This portfolio builds into lightweight static files on GitHub Pages so it loads fast, exposes zero server attack surface, and respects visitor privacy.
         </p>
 
@@ -55,10 +55,10 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
               key={metric.label}
               className="rounded-xl border border-[var(--hair)] bg-[var(--surface)] p-5"
             >
-              <div className="font-display text-[28px] font-bold text-[var(--accent-text)]">
+              <div className="font-display tabular-nums text-[28px] font-medium text-[var(--ink)]">
                 {metric.val}
               </div>
-              <div className="mt-1 text-[13px] font-medium text-[var(--mute)]">
+              <div className="mt-1.5 text-[13px] font-normal text-[var(--mute)]">
                 {metric.label}
               </div>
             </div>
@@ -66,13 +66,13 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
         </div>
       </section>
 
-      <section className="border-b border-[var(--hair)] py-14">
-        <div className="mb-7">
+      <section className="border-b border-[var(--hair)] py-16">
+        <div className="mb-8">
           <h2 className="font-display m-0 text-[28px] font-semibold text-[var(--ink)]">
-            Why Keep It Simple?
+            Why Keep It Simple
           </h2>
-          <p className="mt-1 mb-0 text-[15px] text-[var(--mute)]">
-            Fewer moving parts means fewer vulnerabilities and nothing exposed on a backend server.
+          <p className="mt-2 mb-0 text-[15px] text-[var(--mute)]">
+            Fewer moving parts means fewer vulnerabilities and nothing exposed on a backend server
           </p>
         </div>
 
@@ -80,13 +80,13 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
           <SpotlightCard
             theme={theme}
             spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-            intensity={theme === 'dark' ? 0.16 : 0.1}
-            borderGlow={0.48}
+            intensity={theme === 'dark' ? 0.1 : 0.06}
+            borderGlow={0.25}
             spotlightSize={260}
             style={spotlightStyle}
             className="rounded-xl! border! border-[var(--hair)]! p-6!"
           >
-            <h3 className="font-display mt-0 mb-2.5 text-[20px] font-semibold text-[var(--ink)]">
+            <h3 className="font-display mt-0 mb-2 text-[20px] font-semibold text-[var(--ink)]">
               No Database or Login Server
             </h3>
             <p className="mt-0 mb-3 text-[14.5px] leading-relaxed text-[var(--ink2)]">
@@ -99,7 +99,7 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
               {['Static Files Only', 'No Database', 'GitHub Pages'].map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono-code rounded border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
+                  className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
                 >
                   {tag}
                 </span>
@@ -110,13 +110,13 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
           <SpotlightCard
             theme={theme}
             spotlightColor={theme === 'dark' ? '#0D9488' : '#2563EB'}
-            intensity={theme === 'dark' ? 0.16 : 0.1}
-            borderGlow={0.48}
+            intensity={theme === 'dark' ? 0.1 : 0.06}
+            borderGlow={0.25}
             spotlightSize={260}
             style={spotlightStyle}
             className="rounded-xl! border! border-[var(--hair)]! p-6!"
           >
-            <h3 className="font-display mt-0 mb-2.5 text-[20px] font-semibold text-[var(--ink)]">
+            <h3 className="font-display mt-0 mb-2 text-[20px] font-semibold text-[var(--ink)]">
               No Visitor Tracking
             </h3>
             <p className="mt-0 mb-3 text-[14.5px] leading-relaxed text-[var(--ink2)]">
@@ -129,7 +129,7 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
               {['No Analytics', 'No Tracking Cookies', 'Local Browser Only'].map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono-code rounded border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
+                  className="font-mono-code rounded-md border border-[var(--hair)] bg-[var(--paper)] px-2 py-0.5 text-[11.5px] text-[var(--mute)]"
                 >
                   {tag}
                 </span>
@@ -139,13 +139,13 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
         </div>
       </section>
 
-      <section className="border-b border-[var(--hair)] py-14">
-        <div className="mb-7">
+      <section className="py-16">
+        <div className="mb-8">
           <h2 className="font-display m-0 text-[28px] font-semibold text-[var(--ink)]">
             How Everything Fits Together
           </h2>
-          <p className="mt-1 mb-0 text-[15px] text-[var(--mute)]">
-            Structured static JSON feeds and automated GitHub Actions keep content current.
+          <p className="mt-2 mb-0 text-[15px] text-[var(--mute)]">
+            Structured static JSON feeds and automated GitHub Actions keep content current
           </p>
         </div>
 
@@ -153,8 +153,8 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
           <SpotlightCard
             theme={theme}
             spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-            intensity={theme === 'dark' ? 0.15 : 0.09}
-            borderGlow={0.45}
+            intensity={theme === 'dark' ? 0.1 : 0.06}
+            borderGlow={0.25}
             spotlightSize={260}
             style={spotlightStyle}
             className="rounded-xl! border! border-[var(--hair)]! p-6! lg:col-span-2"
@@ -165,7 +165,7 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
             <p className="mt-0 mb-4 text-[14.5px] text-[var(--ink2)]">
               Case studies live in <code className="font-mono-code">public/projects.json</code> and daily threat briefings live in <code className="font-mono-code">public/news.json</code>, updated automatically by GitHub Actions workflows.
             </p>
-            <pre className="font-mono-code m-0 overflow-x-auto rounded-xl border border-slate-800 bg-[#0B1120] p-4 text-[12.5px] leading-relaxed text-slate-200">{`// Example entry inside public/projects.json
+            <pre className="font-mono-code m-0 overflow-x-auto rounded-lg border border-slate-800 bg-[#0B1120] p-4 text-[12.5px] leading-relaxed text-slate-200">{`// Example entry inside public/projects.json
 {
   "id": "unsloth-lora-secops",
   "category": "ai",
@@ -177,8 +177,8 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
           <SpotlightCard
             theme={theme}
             spotlightColor={theme === 'dark' ? '#3B82F6' : '#2563EB'}
-            intensity={theme === 'dark' ? 0.15 : 0.09}
-            borderGlow={0.45}
+            intensity={theme === 'dark' ? 0.1 : 0.06}
+            borderGlow={0.25}
             spotlightSize={260}
             style={spotlightStyle}
             className="rounded-xl! border! border-[var(--hair)]! p-6!"
@@ -195,10 +195,10 @@ export function ArchitectureView({ theme, onNavigate }: ArchitectureViewProps) {
             <button
               type="button"
               onClick={() => onNavigate('tools')}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3.5 py-2 text-[13px] font-semibold text-white cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-4 py-2 text-[13px] font-semibold text-white transition-colors duration-150 hover:border-[var(--accent-text)] hover:bg-[var(--accent-text)] cursor-pointer"
             >
               <span>Explore Tools</span>
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
             </button>
           </SpotlightCard>
         </div>
